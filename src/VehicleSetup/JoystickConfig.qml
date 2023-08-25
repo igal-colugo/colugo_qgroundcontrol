@@ -62,20 +62,35 @@ SetupPage {
                 id:             bar
                 width:          parent.width
                 Component.onCompleted: {
-                    currentIndex = _activeJoystick && _activeJoystick.calibrated ? 0 : 2
+                    if (_activeJoystick) {
+                        if (_activeJoystick.axisCount == 0) {
+                            currentIndex = 1
+                        } else {
+                            if (_activeJoystick.calibrated) {
+                                currentIndex = 0
+                            } else {
+                                currentIndex = 2
+                            }
+                        }
+                    } else {
+                        currentIndex = 0
+                    }
                 }
                 anchors.top:    parent.top
                 QGCTabButton {
                     text:       qsTr("General")
+                    visible:    _activeJoystick.axisCount != 0
                 }
                 QGCTabButton {
                     text:       qsTr("Button Assigment")
                 }
                 QGCTabButton {
                     text:       qsTr("Calibration")
+                    visible:    _activeJoystick.axisCount != 0
                 }
                 QGCTabButton {
                     text:       qsTr("Advanced")
+                    visible:    _activeJoystick.axisCount != 0
                 }
             }
 
