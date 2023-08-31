@@ -428,13 +428,19 @@ contains (DEFINES, QGC_ENABLE_PAIRING) {
 #
 
 HEADERS += \
+    src/NextVision/NextVisionLinkConfiguration.h \
+    src/NextVision/NextVisionLinkInterface.h \
+    src/NextVision/NextVisionLinkManager.h \
+    src/NextVision/NextVisionMAVLinkProtocol.h \
+    src/NextVision/NextVisionTCPLink.h \
+    src/NextVision/NextVisionUDPLink.h \
     src/QmlControls/QmlUnitsConversion.h \
     src/Vehicle/VehicleEscStatusFactGroup.h \
     src/api/QGCCorePlugin.h \
     src/api/QGCOptions.h \
     src/api/QGCSettings.h \
     src/api/QmlComponentInfo.h \
-    src/GPS/Drivers/src/base_station.h \
+    src/GPS/Drivers/src/base_station.h
 
 contains (DEFINES, QGC_ENABLE_PAIRING) {
     HEADERS += \
@@ -442,11 +448,17 @@ contains (DEFINES, QGC_ENABLE_PAIRING) {
 }
 
 SOURCES += \
+    src/NextVision/NextVisionLinkConfiguration.cc \
+    src/NextVision/NextVisionLinkInterface.cc \
+    src/NextVision/NextVisionLinkManager.cc \
+    src/NextVision/NextVisionMAVLinkProtocol.cc \
+    src/NextVision/NextVisionTCPLink.cc \
+    src/NextVision/NextVisionUDPLink.cc \
     src/Vehicle/VehicleEscStatusFactGroup.cc \
     src/api/QGCCorePlugin.cc \
     src/api/QGCOptions.cc \
     src/api/QGCSettings.cc \
-    src/api/QmlComponentInfo.cc \
+    src/api/QmlComponentInfo.cc
 
 contains (DEFINES, QGC_ENABLE_PAIRING) {
     SOURCES += \
@@ -1525,6 +1537,11 @@ contains (CONFIG, QGC_DISABLE_INSTALLER_SETUP) {
 }
 
 DISTFILES += \
+    src/NextVision/CMakeLists.txt \
+    src/NextVisionCamera/CMakeLists.txt \
+    src/NextVisionCamera/camera_definition_example.xml \
+    src/NextVisionCamera/images/next_vision_camera_photo.svg \
+    src/NextVisionCamera/images/next_vision_camera_video.svg \
     src/QmlControls/QGroundControl/Specific/qmldir
 
 #
