@@ -434,6 +434,7 @@ HEADERS += \
     src/NextVision/NextVisionMAVLinkProtocol.h \
     src/NextVision/NextVisionTCPLink.h \
     src/NextVision/NextVisionUDPLink.h \
+    src/NextVisionExt/NvExt_CameraManagement.h \
     src/QmlControls/QmlUnitsConversion.h \
     src/Vehicle/VehicleEscStatusFactGroup.h \
     src/api/QGCCorePlugin.h \
@@ -454,6 +455,7 @@ SOURCES += \
     src/NextVision/NextVisionMAVLinkProtocol.cc \
     src/NextVision/NextVisionTCPLink.cc \
     src/NextVision/NextVisionUDPLink.cc \
+    src/NextVisionExt/NvExt_CameraManagement.cpp \
     src/Vehicle/VehicleEscStatusFactGroup.cc \
     src/api/QGCCorePlugin.cc \
     src/api/QGCOptions.cc \

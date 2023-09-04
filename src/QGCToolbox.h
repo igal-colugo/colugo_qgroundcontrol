@@ -20,6 +20,7 @@ class JoystickManager;
 class FollowMe;
 class LinkManager;
 class NextVisionLinkManager;
+class CameraManagement;
 class MAVLinkProtocol;
 class NextVisionMAVLinkProtocol;
 class MissionCommandTree;

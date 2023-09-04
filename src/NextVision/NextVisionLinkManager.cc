@@ -88,6 +88,7 @@ bool NextVisionLinkManager::createConnectedLink(SharedNextVisionLinkConfiguratio
         }
 
         _rgLinks.append(link);
+        _selectedConfigurationId = _rgLinks.count() - 1;
         config->setLink(link);
 
         connect(link.get(), &NextVisionLinkInterface::communicationError, _app, &QGCApplication::criticalMessageBoxOnMainThread);
@@ -153,6 +154,18 @@ SharedNextVisionLinkInterfacePtr NextVisionLinkManager::sharedLinkInterfacePoint
     if (!ignoreNull)
         qWarning() << "LinkManager::sharedLinkInterfaceForLink returning nullptr";
     return SharedNextVisionLinkInterfacePtr(nullptr);
+}
+
+SharedNextVisionLinkInterfacePtr NextVisionLinkManager::selectedSharedLinkInterfacePointerForLink(void)
+{
+    SharedNextVisionLinkInterfacePtr returnValue = nullptr;
+
+    if (_rgLinks.count() > _selectedConfigurationId)
+    {
+        returnValue = _rgLinks[_selectedConfigurationId];
+    }
+
+    return returnValue;
 }
 
 /// @brief If all new connections should be suspended a message is displayed to the user and true
@@ -342,6 +355,24 @@ NextVisionLinkConfiguration *NextVisionLinkManager::startConfigurationEditing(Ne
     }
 }
 
+void NextVisionLinkManager::selectConfiguration(NextVisionLinkConfiguration *config)
+{
+    if (config)
+    {
+        if (_rgLinks.count() > 0)
+        {
+            for (int i = 0; i < _rgLinks.count(); i++)
+            {
+                if (_rgLinkConfigs[i].get() == config)
+                {
+                    _selectedConfigurationId = i;
+                    break;
+                }
+            }
+        }
+    }
+}
+
 void NextVisionLinkManager::removeConfiguration(NextVisionLinkConfiguration *config)
 {
     if (config)
@@ -354,6 +385,8 @@ void NextVisionLinkManager::removeConfiguration(NextVisionLinkConfiguration *con
 
         _removeConfiguration(config);
         saveLinkConfigurationList();
+
+        _selectedConfigurationId = _rgLinks.count() - 1;
     }
     else
     {
@@ -391,6 +424,7 @@ SharedNextVisionLinkConfigurationPtr NextVisionLinkManager::addConfiguration(Nex
 {
     _qmlConfigurations.append(config);
     _rgLinkConfigs.append(SharedNextVisionLinkConfigurationPtr(config));
+
     return _rgLinkConfigs.last();
 }
 

@@ -78,6 +78,7 @@ Rectangle {
                     onClicked: {
                         checked = true
                         _currentSelection = object
+                        QGroundControl.nextVisionLinkManager.selectConfiguration(_currentSelection)
                     }
                 }
             }
@@ -131,11 +132,14 @@ Rectangle {
             enabled:    _currentSelection && _currentSelection.link
             onClicked:  _currentSelection.link.disconnect()
         }
-        QGCButton {
-            text:       qsTr("Test send")
-            enabled:    _currentSelection && _currentSelection.link
-            onClicked:  _currentSelection.link.testSend()
-        }
+        QGCCheckBox {
+            id:             checkBox
+            text:           "Use separated link"
+            onClicked:      { joystickManager.cameraManagement.setUseSeparatedLink(checked)}
+            Component.onCompleted: {
+                checked = joystickManager.cameraManagement.getUseSeparatedLink()
+            }
+    }
     }
 
     Loader {

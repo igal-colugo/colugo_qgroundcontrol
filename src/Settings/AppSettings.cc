@@ -8,40 +8,37 @@
  ****************************************************************************/
 
 #include "AppSettings.h"
-#include "QGCPalette.h"
-#include "QGCApplication.h"
 #include "ParameterManager.h"
+#include "QGCApplication.h"
+#include "QGCPalette.h"
 
 #include <QQmlEngine>
-#include <QtQml>
 #include <QStandardPaths>
+#include <QtQml>
 
-const char* AppSettings::parameterFileExtension =   "params";
-const char* AppSettings::planFileExtension =        "plan";
-const char* AppSettings::missionFileExtension =     "mission";
-const char* AppSettings::waypointsFileExtension =   "waypoints";
-const char* AppSettings::fenceFileExtension =       "fence";
-const char* AppSettings::rallyPointFileExtension =  "rally";
-const char* AppSettings::telemetryFileExtension =   "tlog";
-const char* AppSettings::kmlFileExtension =         "kml";
-const char* AppSettings::shpFileExtension =         "shp";
-const char* AppSettings::logFileExtension =         "ulg";
+const char *AppSettings::parameterFileExtension = "params";
+const char *AppSettings::planFileExtension = "plan";
+const char *AppSettings::missionFileExtension = "mission";
+const char *AppSettings::waypointsFileExtension = "waypoints";
+const char *AppSettings::fenceFileExtension = "fence";
+const char *AppSettings::rallyPointFileExtension = "rally";
+const char *AppSettings::telemetryFileExtension = "tlog";
+const char *AppSettings::kmlFileExtension = "kml";
+const char *AppSettings::shpFileExtension = "shp";
+const char *AppSettings::logFileExtension = "ulg";
 
-const char* AppSettings::parameterDirectory =       QT_TRANSLATE_NOOP("AppSettings", "Parameters");
-const char* AppSettings::telemetryDirectory =       QT_TRANSLATE_NOOP("AppSettings", "Telemetry");
-const char* AppSettings::missionDirectory =         QT_TRANSLATE_NOOP("AppSettings", "Missions");
-const char* AppSettings::logDirectory =             QT_TRANSLATE_NOOP("AppSettings", "Logs");
-const char* AppSettings::videoDirectory =           QT_TRANSLATE_NOOP("AppSettings", "Video");
-const char* AppSettings::photoDirectory =           QT_TRANSLATE_NOOP("AppSettings", "Photo");
-const char* AppSettings::crashDirectory =           QT_TRANSLATE_NOOP("AppSettings", "CrashLogs");
+const char *AppSettings::parameterDirectory = QT_TRANSLATE_NOOP("AppSettings", "Parameters");
+const char *AppSettings::telemetryDirectory = QT_TRANSLATE_NOOP("AppSettings", "Telemetry");
+const char *AppSettings::missionDirectory = QT_TRANSLATE_NOOP("AppSettings", "Missions");
+const char *AppSettings::logDirectory = QT_TRANSLATE_NOOP("AppSettings", "Logs");
+const char *AppSettings::videoDirectory = QT_TRANSLATE_NOOP("AppSettings", "Video");
+const char *AppSettings::photoDirectory = QT_TRANSLATE_NOOP("AppSettings", "Photo");
+const char *AppSettings::crashDirectory = QT_TRANSLATE_NOOP("AppSettings", "CrashLogs");
 
 // Release languages are 90%+ complete
 QList<int> AppSettings::_rgReleaseLanguages = {
-    QLocale::AnyLanguage,  // System
-    QLocale::Chinese,
-    QLocale::English,
-    QLocale::Korean,
-    QLocale::Azerbaijani,
+    QLocale::AnyLanguage, // System
+    QLocale::Chinese,     QLocale::English, QLocale::Korean, QLocale::Azerbaijani,
 };
 // Partial languages are 40%+ complete
 QList<int> AppSettings::_rgPartialLanguages = {
@@ -57,20 +54,24 @@ DECLARE_SETTINGGROUP(App, "")
     QSettings settings;
 
     // These two "type" keys were changed to "class" values
-    static const char* deprecatedFirmwareTypeKey    = "offlineEditingFirmwareType";
-    static const char* deprecatedVehicleTypeKey     = "offlineEditingVehicleType";
-    if (settings.contains(deprecatedFirmwareTypeKey)) {
+    static const char *deprecatedFirmwareTypeKey = "offlineEditingFirmwareType";
+    static const char *deprecatedVehicleTypeKey = "offlineEditingVehicleType";
+    if (settings.contains(deprecatedFirmwareTypeKey))
+    {
         settings.setValue(deprecatedFirmwareTypeKey, QGCMAVLink::firmwareClass(static_cast<MAV_AUTOPILOT>(settings.value(deprecatedFirmwareTypeKey).toInt())));
     }
-    if (settings.contains(deprecatedVehicleTypeKey)) {
+    if (settings.contains(deprecatedVehicleTypeKey))
+    {
         settings.setValue(deprecatedVehicleTypeKey, QGCMAVLink::vehicleClass(static_cast<MAV_TYPE>(settings.value(deprecatedVehicleTypeKey).toInt())));
     }
 
-    QStringList deprecatedKeyNames  = { "virtualJoystickCentralized",           "offlineEditingFirmwareType",   "offlineEditingVehicleType" };
-    QStringList newKeyNames         = { "virtualJoystickAutoCenterThrottle",    "offlineEditingFirmwareClass",  "offlineEditingVehicleClass" };
+    QStringList deprecatedKeyNames = {"virtualJoystickCentralized", "offlineEditingFirmwareType", "offlineEditingVehicleType"};
+    QStringList newKeyNames = {"virtualJoystickAutoCenterThrottle", "offlineEditingFirmwareClass", "offlineEditingVehicleClass"};
     settings.beginGroup(_settingsGroup);
-    for (int i=0; i<deprecatedKeyNames.count(); i++) {
-        if (settings.contains(deprecatedKeyNames[i])) {
+    for (int i = 0; i < deprecatedKeyNames.count(); i++)
+    {
+        if (settings.contains(deprecatedKeyNames[i]))
+        {
             settings.setValue(newKeyNames[i], settings.value(deprecatedKeyNames[i]));
             settings.remove(deprecatedKeyNames[i]);
         }
@@ -78,7 +79,7 @@ DECLARE_SETTINGGROUP(App, "")
 
     // Instantiate savePath so we can check for override and setup default path if needed
 
-    SettingsFact* savePathFact = qobject_cast<SettingsFact*>(savePath());
+    SettingsFact *savePathFact = qobject_cast<SettingsFact *>(savePath());
     QString appName = qgcApp()->applicationName();
 #ifdef __mobile__
     // Mobile builds always use the runtime generated location for savePath.
@@ -87,16 +88,17 @@ DECLARE_SETTINGGROUP(App, "")
     bool userHasModifiedSavePath = !savePathFact->rawValue().toString().isEmpty() || !_nameToMetaDataMap[savePathName]->rawDefaultValue().toString().isEmpty();
 #endif
 
-    if (!userHasModifiedSavePath) {
+    if (!userHasModifiedSavePath)
+    {
 #ifdef __mobile__
-    #ifdef __ios__
+#ifdef __ios__
         // This will expose the directories directly to the File iOs app
         QDir rootDir = QDir(QStandardPaths::writableLocation(QStandardPaths::DocumentsLocation));
         savePathFact->setRawValue(rootDir.absolutePath());
-    #else
+#else
         QDir rootDir = QDir(QStandardPaths::writableLocation(QStandardPaths::GenericDataLocation));
         savePathFact->setRawValue(rootDir.filePath(appName));
-    #endif
+#endif
         savePathFact->setVisible(false);
 #else
         QDir rootDir = QDir(QStandardPaths::writableLocation(QStandardPaths::DocumentsLocation));
@@ -131,6 +133,10 @@ DECLARE_SETTINGSFACT(AppSettings, useChecklist)
 DECLARE_SETTINGSFACT(AppSettings, enforceChecklist)
 DECLARE_SETTINGSFACT(AppSettings, mapboxToken)
 DECLARE_SETTINGSFACT(AppSettings, mapboxAccount)
+DECLARE_SETTINGSFACT(AppSettings, camJoystickDZ)
+DECLARE_SETTINGSFACT(AppSettings, camJoystickGain)
+DECLARE_SETTINGSFACT(AppSettings, camJoystickRollInvert)
+DECLARE_SETTINGSFACT(AppSettings, camJoystickPitchInvert)
 DECLARE_SETTINGSFACT(AppSettings, mapboxStyle)
 DECLARE_SETTINGSFACT(AppSettings, esriToken)
 DECLARE_SETTINGSFACT(AppSettings, customURL)
@@ -151,7 +157,8 @@ DECLARE_SETTINGSFACT(AppSettings, forwardMavlinkHostName)
 
 DECLARE_SETTINGSFACT_NO_FUNC(AppSettings, indoorPalette)
 {
-    if (!_indoorPaletteFact) {
+    if (!_indoorPaletteFact)
+    {
         _indoorPaletteFact = _createSettingsFact(indoorPaletteName);
         connect(_indoorPaletteFact, &Fact::rawValueChanged, this, &AppSettings::_indoorPaletteChanged);
     }
@@ -160,34 +167,41 @@ DECLARE_SETTINGSFACT_NO_FUNC(AppSettings, indoorPalette)
 
 DECLARE_SETTINGSFACT_NO_FUNC(AppSettings, qLocaleLanguage)
 {
-    if (!_qLocaleLanguageFact) {
+    if (!_qLocaleLanguageFact)
+    {
         _qLocaleLanguageFact = _createSettingsFact(qLocaleLanguageName);
         connect(_qLocaleLanguageFact, &Fact::rawValueChanged, this, &AppSettings::_qLocaleLanguageChanged);
 
-        FactMetaData*   metaData            = _qLocaleLanguageFact->metaData();
-        QStringList     rgOriginalStrings   = metaData->enumStrings();
-        QVariantList    rgOriginalValues    = metaData->enumValues();
-        QStringList     rgUpdatedStrings;
-        QVariantList    rgUpdatedValues;
+        FactMetaData *metaData = _qLocaleLanguageFact->metaData();
+        QStringList rgOriginalStrings = metaData->enumStrings();
+        QVariantList rgOriginalValues = metaData->enumValues();
+        QStringList rgUpdatedStrings;
+        QVariantList rgUpdatedValues;
 
         // All builds contains released and partial languages
-        for (int i=0; i<rgOriginalStrings.count(); i++) {
-            if (_rgReleaseLanguages.contains(rgOriginalValues[i].toInt())) {
+        for (int i = 0; i < rgOriginalStrings.count(); i++)
+        {
+            if (_rgReleaseLanguages.contains(rgOriginalValues[i].toInt()))
+            {
                 rgUpdatedStrings.append(rgOriginalStrings[i]);
                 rgUpdatedValues.append(rgOriginalValues[i]);
             }
         }
-        for (int i=0; i<rgOriginalStrings.count(); i++) {
-            if (_rgPartialLanguages.contains(rgOriginalValues[i].toInt())) {
+        for (int i = 0; i < rgOriginalStrings.count(); i++)
+        {
+            if (_rgPartialLanguages.contains(rgOriginalValues[i].toInt()))
+            {
                 rgUpdatedStrings.append(rgOriginalStrings[i] + AppSettings::tr(" (Partial)"));
                 rgUpdatedValues.append(rgOriginalValues[i].toInt());
             }
         }
 #ifdef DAILY_BUILD
         // Only daily builds include full set
-        for (int i=0; i<rgOriginalStrings.count(); i++) {
+        for (int i = 0; i < rgOriginalStrings.count(); i++)
+        {
             int languageId = rgOriginalValues[i].toInt();
-            if (!_rgReleaseLanguages.contains(languageId)  || !_rgPartialLanguages.contains(languageId)) {
+            if (!_rgReleaseLanguages.contains(languageId) || !_rgPartialLanguages.contains(languageId))
+            {
                 rgUpdatedStrings.append(rgOriginalStrings[i] + AppSettings::tr(" (Test only)"));
                 rgUpdatedValues.append(rgOriginalValues[i].toInt());
             }
@@ -206,10 +220,12 @@ void AppSettings::_qLocaleLanguageChanged()
 void AppSettings::_checkSavePathDirectories(void)
 {
     QDir savePathDir(savePath()->rawValue().toString());
-    if (!savePathDir.exists()) {
+    if (!savePathDir.exists())
+    {
         QDir().mkpath(savePathDir.absolutePath());
     }
-    if (savePathDir.exists()) {
+    if (savePathDir.exists())
+    {
         savePathDir.mkdir(parameterDirectory);
         savePathDir.mkdir(telemetryDirectory);
         savePathDir.mkdir(missionDirectory);
@@ -228,7 +244,8 @@ void AppSettings::_indoorPaletteChanged(void)
 QString AppSettings::missionSavePath(void)
 {
     QString path = savePath()->rawValue().toString();
-    if (!path.isEmpty() && QDir(path).exists()) {
+    if (!path.isEmpty() && QDir(path).exists())
+    {
         QDir dir(path);
         return dir.filePath(missionDirectory);
     }
@@ -238,7 +255,8 @@ QString AppSettings::missionSavePath(void)
 QString AppSettings::parameterSavePath(void)
 {
     QString path = savePath()->rawValue().toString();
-    if (!path.isEmpty() && QDir(path).exists()) {
+    if (!path.isEmpty() && QDir(path).exists())
+    {
         QDir dir(path);
         return dir.filePath(parameterDirectory);
     }
@@ -248,7 +266,8 @@ QString AppSettings::parameterSavePath(void)
 QString AppSettings::telemetrySavePath(void)
 {
     QString path = savePath()->rawValue().toString();
-    if (!path.isEmpty() && QDir(path).exists()) {
+    if (!path.isEmpty() && QDir(path).exists())
+    {
         QDir dir(path);
         return dir.filePath(telemetryDirectory);
     }
@@ -258,7 +277,8 @@ QString AppSettings::telemetrySavePath(void)
 QString AppSettings::logSavePath(void)
 {
     QString path = savePath()->rawValue().toString();
-    if (!path.isEmpty() && QDir(path).exists()) {
+    if (!path.isEmpty() && QDir(path).exists())
+    {
         QDir dir(path);
         return dir.filePath(logDirectory);
     }
@@ -268,7 +288,8 @@ QString AppSettings::logSavePath(void)
 QString AppSettings::videoSavePath(void)
 {
     QString path = savePath()->rawValue().toString();
-    if (!path.isEmpty() && QDir(path).exists()) {
+    if (!path.isEmpty() && QDir(path).exists())
+    {
         QDir dir(path);
         return dir.filePath(videoDirectory);
     }
@@ -278,7 +299,8 @@ QString AppSettings::videoSavePath(void)
 QString AppSettings::photoSavePath(void)
 {
     QString path = savePath()->rawValue().toString();
-    if (!path.isEmpty() && QDir(path).exists()) {
+    if (!path.isEmpty() && QDir(path).exists())
+    {
         QDir dir(path);
         return dir.filePath(photoDirectory);
     }
@@ -288,29 +310,32 @@ QString AppSettings::photoSavePath(void)
 QString AppSettings::crashSavePath(void)
 {
     QString path = savePath()->rawValue().toString();
-    if (!path.isEmpty() && QDir(path).exists()) {
+    if (!path.isEmpty() && QDir(path).exists())
+    {
         QDir dir(path);
         return dir.filePath(crashDirectory);
     }
     return QString();
 }
 
-QList<int> AppSettings::firstRunPromptsIdsVariantToList(const QVariant& firstRunPromptIds)
+QList<int> AppSettings::firstRunPromptsIdsVariantToList(const QVariant &firstRunPromptIds)
 {
     QList<int> rgIds;
 
     QStringList strIdList = firstRunPromptIds.toString().split(",", Qt::SkipEmptyParts);
 
-    for (const QString& strId: strIdList) {
+    for (const QString &strId : strIdList)
+    {
         rgIds.append(strId.toInt());
     }
     return rgIds;
 }
 
-QVariant AppSettings::firstRunPromptsIdsListToVariant(const QList<int>& rgIds)
+QVariant AppSettings::firstRunPromptsIdsListToVariant(const QList<int> &rgIds)
 {
     QStringList strList;
-    for (int id: rgIds) {
+    for (int id : rgIds)
+    {
         strList.append(QString::number(id));
     }
     return QVariant(strList.join(","));
@@ -319,7 +344,8 @@ QVariant AppSettings::firstRunPromptsIdsListToVariant(const QList<int>& rgIds)
 void AppSettings::firstRunPromptIdsMarkIdAsShown(int id)
 {
     QList<int> rgIds = firstRunPromptsIdsVariantToList(firstRunPromptIdsShown()->rawValue());
-    if (!rgIds.contains(id)) {
+    if (!rgIds.contains(id))
+    {
         rgIds.append(id);
         firstRunPromptIdsShown()->setRawValue(firstRunPromptsIdsListToVariant(rgIds));
     }
@@ -331,14 +357,15 @@ QLocale::Language AppSettings::_qLocaleLanguageID(void)
 {
     QSettings settings;
 
-    if (settings.childKeys().contains("language")) {
+    if (settings.childKeys().contains("language"))
+    {
         // We need to convert to the new settings key/values
 #if 0
         // Old vales
         "enumStrings":      "System,български (Bulgarian),中文 (Chinese),Nederlands (Dutch),English,Suomi (Finnish),Français (French),Deutsche (German),Ελληνικά (Greek), עברית (Hebrew),Italiano (Italian),日本人 (Japanese),한국어 (Korean),Norsk (Norwegian),Polskie (Polish),Português (Portuguese),Pусский (Russian),Español (Spanish),Svenska (Swedish),Türk (Turkish),Azerbaijani (Azerbaijani)",
         "enumValues":       "0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20",
 #endif
-        static QList<int> rgNewValues = { 0,20,25,30,31,36,37,42,43,48,58,59,66,85,90,91,96,111,114,125,15 };
+        static QList<int> rgNewValues = {0, 20, 25, 30, 31, 36, 37, 42, 43, 48, 58, 59, 66, 85, 90, 91, 96, 111, 114, 125, 15};
 
         int oldValue = settings.value("language").toInt();
         settings.setValue(qLocaleLanguageName, rgNewValues[oldValue]);
@@ -346,10 +373,12 @@ QLocale::Language AppSettings::_qLocaleLanguageID(void)
     }
 
     QLocale::Language id = settings.value(qLocaleLanguageName, QLocale::AnyLanguage).value<QLocale::Language>();
-    if (id == QLocale::AnyLanguage) {
+    if (id == QLocale::AnyLanguage)
+    {
 #ifndef DAILY_BUILD
         // Stable builds only support released and partial languages
-        if (!_rgReleaseLanguages.contains(id) && _rgPartialLanguages.contains(id)) {
+        if (!_rgReleaseLanguages.contains(id) && _rgPartialLanguages.contains(id))
+        {
             id = QLocale::English;
         }
 #endif

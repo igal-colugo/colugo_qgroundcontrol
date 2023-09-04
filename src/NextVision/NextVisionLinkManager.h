@@ -60,6 +60,7 @@ class NextVisionLinkManager : public QGCTool
     Q_INVOKABLE bool endConfigurationEditing(NextVisionLinkConfiguration *config, NextVisionLinkConfiguration *editedConfig);
     Q_INVOKABLE bool endCreateConfiguration(NextVisionLinkConfiguration *config);
     Q_INVOKABLE void removeConfiguration(NextVisionLinkConfiguration *config);
+    Q_INVOKABLE void selectConfiguration(NextVisionLinkConfiguration *config);
 
     // Called to signal app shutdown. Disconnects all links while turning off auto-connect.
     Q_INVOKABLE void shutdown(void);
@@ -120,6 +121,7 @@ class NextVisionLinkManager : public QGCTool
     /// If you are going to hold a reference to a LinkInterface* in your object you must reference count it
     /// by using this method to get access to the shared pointer.
     SharedNextVisionLinkInterfacePtr sharedLinkInterfacePointerForLink(NextVisionLinkInterface *link, bool ignoreNull = false);
+    SharedNextVisionLinkInterfacePtr selectedSharedLinkInterfacePointerForLink(void);
 
     bool containsLink(NextVisionLinkInterface *link);
 
@@ -137,6 +139,8 @@ class NextVisionLinkManager : public QGCTool
     }
     bool _connectionsSuspendedMsg(void);
     void _removeConfiguration(NextVisionLinkConfiguration *config);
+
+    int _selectedConfigurationId;
 
     bool _configUpdateSuspended;         ///< true: stop updating configuration list
     bool _configurationsLoaded;          ///< true: Link configurations have been loaded
