@@ -32,7 +32,7 @@ QGC_LOGGING_CATEGORY(NextvisionLinkManagerVerboseLog, "NextVisionLinkManagerVerb
 const char *NextVisionLinkManager::_defaultUDPLinkName = "UDP Link (AutoConnect)";
 
 NextVisionLinkManager::NextVisionLinkManager(QGCApplication *app, QGCToolbox *toolbox)
-    : QGCTool(app, toolbox), _configUpdateSuspended(false), _configurationsLoaded(false), _connectionsSuspended(false),
+    : QGCTool(app, toolbox), _selectedConfigurationId(-1), _configUpdateSuspended(false), _configurationsLoaded(false), _connectionsSuspended(false),
       _mavlinkChannelsUsedBitMask(1) // We never use channel 0 to avoid sequence numbering problems
       ,
       _mavlinkProtocol(nullptr)
@@ -160,7 +160,7 @@ SharedNextVisionLinkInterfacePtr NextVisionLinkManager::selectedSharedLinkInterf
 {
     SharedNextVisionLinkInterfacePtr returnValue = nullptr;
 
-    if (_rgLinks.count() > _selectedConfigurationId)
+    if (_rgLinks.count() > _selectedConfigurationId && _selectedConfigurationId > -1)
     {
         returnValue = _rgLinks[_selectedConfigurationId];
     }
@@ -204,6 +204,12 @@ void NextVisionLinkManager::saveLinkConfigurationList()
         SharedNextVisionLinkConfigurationPtr linkConfig = _rgLinkConfigs[i];
         if (linkConfig)
         {
+            QString root = NextVisionLinkConfiguration::settingsRoot();
+            root += QString("/Link%1").arg(trueCount++);
+            settings.setValue(root + "/name", linkConfig->name());
+            settings.setValue(root + "/type", linkConfig->type());
+            // Have the instance save its own values
+            linkConfig->saveSettings(settings, root);
         }
         else
         {
@@ -247,7 +253,6 @@ void NextVisionLinkManager::loadLinkConfigurationList()
                             case NextVisionLinkConfiguration::TypeTcp:
                                 link = new NextVisionTCPConfiguration(name);
                                 break;
-
                             case NextVisionLinkConfiguration::TypeLast:
                                 break;
                             }
