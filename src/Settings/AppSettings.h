@@ -62,6 +62,7 @@ class AppSettings : public SettingsGroup
     DEFINE_SETTINGFACT(enableTaisync)
     DEFINE_SETTINGFACT(enableTaisyncVideo)
     DEFINE_SETTINGFACT(enableMicrohard)
+    DEFINE_SETTINGFACT(enableNextVision)
     DEFINE_SETTINGFACT(qLocaleLanguage)
     DEFINE_SETTINGFACT(disableAllPersistence)
     DEFINE_SETTINGFACT(usePairing)

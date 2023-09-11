@@ -281,32 +281,31 @@ CameraManagement::MavlinkExtSetGimbalArgs CameraManagement::getZoomValue(unsigne
 /* Sending gimbal Command Messages */
 void CameraManagement::sendGimbalCommand(float cam_roll_yaw, float cam_pitch)
 {
-    if (!activeVehicle)
-        return;
-
     if (_useSeparatedLink == true)
     {
-        WeakLinkInterfacePtr weakLink = activeVehicle->vehicleLinkManager()->primaryLink();
+        WeakNextVisionLinkInterfacePtr weakLink = this->_nextVisionLinkManager->selectedSharedLinkInterfacePointerForLink();
         if (weakLink.expired())
         {
             return;
         }
-        SharedLinkInterfacePtr sharedLink = weakLink.lock();
+        SharedNextVisionLinkInterfacePtr sharedLink = weakLink.lock();
 
-        mavlink_message_t message;
-        mavlink_msg_command_long_pack_chan(1, 0, sharedLink->mavlinkChannel(), &message, 1, 0, MAV_CMD_DO_DIGICAM_CONTROL, 0, MavExtCmd_SetGimbal, cam_roll_yaw, cam_pitch,
-                                           MavExtCmdArg_ZoomNoChange, (float) this->gndCrsAltitude, 0, 0);
-        uint8_t buffer[MAVLINK_MAX_PACKET_LEN];
-        int len = mavlink_msg_to_send_buffer(buffer, &message);
-
-        SharedNextVisionLinkInterfacePtr sharedNextVisionLink = this->_nextVisionLinkManager->selectedSharedLinkInterfacePointerForLink();
-        if (sharedNextVisionLink != nullptr)
+        if (sharedLink != nullptr)
         {
-            sharedNextVisionLink->writeBytesThreadSafe((const char *) buffer, len);
+            mavlink_message_t message;
+            mavlink_msg_command_long_pack_chan(1, 0, sharedLink->mavlinkChannel(), &message, 1, 0, MAV_CMD_DO_DIGICAM_CONTROL, 0, MavExtCmd_SetGimbal, cam_roll_yaw, cam_pitch,
+                                               MavExtCmdArg_ZoomNoChange, (float) this->gndCrsAltitude, 0, 0);
+            uint8_t buffer[MAVLINK_MAX_PACKET_LEN];
+            int len = mavlink_msg_to_send_buffer(buffer, &message);
+
+            sharedLink->writeBytesThreadSafe((const char *) buffer, len);
         }
     }
     else
     {
+        if (!activeVehicle)
+            return;
+
         WeakLinkInterfacePtr weakLink = activeVehicle->vehicleLinkManager()->primaryLink();
         if (weakLink.expired())
         {
@@ -352,45 +351,46 @@ void CameraManagement::sendGimbalVirtualCommand(float cam_roll_yaw, float cam_pi
 /* Sending Mavlink Command Long Messages */
 void CameraManagement::sendMavCommandLong(MAV_CMD command, float param1, float param2, float param3, float param4, float param5, float param6, float param7)
 {
-    if (!activeVehicle)
-        return;
     if (_useSeparatedLink == true)
     {
-        WeakLinkInterfacePtr weakLink = activeVehicle->vehicleLinkManager()->primaryLink();
+        WeakNextVisionLinkInterfacePtr weakLink = this->_nextVisionLinkManager->selectedSharedLinkInterfacePointerForLink();
+
         if (weakLink.expired())
         {
             return;
         }
-        SharedLinkInterfacePtr sharedLink = weakLink.lock();
+        SharedNextVisionLinkInterfacePtr sharedLink = weakLink.lock();
 
-        mavlink_message_t message;
-        mavlink_command_long_t cmd;
-
-        memset(&cmd, 0, sizeof(cmd));
-        cmd.target_system = 1;
-        cmd.target_component = 0;
-        cmd.command = command;
-        cmd.confirmation = 0;
-        cmd.param1 = param1;
-        cmd.param2 = param2;
-        cmd.param3 = param3;
-        cmd.param4 = param4;
-        cmd.param5 = param5;
-        cmd.param6 = param6;
-        cmd.param7 = param7;
-        mavlink_msg_command_long_encode_chan(1, 0, sharedLink->mavlinkChannel(), &message, &cmd);
-
-        uint8_t buffer[MAVLINK_MAX_PACKET_LEN];
-        int len = mavlink_msg_to_send_buffer(buffer, &message);
-
-        SharedNextVisionLinkInterfacePtr sharedNextVisionLink = this->_nextVisionLinkManager->selectedSharedLinkInterfacePointerForLink();
-        if (sharedNextVisionLink != nullptr)
+        if (sharedLink != nullptr)
         {
-            sharedNextVisionLink->writeBytesThreadSafe((const char *) buffer, len);
+            mavlink_message_t message;
+            mavlink_command_long_t cmd;
+
+            memset(&cmd, 0, sizeof(cmd));
+            cmd.target_system = 1;
+            cmd.target_component = 0;
+            cmd.command = command;
+            cmd.confirmation = 0;
+            cmd.param1 = param1;
+            cmd.param2 = param2;
+            cmd.param3 = param3;
+            cmd.param4 = param4;
+            cmd.param5 = param5;
+            cmd.param6 = param6;
+            cmd.param7 = param7;
+            mavlink_msg_command_long_encode_chan(1, 0, sharedLink->mavlinkChannel(), &message, &cmd);
+
+            uint8_t buffer[MAVLINK_MAX_PACKET_LEN];
+            int len = mavlink_msg_to_send_buffer(buffer, &message);
+
+            sharedLink->writeBytesThreadSafe((const char *) buffer, len);
         }
     }
     else
     {
+        if (!activeVehicle)
+            return;
+
         WeakLinkInterfacePtr weakLink = activeVehicle->vehicleLinkManager()->primaryLink();
         if (weakLink.expired())
         {
