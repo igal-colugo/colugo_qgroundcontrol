@@ -146,19 +146,18 @@ void JoystickManager::_setActiveJoystickFromSettings(void)
         cam_joy_name = _name2JoystickMap.first()->name();
     }
 
-    /* check if the joystick is the same */
-    if (joy_name == cam_joy_name)
+    setActiveJoystick(_name2JoystickMap.value(joy_name, _name2JoystickMap.first()));
+    if (_activeJoystick)
     {
-        Joystick *joystick = _name2JoystickMap.value(joy_name, _name2JoystickMap.first());
-        joystick->_is_same_joystick = true;
+        settings.setValue(_settingsKeyActiveJoystick, _activeJoystick->name());
     }
 
-    /* Must Be First !!!!! */
     setActiveCamJoystick(_name2JoystickMap.value(cam_joy_name, _name2JoystickMap.first()));
-    settings.setValue(_settingsKeyActiveCamJoystick, _activeCamJoystick->name());
+    if (_activeCamJoystick)
+    {
+        settings.setValue(_settingsKeyActiveCamJoystick, _activeCamJoystick->name());
+    }
 
-    setActiveJoystick(_name2JoystickMap.value(joy_name, _name2JoystickMap.first()));
-    settings.setValue(_settingsKeyActiveJoystick, _activeJoystick->name());
     /* ------------------------------------------------------------------------------------------------------*/
 }
 
@@ -176,29 +175,33 @@ void JoystickManager::setActiveJoystick(Joystick *joystick)
         qCWarning(JoystickManagerLog) << "Set active not in map" << joystick->name();
         return;
     }
-
     if (_activeJoystick == joystick)
     {
         return;
     }
-
+    // if desired joystick eq to camera joystick destroy it
+    if (_activeCamJoystick == joystick)
+    {
+        _activeCamJoystick->stopPolling();
+        _activeCamJoystick = nullptr;
+    }
     if (_activeJoystick)
     {
         _activeJoystick->stopPolling();
     }
 
     _activeJoystick = joystick;
-    if (_activeJoystick)                           /* NextVision */
-        _activeJoystick->_is_cam_joystick = false; /* NextVision */
-
-    if (_activeJoystick != nullptr)
+    if (_activeJoystick)
     {
+        _activeJoystick->isCameraJoystick = false; /* NextVision */
+
         qCDebug(JoystickManagerLog) << "Set active:" << _activeJoystick->name();
 
         settings.beginGroup(_settingsGroup);
         settings.setValue(_settingsKeyActiveJoystick, _activeJoystick->name());
     }
 
+    // notify out
     emit activeJoystickChanged(_activeJoystick);
     emit activeJoystickNameChanged(_activeJoystick ? _activeJoystick->name() : "");
 }
@@ -268,12 +271,29 @@ void JoystickManager::setActiveCamJoystick(Joystick *joystick)
         qCWarning(JoystickManagerLog) << "Set cam active not in map" << joystick->name();
         return;
     }
+    // avoid set joystick to manual system joystick
 
+    if (_activeJoystick != nullptr)
+    {
+        if (_activeJoystick == joystick)
+        {
+            if (_activeJoystick->enabled() == true)
+            {
+                qgcApp()->showAppMessage(QStringLiteral("Joystick occupied by manual control.Disable it before."));
+                emit activeCamJoystickNameChanged(_activeCamJoystick ? _activeCamJoystick->name() : "");
+                return;
+            }
+            else
+            {
+                _activeJoystick->stopPolling();
+                _activeJoystick = nullptr;
+            }
+        }
+    }
     if (_activeCamJoystick == joystick)
     {
         return;
     }
-
     if (_activeCamJoystick)
     {
         _activeCamJoystick->stopPolling();
@@ -281,16 +301,16 @@ void JoystickManager::setActiveCamJoystick(Joystick *joystick)
 
     _activeCamJoystick = joystick;
     if (_activeCamJoystick)
-        _activeCamJoystick->_is_cam_joystick = true;
-
-    if (_activeCamJoystick != nullptr)
     {
+        _activeCamJoystick->isCameraJoystick = true;
+
         qCDebug(JoystickManagerLog) << "Set cam active:" << _activeCamJoystick->name();
 
         settings.beginGroup(_settingsGroup);
         settings.setValue(_settingsKeyActiveCamJoystick, _activeCamJoystick->name());
     }
 
+    // notify out
     emit activeCamJoystickChanged(_activeCamJoystick);
     emit activeCamJoystickNameChanged(_activeCamJoystick ? _activeCamJoystick->name() : "");
 }

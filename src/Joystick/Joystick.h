@@ -34,7 +34,6 @@ class AssignedButtonAction : public QObject
     QElapsedTimer buttonTime;
     bool repeat = false;
 };
-
 /// Assignable Button Action
 class AssignableButtonAction : public QObject
 {
@@ -56,14 +55,12 @@ class AssignableButtonAction : public QObject
     QString _action;
     bool _repeat = false;
 };
-
 /// Joystick Controller
 class Joystick : public QThread
 {
     Q_OBJECT
   public:
     Joystick(const QString &name, int axisCount, int buttonCount, int hatCount, MultiVehicleManager *multiVehicleManager);
-
     virtual ~Joystick();
 
     typedef struct Calibration_t
@@ -98,18 +95,16 @@ class Joystick : public QThread
 
     Q_PROPERTY(QString name READ name CONSTANT)
     Q_PROPERTY(bool calibrated MEMBER _calibrated NOTIFY calibratedChanged)
+    Q_PROPERTY(bool enabled READ enabled NOTIFY enabledChanged)
     Q_PROPERTY(int totalButtonCount READ totalButtonCount CONSTANT)
     Q_PROPERTY(int axisCount READ axisCount CONSTANT)
     Q_PROPERTY(bool requiresCalibration READ requiresCalibration CONSTANT)
-
     //-- Actions assigned to buttons
     Q_PROPERTY(QStringList buttonActions READ buttonActions NOTIFY buttonActionsChanged)
-
     //-- Actions that can be assigned to buttons
     Q_PROPERTY(QmlObjectListModel *assignableActions READ assignableActions NOTIFY assignableActionsChanged)
     Q_PROPERTY(QStringList assignableActionTitles READ assignableActionTitles NOTIFY assignableActionsChanged)
     Q_PROPERTY(QString disabledActionName READ disabledActionName CONSTANT)
-
     Q_PROPERTY(int throttleMode READ throttleMode WRITE setThrottleMode NOTIFY throttleModeChanged)
     Q_PROPERTY(float axisFrequencyHz READ axisFrequencyHz WRITE setAxisFrequency NOTIFY axisFrequencyHzChanged)
     Q_PROPERTY(float minAxisFrequencyHz MEMBER _minAxisFrequencyHz CONSTANT)
@@ -130,7 +125,6 @@ class Joystick : public QThread
     /* NextVision Added QML properties for Camera Joystick
      * ------------------------------------------------------------------------------------------------------*/
     Q_PROPERTY(QStringList buttonCamActions READ buttonCamActions NOTIFY buttonCamActionsChanged)
-
     //-- Actions that can be assigned to camera buttons
     Q_PROPERTY(QmlObjectListModel *assignableCamActions READ assignableCamActions NOTIFY assignableCamActionsChanged)
     Q_PROPERTY(QStringList assignableCamActionTitles READ assignableCamActionTitles NOTIFY assignableCamActionsChanged)
@@ -140,8 +134,8 @@ class Joystick : public QThread
     Q_INVOKABLE QString getButtonCamAction(int button);
 
     /* NextVision Added vars to indicate if the joystick is shared or not */
-    bool _is_cam_joystick;
-    bool _is_same_joystick;
+    bool isCameraJoystick;
+
     int camPitchRollAxle()
     {
         return _camPitchRollAxle;
@@ -170,6 +164,10 @@ class Joystick : public QThread
 
     // Property accessors
 
+    bool enabled()
+    {
+        return _enabled;
+    }
     QString name()
     {
         return _name;
@@ -274,7 +272,7 @@ class Joystick : public QThread
     void negativeThrustChanged(bool allowNegative);
     void exponentialChanged(float exponential);
     void accumulatorChanged(bool accumulator);
-    void enabledChanged(bool enabled);
+    void enabledChanged(bool enabled, bool isCameraJoystick);
     void circleCorrectionChanged(bool circleCorrection);
     void axisValues(float roll, float pitch, float yaw, float throttle);
 
@@ -383,6 +381,7 @@ class Joystick : public QThread
 
     QString _name;
     bool _calibrated;
+    bool _enabled;
     int _axisCount;
     int _buttonCount;
     int _hatCount;
@@ -410,6 +409,7 @@ class Joystick : public QThread
 
     static const char *_settingsGroup;
     static const char *_calibratedSettingsKey;
+    static const char *_enabledSettingsKey;
     static const char *_buttonActionNameKey;
     static const char *_buttonActionRepeatKey;
     static const char *_throttleModeSettingsKey;

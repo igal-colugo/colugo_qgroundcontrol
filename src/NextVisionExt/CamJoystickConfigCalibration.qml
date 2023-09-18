@@ -112,7 +112,7 @@ Item {
                 }
                 Repeater {
                     id:             axisMonitorRepeater
-                    model:          _activeJoystick ? _activeJoystick.axisCount : 0
+                    model:          _activeCamJoystick ? _activeCamJoystick.axisCount : 0
                     width:          parent.width
                     Row {
                         spacing:    5
@@ -162,7 +162,7 @@ Item {
         // Command Buttons
         Row {
             spacing:            ScreenTools.defaultFontPixelWidth * 2
-            visible:            _activeJoystick?_activeJoystick.requiresCalibration:false
+            visible:            _activeCamJoystick?_activeCamJoystick.requiresCalibration:false
             anchors.horizontalCenter: parent.horizontalCenter
             QGCButton {
                 id:         skipButton

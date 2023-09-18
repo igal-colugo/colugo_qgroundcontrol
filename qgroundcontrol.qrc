@@ -374,5 +374,6 @@
         <file alias="CamStreamControlPanel.qml">src/NextVisionExt/CamStreamControlPanel.qml</file>
         <file alias="CamTrackControlPanel.qml">src/NextVisionExt/CamTrackControlPanel.qml</file>
         <file alias="CamVMDControlPanel.qml">src/NextVisionExt/CamVMDControlPanel.qml</file>
+        <file alias="CamJoystickConfigCalibration.qml">src/NextVisionExt/CamJoystickConfigCalibration.qml</file>
     </qresource>
 </RCC>

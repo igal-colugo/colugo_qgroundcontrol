@@ -2119,10 +2119,22 @@ bool Vehicle::joystickEnabled() const
 
 void Vehicle::setJoystickEnabled(bool enabled)
 {
-    _joystickEnabled = enabled;
-    _startJoystick(_joystickEnabled);
+    _startJoystick(enabled);
     _saveSettings();
-    emit joystickEnabledChanged(_joystickEnabled);
+}
+
+void Vehicle::_joystickEnabledChanged(bool enabled, bool isCameraJoystick)
+{
+    if (isCameraJoystick)
+    {
+        _joystickCamEnabled = enabled;
+        emit joystickCamEnabledChanged(_joystickCamEnabled);
+    }
+    else
+    {
+        _joystickEnabled = enabled;
+        emit joystickEnabledChanged(_joystickEnabled);
+    }
 }
 
 void Vehicle::_startJoystick(bool start)
@@ -2132,6 +2144,8 @@ void Vehicle::_startJoystick(bool start)
     {
         if (start)
         {
+            joystick->isCameraJoystick = false;
+            joystick->wait(500);
             joystick->startPolling(this);
         }
         else
@@ -2160,10 +2174,8 @@ void Vehicle::_saveCamSettings(void)
 
 void Vehicle::setJoystickCamEnabled(bool enabled)
 {
-    _joystickCamEnabled = enabled;
-    _startJoystickCam(_joystickCamEnabled);
+    _startJoystickCam(enabled);
     _saveCamSettings();
-    emit joystickCamEnabledChanged(_joystickCamEnabled);
 }
 
 bool Vehicle::joystickCamEnabled(void)
@@ -2178,12 +2190,14 @@ void Vehicle::_startJoystickCam(bool start)
     {
         if (start)
         {
+            joystick->isCameraJoystick = true;
+            joystick->wait(500);
             joystick->startPolling(this);
         }
         else
         {
-            if (joystick->_is_same_joystick && !_joystickEnabled)
-                joystick->stopPolling();
+            joystick->stopPolling();
+            joystick->wait(500);
         }
     }
 }
