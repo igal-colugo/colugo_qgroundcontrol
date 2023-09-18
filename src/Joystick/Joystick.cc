@@ -595,6 +595,7 @@ void Joystick::run()
     //-- Reset timers
     _axisTime.start();
     _camTimeDivider = 0;
+
     for (int buttonIndex = 0; buttonIndex < _totalButtonCount; buttonIndex++)
     {
         if (_buttonActionArray[buttonIndex])
@@ -602,105 +603,19 @@ void Joystick::run()
             _buttonActionArray[buttonIndex]->buttonTime.start();
         }
     }
+
     while (!_exitThread)
     {
         _update();
-        if (_is_same_joystick)
-        {
-            _handleButtons();
-            _handleAxis();
 
-            if (_activeVehicle->joystickCamEnabled())
-            {
-                if (_camTimeDivider++ >= 3)
-                {
-
-                    switch (_camPitchRollAxle)
-                    {
-                    case 0: {
-                        _handleCamHat(&roll_yaw, &pitch);
-                        roll_caib.max = 32768;
-                        roll_caib.min = -32768;
-                        pitch_caib.max = 32768;
-                        pitch_caib.min = -32768;
-                    }
-                    break;
-
-                    case 1: {
-                        roll_yaw = _getAxis(0);
-                        pitch = _getAxis(1);
-                        /* apply inversion */
-                        if (_camJoystickRollInvert)
-                            roll_yaw *= -1;
-                        if (_camJoystickPitchInvert)
-                            pitch *= -1;
-                        roll_caib = getCalibration(0);
-                        pitch_caib = getCalibration(1);
-                    }
-                    break;
-
-                    case 2: {
-                        roll_yaw = _getAxis(2);
-                        pitch = _getAxis(3);
-                        /* apply inversion */
-                        if (_camJoystickRollInvert)
-                            roll_yaw *= -1;
-                        if (_camJoystickPitchInvert)
-                            pitch *= -1;
-                        roll_caib = getCalibration(2);
-                        pitch_caib = getCalibration(3);
-                    }
-                    break;
-
-                    default:
-                        QGC::SLEEP::msleep(20);
-                        continue;
-                    }
-
-                    _camTimeDivider = 0;
-
-                    if (_camPitchRollAxle != 0)
-                    {
-                        /* calculate the Dead Zone */
-                        roll_yaw_DZ = (_camJoystickDZ * roll_caib.max) / 100;
-                        pitch_DZ = (_camJoystickDZ * pitch_caib.max) / 100;
-
-                        /* check deadzone - roll */
-                        if (roll_yaw > -roll_yaw_DZ && roll_yaw < roll_yaw_DZ)
-                            roll_yaw = 0;
-
-                        /* check deadzone - pitch */
-                        if (pitch > -pitch_DZ && pitch < pitch_DZ)
-                            pitch = 0;
-                    }
-
-                    /* Apply Gain */
-                    roll_yaw *= ((float) _camJoystickGain / (float) 100.0);
-                    pitch *= ((float) _camJoystickGain / (float) 100.0);
-
-                    /* Apply limiting */
-                    if (roll_yaw > roll_caib.max)
-                        roll_yaw = roll_caib.max;
-                    if (roll_yaw < roll_caib.min)
-                        roll_yaw = roll_caib.min;
-                    if (pitch > pitch_caib.max)
-                        pitch = pitch_caib.max;
-                    if (pitch < pitch_caib.min)
-                        pitch = pitch_caib.min;
-
-                    emit manualControlCam(roll_yaw, pitch, _rgButtonValues);
-                    emit manualControlCamQml(roll_yaw, pitch);
-                }
-            }
-        }
-        else if (!_is_cam_joystick)
+        if (!isCameraJoystick)
         {
             _handleButtons();
             _handleAxis();
         }
-        else if (_is_cam_joystick)
+        else if (isCameraJoystick)
         {
-            if (_activeVehicle->joystickCamEnabled())
+            if (_enabled)
             {
                 if (_camTimeDivider++ >= 3)
                 {
@@ -710,17 +625,23 @@ void Joystick::run()
                         int newAxisValue = _getAxis(axisIndex);
                         // Calibration code requires signal to be emitted even if value hasn't changed
                         _rgAxisValues[axisIndex] = newAxisValue;
+                        emit rawAxisValueChanged(axisIndex, newAxisValue);
                         //   qDebug() << "newAxisValue[" << axisIndex <<"] = " << newAxisValue;
                     }
-
                     //-- Update button states
                     for (int buttonIndex = 0; buttonIndex < _buttonCount; buttonIndex++)
                     {
                         bool newButtonValue = _getButton(buttonIndex);
                         if (newButtonValue && _rgButtonValues[buttonIndex] == BUTTON_UP)
+                        {
                             _rgButtonValues[buttonIndex] = BUTTON_DOWN;
+                            emit rawButtonPressedChanged(buttonIndex, newButtonValue);
+                        }
                         else if (!newButtonValue && _rgButtonValues[buttonIndex] != BUTTON_UP)
+                        {
                             _rgButtonValues[buttonIndex] = BUTTON_UP;
+                            emit rawButtonPressedChanged(buttonIndex, newButtonValue);
+                        }
                     }
                     //-- Update hat - append hat buttons to the end of the normal button list
                     for (int hatButtonIndex = 0; hatButtonIndex < 4; hatButtonIndex++)
@@ -728,9 +649,15 @@ void Joystick::run()
                         int rgButtonValueIndex = hatButtonIndex + _buttonCount;
                         bool newButtonValue = _getHat(0, hatButtonIndex);
                         if (newButtonValue && _rgButtonValues[rgButtonValueIndex] == BUTTON_UP)
+                        {
                             _rgButtonValues[rgButtonValueIndex] = BUTTON_DOWN;
+                            emit rawButtonPressedChanged(rgButtonValueIndex, newButtonValue);
+                        }
                         else if (!newButtonValue && _rgButtonValues[rgButtonValueIndex] != BUTTON_UP)
+                        {
                             _rgButtonValues[rgButtonValueIndex] = BUTTON_UP;
+                            emit rawButtonPressedChanged(rgButtonValueIndex, newButtonValue);
+                        }
                     }
 
                     switch (_camPitchRollAxle)
@@ -798,19 +725,28 @@ void Joystick::run()
 
                     /* Apply limiting */
                     if (roll_yaw > roll_caib.max)
+                    {
                         roll_yaw = roll_caib.max;
+                    }
                     if (roll_yaw < roll_caib.min)
+                    {
                         roll_yaw = roll_caib.min;
+                    }
                     if (pitch > pitch_caib.max)
+                    {
                         pitch = pitch_caib.max;
+                    }
                     if (pitch < pitch_caib.min)
+                    {
                         pitch = pitch_caib.min;
+                    }
 
                     emit manualControlCam(roll_yaw, pitch, _rgButtonValues);
                     emit manualControlCamQml(roll_yaw, pitch);
                 }
             }
         }
+
         QGC::SLEEP::msleep(20);
     }
     _close();
@@ -859,8 +795,11 @@ void Joystick::_handleButtons()
     for (int buttonIndex = 0; buttonIndex < _buttonCount; buttonIndex++)
     {
         bool newButtonValue = _getButton(buttonIndex);
+
         if (buttonIndex < 256)
+        {
             lastBbuttonValues[buttonIndex] = _rgButtonValues[buttonIndex];
+        }
         if (newButtonValue && _rgButtonValues[buttonIndex] == BUTTON_UP)
         {
             _rgButtonValues[buttonIndex] = BUTTON_DOWN;
@@ -883,7 +822,9 @@ void Joystick::_handleButtons()
             // Get hat value from joystick
             bool newButtonValue = _getHat(hatIndex, hatButtonIndex);
             if (rgButtonValueIndex < 256)
+            {
                 lastBbuttonValues[rgButtonValueIndex] = _rgButtonValues[rgButtonValueIndex];
+            }
             if (newButtonValue && _rgButtonValues[rgButtonValueIndex] == BUTTON_UP)
             {
                 _rgButtonValues[rgButtonValueIndex] = BUTTON_DOWN;
@@ -905,7 +846,9 @@ void Joystick::_handleButtons()
             {
                 QString buttonAction = _buttonActionArray[buttonIndex]->action;
                 if (buttonAction.isEmpty() || buttonAction == _buttonActionNone)
+                {
                     continue;
+                }
                 if (!_buttonActionArray[buttonIndex]->repeat)
                 {
                     //-- This button just went down
@@ -969,7 +912,9 @@ void Joystick::_handleButtons()
                     {
                         QString buttonAction = _buttonActionArray[buttonIndex]->action;
                         if (buttonAction.isEmpty() || buttonAction == _buttonActionNone)
+                        {
                             continue;
+                        }
                         qCDebug(JoystickLog) << "Button up" << buttonIndex << buttonAction;
                         _executeButtonAction(buttonAction, false);
                     }
@@ -1108,7 +1053,7 @@ void Joystick::startPolling(Vehicle *vehicle)
         // Always set up the new vehicle
         _activeVehicle = vehicle;
         // If joystick is not calibrated, disable it
-        if (!_calibrated)
+        if (!_calibrated && !isCameraJoystick)
         {
             vehicle->setJoystickEnabled(false);
         }
@@ -1116,24 +1061,25 @@ void Joystick::startPolling(Vehicle *vehicle)
         emit calibratedChanged(_calibrated);
         // Build action list
         _buildActionList(vehicle);
-        // Only connect the new vehicle if it wants joystick data
-        if (vehicle->joystickEnabled())
-        {
-            _pollingStartedForCalibration = false;
-            connect(this, &Joystick::setArmed, _activeVehicle, &Vehicle::setArmedShowError);
-            connect(this, &Joystick::setVtolInFwdFlight, _activeVehicle, &Vehicle::setVtolInFwdFlight);
-            connect(this, &Joystick::setFlightMode, _activeVehicle, &Vehicle::setFlightMode);
-            connect(this, &Joystick::gimbalPitchStep, _activeVehicle, &Vehicle::gimbalPitchStep);
-            connect(this, &Joystick::gimbalYawStep, _activeVehicle, &Vehicle::gimbalYawStep);
-            connect(this, &Joystick::centerGimbal, _activeVehicle, &Vehicle::centerGimbal);
-            connect(this, &Joystick::gimbalControlValue, _activeVehicle, &Vehicle::gimbalControlValue);
-            connect(this, &Joystick::emergencyStop, _activeVehicle, &Vehicle::emergencyStop);
-        }
+
+        _pollingStartedForCalibration = false;
+        connect(this, &Joystick::setArmed, _activeVehicle, &Vehicle::setArmedShowError);
+        connect(this, &Joystick::setVtolInFwdFlight, _activeVehicle, &Vehicle::setVtolInFwdFlight);
+        connect(this, &Joystick::setFlightMode, _activeVehicle, &Vehicle::setFlightMode);
+        connect(this, &Joystick::gimbalPitchStep, _activeVehicle, &Vehicle::gimbalPitchStep);
+        connect(this, &Joystick::gimbalYawStep, _activeVehicle, &Vehicle::gimbalYawStep);
+        connect(this, &Joystick::centerGimbal, _activeVehicle, &Vehicle::centerGimbal);
+        connect(this, &Joystick::gimbalControlValue, _activeVehicle, &Vehicle::gimbalControlValue);
+        connect(this, &Joystick::emergencyStop, _activeVehicle, &Vehicle::emergencyStop);
+        connect(this, &Joystick::enabledChanged, _activeVehicle, &Vehicle::_joystickEnabledChanged);
     }
     if (!isRunning())
     {
         _exitThread = false;
         start();
+
+        _enabled = true;
+        emit enabledChanged(_enabled, isCameraJoystick);
     }
 }
 
@@ -1141,8 +1087,11 @@ void Joystick::stopPolling(void)
 {
     if (isRunning())
     {
-        if (_activeVehicle && _activeVehicle->joystickEnabled())
+        if (_activeVehicle)
         {
+            _enabled = false;
+            emit enabledChanged(_enabled, isCameraJoystick);
+
             disconnect(this, &Joystick::setArmed, _activeVehicle, &Vehicle::setArmedShowError);
             disconnect(this, &Joystick::setVtolInFwdFlight, _activeVehicle, &Vehicle::setVtolInFwdFlight);
             disconnect(this, &Joystick::setFlightMode, _activeVehicle, &Vehicle::setFlightMode);
@@ -1150,6 +1099,7 @@ void Joystick::stopPolling(void)
             disconnect(this, &Joystick::gimbalYawStep, _activeVehicle, &Vehicle::gimbalYawStep);
             disconnect(this, &Joystick::centerGimbal, _activeVehicle, &Vehicle::centerGimbal);
             disconnect(this, &Joystick::gimbalControlValue, _activeVehicle, &Vehicle::gimbalControlValue);
+            disconnect(this, &Joystick::enabledChanged, _activeVehicle, &Vehicle::_joystickEnabledChanged);
         }
         _exitThread = true;
     }

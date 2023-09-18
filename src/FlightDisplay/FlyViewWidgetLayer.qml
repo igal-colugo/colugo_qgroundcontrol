@@ -49,6 +49,8 @@ Item {
     property rect   _centerViewport:        Qt.rect(0, 0, width, height)
     property real   _rightPanelWidth:       ScreenTools.defaultFontPixelWidth * 30
 
+    property bool _nextVisionEnabled: QGroundControl.settingsManager.appSettings.enableNextVision.rawValue
+
     QGCToolInsets {
         id:                     _totalToolInsets
         leftEdgeTopInset:       toolStrip.leftInset
@@ -119,33 +121,58 @@ Item {
         property real rightInset: visible ? parent.width - x : 0
     }
 
-    PhotoVideoControl {
-        id:                     photoVideoControl
+    Loader
+    {
         anchors.margins:        _toolsMargin
         anchors.right:          parent.right
         width:                  _rightPanelWidth
-        state:                  _verticalCenter ? "verticalCenter" : "topAnchor"
-        states: [
-            State {
-                name: "verticalCenter"
-                AnchorChanges {
-                    target:                 photoVideoControl
-                    anchors.top:            undefined
-                    anchors.verticalCenter: _root.verticalCenter
-                }
-            },
-            State {
-                name: "topAnchor"
-                AnchorChanges {
-                    target:                 photoVideoControl
-                    anchors.verticalCenter: undefined
-                    anchors.top:            instrumentPanel.bottom
-                }
-            }
-        ]
+        anchors.top:            undefined
+        anchors.verticalCenter: _root.verticalCenter
 
-        property bool _verticalCenter: !QGroundControl.settingsManager.flyViewSettings.alternateInstrumentPanel.rawValue
+        sourceComponent: _nextVisionEnabled?nextVision:standard
     }
+
+    Component {
+        id: standard
+        PhotoVideoControl {
+            id:photoVideoControl
+        }
+    }
+
+    Component {
+        id: nextVision
+        NextVisionPhotoVideoControl {
+            id:photoVideoControl
+        }
+    }
+
+    //PhotoVideoControl {
+        //id:                     photoVideoControl
+        //anchors.margins:        _toolsMargin
+        //anchors.right:          parent.right
+        //width:                  _rightPanelWidth
+        //state:                  _verticalCenter ? "verticalCenter" : "topAnchor"
+        //states: [
+            //State {
+                //name: "verticalCenter"
+                //AnchorChanges {
+                    //target:                 photoVideoControl
+                    //anchors.top:            undefined
+                    //anchors.verticalCenter: _root.verticalCenter
+                //}
+            //},
+            //State {
+                //name: "topAnchor"
+                //AnchorChanges {
+                    //target:                 photoVideoControl
+                    //anchors.verticalCenter: undefined
+                    //anchors.top:            instrumentPanel.bottom
+                //}
+            //}
+        //]
+
+        //property bool _verticalCenter: !QGroundControl.settingsManager.flyViewSettings.alternateInstrumentPanel.rawValue
+    //}
 
     TelemetryValuesBar {
         id:                 telemetryPanel

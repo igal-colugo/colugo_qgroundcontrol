@@ -1265,6 +1265,7 @@ class Vehicle : public FactGroup
     void setVtolInFwdFlight(bool vtolInFwdFlight);
     void _offlineFirmwareTypeSettingChanged(QVariant varFirmwareType); // Should only be used by MissionControler to set firmware from Plan file
     void _offlineVehicleTypeSettingChanged(QVariant varVehicleType);   // Should only be used by MissionController to set vehicle type from Plan file
+    void _joystickEnabledChanged(bool enabled, bool isCameraJoystick);
 
   signals:
     void coordinateChanged(QGeoCoordinate coordinate);

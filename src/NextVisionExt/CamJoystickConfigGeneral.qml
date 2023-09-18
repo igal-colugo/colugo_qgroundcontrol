@@ -110,6 +110,12 @@ Item {
                             joystickCombo.currentIndex = index
                         }
                     }
+                    onActiveCamJoystickNameChanged: {
+                        var index = joystickCombo.find(joystickManager.activeCamJoystickName)
+                        if (index >= 0) {
+                            joystickCombo.currentIndex = index
+                        }
+                    }
                 }
             }
 
@@ -127,9 +133,15 @@ Item {
                 Layout.alignment:   Qt.AlignVCenter
                 model:              pitchRollAxleModel
                 Component.onCompleted: {
-                    pitchRollAxleCombo.currentIndex = _activeCamJoystick.camPitchRollAxle
+                    pitchRollAxleCombo.currentIndex = _activeCamJoystick?_activeCamJoystick.camPitchRollAxle:-1
                 }
-                onActivated:        _activeCamJoystick.camPitchRollAxle = index
+                onActivated:        {
+
+                    if(_activeCamJoystick)
+                    {
+                    _activeCamJoystick.camPitchRollAxle = index
+                    }
+                }
 
             }
 
