@@ -137,8 +137,12 @@ QVariantList &QGCCorePlugin::settingsPages()
         _p->settingsList.append(QVariant::fromValue(reinterpret_cast<QmlComponentInfo *>(_p->pGeneral)));
         _p->pCommLinks = new QmlComponentInfo(tr("Comm Links"), QUrl::fromUserInput("qrc:/qml/LinkSettings.qml"), QUrl::fromUserInput("qrc:/res/waves.svg"));
         _p->settingsList.append(QVariant::fromValue(reinterpret_cast<QmlComponentInfo *>(_p->pCommLinks)));
-        _p->pNextVisionLinks = new QmlComponentInfo(tr("Next Vision"), QUrl::fromUserInput("qrc:/qml/NextVisionLinkSettings.qml"), QUrl::fromUserInput("qrc:/res/waves.svg"));
-        _p->settingsList.append(QVariant::fromValue(reinterpret_cast<QmlComponentInfo *>(_p->pNextVisionLinks)));
+        bool nextVisionUsed = qgcApp()->toolbox()->settingsManager()->appSettings()->enableNextVision()->rawValue().toBool();
+        if (nextVisionUsed)
+        {
+            _p->pNextVisionLinks = new QmlComponentInfo(tr("Next Vision"), QUrl::fromUserInput("qrc:/qml/NextVisionLinkSettings.qml"), QUrl::fromUserInput("qrc:/res/waves.svg"));
+            _p->settingsList.append(QVariant::fromValue(reinterpret_cast<QmlComponentInfo *>(_p->pNextVisionLinks)));
+        }
         _p->pOfflineMaps = new QmlComponentInfo(tr("Offline Maps"), QUrl::fromUserInput("qrc:/qml/OfflineMap.qml"), QUrl::fromUserInput("qrc:/res/waves.svg"));
         _p->settingsList.append(QVariant::fromValue(reinterpret_cast<QmlComponentInfo *>(_p->pOfflineMaps)));
 #if defined(QGC_GST_TAISYNC_ENABLED)
