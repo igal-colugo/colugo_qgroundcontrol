@@ -40,7 +40,7 @@ class CameraManagement : public QObject
         MavExtCmdArg_NadirScan,
         MavExtCmdArg_2DScan,
         MavExtCmdArg_PTC,
-        MavExtCmdArg_UnstabilizedPosition,
+        MavExtCmdArg_UnstabilizedPosition
     } MavlinkExtSetSystemModeArgs;
 
     /* Mavlink Extension Arguments for Enable/Disable */
@@ -227,6 +227,7 @@ class CameraManagement : public QObject
     Q_INVOKABLE void trackOnPosition(float posX, float posY, int chan);
     Q_INVOKABLE void setSysModeObsCommand(void);
     Q_INVOKABLE void setSysModeGrrCommand(void);
+    Q_INVOKABLE void setSysModeTrackCommand(void);
     Q_INVOKABLE void setSysModeEprCommand(void);
     Q_INVOKABLE void setSysModeHoldCommand(void);
     Q_INVOKABLE void setSysModePilotCommand(void);
