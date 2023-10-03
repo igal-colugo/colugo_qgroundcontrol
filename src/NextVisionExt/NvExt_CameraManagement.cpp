@@ -2,7 +2,6 @@
 #include "JoystickManager.h"
 #include "QGCApplication.h"
 #include "SettingsManager.h"
-#include "TerrainQuery.h"
 
 // Q_GLOBAL_STATIC(TerrainTileManager, _terrainTileManager)
 CameraManagement::CameraManagement(QObject *parent, MultiVehicleManager *multiVehicleManager, JoystickManager *joystickManager)
@@ -491,6 +490,17 @@ void CameraManagement::setSysModeGrrCommand()
 {
     /* Sending the GRR command */
     sendMavCommandLong(MAV_CMD_DO_DIGICAM_CONTROL, MavExtCmd_SetSystemMode, MavExtCmdArg_GRR, 0, 0, 0, 0, 0);
+}
+
+void CameraManagement::setSysModeTrackCommand()
+{
+    /* Sending the enable tooo see the tracke - than ... track... command */
+    //need to add some delay between commands...
+    sendMavCommandLong(MAV_CMD_DO_DIGICAM_CONTROL, MavExtCmd_SetSystemMode, MavExtCmdArg_TrackOnPosition, 0, 0, 1, 0, 0);
+    sendMavCommandLong(MAV_CMD_DO_DIGICAM_CONTROL, MavExtCmd_SetSystemMode, 39, 1, 0, 0, 0, 0);
+    sendMavCommandLong(MAV_CMD_DO_DIGICAM_CONTROL, MavExtCmd_SetSystemMode, MavExtCmdArg_TrackOnPosition, 0, 0, 2, 0, 0);
+   // sendMavCommandLong(MAV_CMD_DO_DIGICAM_CONTROL, MavExtCmd_SetSystemMode, MavExtCmdArg_TrackOnPosition, 0, 0, 1, 0, 0);
+
 }
 
 void CameraManagement::setSysModeEprCommand()

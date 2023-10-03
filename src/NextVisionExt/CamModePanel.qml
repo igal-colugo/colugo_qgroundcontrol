@@ -74,6 +74,19 @@ Rectangle {
                 joystickManager.cameraManagement.setSysModeGrrCommand();
             }
         }
+
+        //igal shit
+        QGCButton {
+            showBorder:     true
+            font.pointSize: ScreenTools.isMobile? point_size : ScreenTools.smallFontPointSize
+            pointSize:      ScreenTools.isMobile? point_size : ScreenTools.defaultFontPointSize
+            text:           qsTr("TRACK")
+            leftPadding:    0
+            rightPadding:   0
+            onReleased: {
+                joystickManager.cameraManagement.setSysModeTrackCommand();
+            }
+        }
     }
 
     RowLayout {
