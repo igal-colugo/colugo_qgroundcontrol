@@ -70,6 +70,25 @@ Item {
                     QGCLabel { text: _activeVehicle ? _activeVehicle.gps.vdop.valueString : qsTr("--.--", "No data to display") }
                     QGCLabel { text: qsTr("Course Over Ground:") }
                     QGCLabel { text: _activeVehicle ? _activeVehicle.gps.courseOverGround.valueString : qsTr("--.--", "No data to display") }
+
+                    QGCButton {
+                        text:       qsTr("Set primary 0")
+                        onClicked: {
+                            if(_activeVehicle )
+                            {
+                                _activeVehicle.parameterManager.sendParamSetToVehicle(1, "SENS_GPS_PRIME", 5, 0)
+                            }
+                        }
+                    }
+                    QGCButton {
+                        text:       qsTr("Set primary 1")
+                        onClicked: {
+                            if(_activeVehicle )
+                            {
+                                _activeVehicle.parameterManager.sendParamSetToVehicle(1, "SENS_GPS_PRIME", 5, 1)
+                            }
+                        }
+                    }
                 }
             }
         }
