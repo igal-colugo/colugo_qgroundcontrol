@@ -1556,7 +1556,8 @@ LinuxBuild {
     share_qgroundcontrol.files = $${IN_PWD}/resources/
 
     share_icons.path = $${PREFIX}/share/icons/hicolor/128x128/apps/
-    share_icons.files = $${IN_PWD}/resources/icons/qgroundcontrol.png
+   # share_icons.files = $${IN_PWD}/resources/icons/qgroundcontrol.png
+   share_icons.files = $${IN_PWD}/resources/icons/colugoico.png
     share_metainfo.path = $${PREFIX}/share/metainfo/
     share_metainfo.files = $${IN_PWD}/deploy/org.mavlink.qgroundcontrol.metainfo.xml
     share_applications.path = $${PREFIX}/share/applications/

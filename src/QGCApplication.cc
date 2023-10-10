@@ -278,7 +278,9 @@ QGCApplication::QGCApplication(int &argc, char *argv[], bool unitTesting) : QApp
     setOrganizationName(QGC_ORG_NAME);
     setOrganizationDomain(QGC_ORG_DOMAIN);
 
-    this->setApplicationVersion(QString(APP_VERSION_STR));
+    QString ORIGINAL_VER {APP_VERSION_STR};
+    QString COLUGO_VER {"\nColugo 1.0.0"};
+    this->setApplicationVersion(ORIGINAL_VER + COLUGO_VER);
 
     // Set settings format
     QSettings::setDefaultFormat(QSettings::IniFormat);
