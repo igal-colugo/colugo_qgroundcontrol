@@ -137,8 +137,8 @@ QVariantList &QGCCorePlugin::settingsPages()
         _p->settingsList.append(QVariant::fromValue(reinterpret_cast<QmlComponentInfo *>(_p->pGeneral)));
         _p->pCommLinks = new QmlComponentInfo(tr("Comm Links"), QUrl::fromUserInput("qrc:/qml/LinkSettings.qml"), QUrl::fromUserInput("qrc:/res/waves.svg"));
         _p->settingsList.append(QVariant::fromValue(reinterpret_cast<QmlComponentInfo *>(_p->pCommLinks)));
-        bool nextVisionUsed = qgcApp()->toolbox()->settingsManager()->appSettings()->enableNextVision()->rawValue().toBool();
-        if (nextVisionUsed)
+        int nextVisionUsed = qgcApp()->toolbox()->settingsManager()->appSettings()->enableNextVision()->rawValue().toInt();
+        if (nextVisionUsed < 0 || nextVisionUsed > 1)
         {
             _p->pNextVisionLinks = new QmlComponentInfo(tr("Next Vision"), QUrl::fromUserInput("qrc:/qml/NextVisionLinkSettings.qml"), QUrl::fromUserInput("qrc:/res/waves.svg"));
             _p->settingsList.append(QVariant::fromValue(reinterpret_cast<QmlComponentInfo *>(_p->pNextVisionLinks)));

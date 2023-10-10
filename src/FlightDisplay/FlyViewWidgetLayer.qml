@@ -49,7 +49,7 @@ Item {
     property rect   _centerViewport:        Qt.rect(0, 0, width, height)
     property real   _rightPanelWidth:       ScreenTools.defaultFontPixelWidth * 30
 
-    property bool _nextVisionEnabled: QGroundControl.settingsManager.appSettings.enableNextVision.rawValue
+    property int _nextVisionEnabled: QGroundControl.settingsManager.appSettings.enableNextVision.value
 
     QGCToolInsets {
         id:                     _totalToolInsets
@@ -121,15 +121,52 @@ Item {
         property real rightInset: visible ? parent.width - x : 0
     }
 
+    //Load common Standard
     Loader
     {
+        id:commonStandardLoader
+        anchors.margins:        _toolsMargin
+        anchors.right:          parent.right
+        width:                  _rightPanelWidth
+        anchors.top:            commonNextVisionLoader.bottom
+
+        sourceComponent: {(_nextVisionEnabled < 0)?standard:null}
+    }
+    //Load common NextVision
+    Loader
+    {
+        id:commonNextVisionLoader
         anchors.margins:        _toolsMargin
         anchors.right:          parent.right
         width:                  _rightPanelWidth
         anchors.top:            undefined
         anchors.verticalCenter: _root.verticalCenter
 
-        sourceComponent: _nextVisionEnabled?nextVision:standard
+        sourceComponent: {(_nextVisionEnabled < 0)?nextVision:null}
+    }
+    //Load Standard
+    Loader
+    {
+        id:standardLoader
+        anchors.margins:        _toolsMargin
+        anchors.right:          parent.right
+        width:                  _rightPanelWidth
+        anchors.top:            undefined
+        anchors.verticalCenter: _root.verticalCenter
+
+        sourceComponent: {(_nextVisionEnabled===1)?standard:null}
+    }
+    //Load Standard
+    Loader
+    {
+        id:nextVisionLoader
+        anchors.margins:        _toolsMargin
+        anchors.right:          parent.right
+        width:                  _rightPanelWidth
+        anchors.top:            undefined
+        anchors.verticalCenter: _root.verticalCenter
+
+        sourceComponent: {(_nextVisionEnabled===2)?nextVision:null}
     }
 
     Component {
@@ -145,34 +182,6 @@ Item {
             id:photoVideoControl
         }
     }
-
-    //PhotoVideoControl {
-        //id:                     photoVideoControl
-        //anchors.margins:        _toolsMargin
-        //anchors.right:          parent.right
-        //width:                  _rightPanelWidth
-        //state:                  _verticalCenter ? "verticalCenter" : "topAnchor"
-        //states: [
-            //State {
-                //name: "verticalCenter"
-                //AnchorChanges {
-                    //target:                 photoVideoControl
-                    //anchors.top:            undefined
-                    //anchors.verticalCenter: _root.verticalCenter
-                //}
-            //},
-            //State {
-                //name: "topAnchor"
-                //AnchorChanges {
-                    //target:                 photoVideoControl
-                    //anchors.verticalCenter: undefined
-                    //anchors.top:            instrumentPanel.bottom
-                //}
-            //}
-        //]
-
-        //property bool _verticalCenter: !QGroundControl.settingsManager.flyViewSettings.alternateInstrumentPanel.rawValue
-    //}
 
     TelemetryValuesBar {
         id:                 telemetryPanel

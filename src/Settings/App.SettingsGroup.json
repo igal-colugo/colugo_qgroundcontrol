@@ -383,8 +383,8 @@
     "name":             "enableNextVision",
     "shortDesc": "Enable Next Vision Module Support",
     "longDesc":  "Enable Next Vision Module Support",
-    "type":             "bool",
-    "default":     false
+    "type":             "int32",
+    "default":     -1
 },
 {
     "name":         "qLocaleLanguage",
