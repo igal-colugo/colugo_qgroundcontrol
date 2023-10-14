@@ -347,7 +347,7 @@ QString Fact::_variantToString(const QVariant& variant, int decimalPlaces) const
         if (qIsNaN(fValue)) {
             valueString = QStringLiteral("--.--");
         } else {
-            valueString = QString("%1").arg(fValue, 0, 'f', decimalPlaces);
+            valueString = QString("%2").arg(fValue, 0, 'f', decimalPlaces);
         }
     }
         break;
@@ -357,7 +357,7 @@ QString Fact::_variantToString(const QVariant& variant, int decimalPlaces) const
         if (qIsNaN(dValue)) {
             valueString = QStringLiteral("--.--");
         } else {
-            valueString = QString("%1").arg(dValue, 0, 'f', decimalPlaces);
+            valueString = QString("%2").arg(dValue, 0, 'f',2);//igal WA//decimalPlaces);
         }
     }
         break;

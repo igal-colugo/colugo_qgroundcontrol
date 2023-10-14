@@ -181,8 +181,7 @@ exists ($$PWD/.git) {
     }
 
     DailyBuild {
-        APP_VERSION_STR = "Daily $${GIT_BRANCH}:$${GIT_HASH} $${GIT_TIME}"
-        # APP_VERSION_STR = "Colugo Test in PRI"
+        APP_VERSION_STR = "Daily $${GIT_BRANCH}:$${GIT_HASH} $${GIT_TIME}"        
     }
 
     message(QGroundControl APP_VERSION_STR VERSION $${APP_VERSION_STR} $${VERSION})
