@@ -169,6 +169,19 @@ Item {
         sourceComponent: {(_nextVisionEnabled===2)?nextVision:null}
     }
 
+    //Load Obox
+    Loader
+    {
+        id:oboxLoader
+        anchors.margins:        _toolsMargin
+        anchors.right:          parent.right
+        width:                  _rightPanelWidth
+        anchors.top:            commonStandardLoader.bottom
+        anchors.verticalCenter: _root.verticalCenter
+
+        sourceComponent: obox
+    }
+
     Component {
         id: standard
         PhotoVideoControl {
@@ -180,6 +193,13 @@ Item {
         id: nextVision
         NextVisionPhotoVideoControl {
             id:photoVideoControl
+        }
+    }
+
+    Component {
+        id: obox
+        OboxControl {
+            id:oboxControl
         }
     }
 

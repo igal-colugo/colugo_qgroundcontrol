@@ -180,6 +180,9 @@ exists ($$PWD/.git) {
         VERSION         = $$section(VERSION, ".", 0, 3)
     }
 
+    #Vlad delete it after tag changes
+    APP_VERSION_STR = $${GIT_DESCRIBE}
+
     DailyBuild {
         APP_VERSION_STR = "Daily $${GIT_BRANCH}:$${GIT_HASH} $${GIT_TIME}"
         # APP_VERSION_STR = "Colugo Test in PRI"

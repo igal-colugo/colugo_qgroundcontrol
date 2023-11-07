@@ -5,6 +5,7 @@ add_custom_target(FligthMapWidgetsQml
 		CompassRing.qml
 		MapFitFunctions.qml
 		PhotoVideoControl.qml
+		NextVisionPhotoVideoControl.qml
 		QGCArtificialHorizon.qml
 		QGCAttitudeHUD.qml
 		QGCAttitudeWidget.qml
@@ -14,5 +15,6 @@ add_custom_target(FligthMapWidgetsQml
 		QGCMapToolButton.qml
 		QGCPitchIndicator.qml
 		QGCWaypointEditor.qml
+		OboxControl.qml
 )
 
