@@ -286,6 +286,7 @@
         <file alias="VTOLLandingPatternEditor.qml">src/PlanView/VTOLLandingPatternEditor.qml</file>
         <file alias="NextVisionLinkSettings.qml">src/ui/preferences/NextVisionLinkSettings.qml</file>
         <file alias="QGroundControl/FlightMap/NextVisionPhotoVideoControl.qml">src/FlightMap/Widgets/NextVisionPhotoVideoControl.qml</file>
+        <file alias="QGroundControl/FlightMap/OboxControl.qml">src/FlightMap/Widgets/OboxControl.qml</file>
     </qresource>
     <qresource prefix="/FirstRunPromptDialogs">
         <file alias="UnitsFirstRunPrompt.qml">src/FirstRunPromptDialogs/UnitsFirstRunPrompt.qml</file>
@@ -375,5 +376,9 @@
         <file alias="CamTrackControlPanel.qml">src/NextVisionExt/CamTrackControlPanel.qml</file>
         <file alias="CamVMDControlPanel.qml">src/NextVisionExt/CamVMDControlPanel.qml</file>
         <file alias="CamJoystickConfigCalibration.qml">src/NextVisionExt/CamJoystickConfigCalibration.qml</file>
+    </qresource>
+    <qresource prefix="/asioqml">
+        <file alias="InitOboxPanel.qml">src/Asio/InitOboxPanel.qml</file>
+        <file alias="OboxSettingsPanel.qml">src/Asio/OboxSettingsPanel.qml</file>
     </qresource>
 </RCC>

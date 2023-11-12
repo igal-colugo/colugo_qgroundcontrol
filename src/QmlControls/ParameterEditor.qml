@@ -248,7 +248,7 @@ Item {
                             return factRow.modelFact.valueString + " " + factRow.modelFact.units
                         }
 
-                        if(factRow.modelFact.bitmaskStrings.length != 0) {
+                        if(factRow.modelFact.bitmaskStrings.length !== 0) {
                             return factRow.modelFact.selectedBitmaskStrings.join(',')
                         }
 
