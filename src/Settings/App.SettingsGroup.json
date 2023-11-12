@@ -387,6 +387,13 @@
     "default":     -1
 },
 {
+    "name":             "enableAsio",
+    "shortDesc": "Enable Asio Obox Module Support",
+    "longDesc":  "Enable Asio Obox Module Support",
+    "type":             "int32",
+    "default":     -1
+},
+{
     "name":         "qLocaleLanguage",
     "shortDesc":    "Language",
     "type":         "uint32",

@@ -50,6 +50,7 @@ Item {
     property real   _rightPanelWidth:       ScreenTools.defaultFontPixelWidth * 30
 
     property int _nextVisionEnabled: QGroundControl.settingsManager.appSettings.enableNextVision.value
+    property int _asioEnabled: QGroundControl.settingsManager.appSettings.enableAsio.value
 
     QGCToolInsets {
         id:                     _totalToolInsets
@@ -179,7 +180,7 @@ Item {
         anchors.top:            commonStandardLoader.bottom
         anchors.verticalCenter: _root.verticalCenter
 
-        sourceComponent: obox
+        sourceComponent: {(_asioEnabled===1)?obox:null}
     }
 
     Component {

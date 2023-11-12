@@ -3,6 +3,7 @@ import QtQuick.Controls 1.2
 import QtQuick.Controls.Styles  1.4
 import QtQuick.Dialogs  1.2
 import QtQuick.Layouts  1.2
+import QtPositioning    5.3
 
 import QGroundControl               1.0
 import QGroundControl.Palette       1.0
@@ -16,14 +17,14 @@ import QGroundControl.SettingsManager 1.0
 Rectangle {
     id: _initialize_obox_panel_rectangle
     height:             _heightTotal
-    color:              Qt.rgba(0.0,0.0,0.0,0.50)
+    color:              Qt.rgba(0.0,0.0,0.0,0.25)
     visible:            true
     radius:     _margins
 
-    property int _heightTotal: mainlabel.height + firstRow.height + secondRow.height+lastRow.height + (_margins*5)
+    property int _heightTotal: mainlabel.height + firstRow.height + secondRow.height+lastRow.height + (_margins*8)
 
     property var    _activeVehicle:             QGroundControl.multiVehicleManager.activeVehicle
-
+    property var    _activeVehicleCoordinate:   _activeVehicle ? _activeVehicle.coordinate : QtPositioning.coordinate()
     // The following properties relate to a simple camera
     property var    _flyViewSettings:                           QGroundControl.settingsManager.flyViewSettings
 
@@ -42,24 +43,26 @@ Rectangle {
     RowLayout {
         id:                         firstRow
         anchors.top:                mainlabel.bottom
-        anchors.margins:            _margins
+        anchors.margins:            _margins * 4
         spacing:                    _butMargins
         visible:                    true
 
         QGCLabel {
             id: _longitudelabel
-            text:                   qsTr("Longitude")
+            text:                   qsTr("Latitude")
             font.pointSize:         12
             color:                  "white"
             Layout.preferredWidth:  (_initialize_obox_panel_rectangle.width - _butMargins*2) / 2
             leftPadding:_butMargins
         }
         QGCTextField {
-            id:                     _longitude
+            id:                     _latitude
             Layout.preferredWidth:  (_initialize_obox_panel_rectangle.width - _butMargins*2) / 2
-            maximumLength:          9
+            maximumLength:          10
             font.pointSize:         12
-            text:                   qsTr("0")
+            text:                  {
+               _fromVehicleLocation.checked? _activeVehicleCoordinate.latitude : _latitude.text
+            }
         }
     }
 
@@ -71,18 +74,20 @@ Rectangle {
         visible:                    true
 
         QGCLabel {
-            text:                   qsTr("Latitude")
+            text:                   qsTr("Longitude")
             font.pointSize:         12
             color:                  "white"
             Layout.preferredWidth:  (_initialize_obox_panel_rectangle.width - _butMargins*2) / 2
             leftPadding:_butMargins
         }
         QGCTextField {
-            id:                     _latitude
+            id:                     _longitude
             Layout.preferredWidth:  (_initialize_obox_panel_rectangle.width - _butMargins*2) / 2
-            maximumLength:          5
+            maximumLength:          10
             font.pointSize:         12
-            text:                   qsTr("0")
+            text:                    {
+                _fromVehicleLocation.checked? _activeVehicleCoordinate.longitude : _longitude.text
+            }
         }
     }
 
@@ -97,13 +102,22 @@ Rectangle {
             showBorder:     true
             font.pointSize: ScreenTools.isMobile? point_size : ScreenTools.smallFontPointSize
             pointSize:      ScreenTools.isMobile? point_size : ScreenTools.defaultFontPointSize
-            text:           qsTr("Set")
+            text:           qsTr("Init")
             leftPadding:    0
             Layout.leftMargin: _margins
             onReleased: {
-                //if( videoChannelCombo.currentIndex >= 0 )
-                    //joystickManager.cameraManagement.setSysAutoSnapshotCommand(_snapInerval.text,_snapCount.text,_snapInf.checked, videoChannelCombo.currentIndex);
+                if( _activeVehicle !== null)
+                {
+                    _activeVehicle.setAsioInitLocation( _latitude.text,_longitude.text);
+                }
             }
+        }
+
+        QGCCheckBox {
+            id:                     _fromVehicleLocation
+            text:                   qsTr("get from vehicle")
+            textColor:              "white"
+            textFontPointSize:      ScreenTools.isMobile ? point_size : 9
         }
     }
 }

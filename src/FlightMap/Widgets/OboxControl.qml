@@ -35,7 +35,7 @@ Rectangle {
     /* nextvision panel resources */
     property int    _panel_index:                               0
     property int    _panel_index_min:                           0
-    property int    _panel_index_max:                           1
+    property int    _panel_index_max:                           2
     property real   point_size:     point_sizes[0]
     property var    point_sizes:    [ScreenTools.smallFontPointSize, ScreenTools.mediumFontPointSize, ScreenTools.largeFontPointSize]
 
@@ -57,7 +57,7 @@ Rectangle {
     QGCPalette { id: qgcPal; colorGroupEnabled: enabled }
 
     //property var camQuickPages: ["qrc:/nvqml/CamQuickPanel.qml","qrc:/nvqml/CamQuick1Panel.qml","qrc:/nvqml/CamQuick2Panel.qml"]
-    property var pages:         ["qrc:/asioqml/InitOboxPanel.qml"]
+    property var pages:         ["qrc:/asioqml/InitOboxPanel.qml","qrc:/asioqml/OboxSettingsPanel.qml"]
 
     Loader {
         id:                 _presentedOboxPanel

@@ -2732,12 +2732,10 @@ double Vehicle::maximumHorizontalSpeedMultirotor()
     return _firmwarePlugin->maximumHorizontalSpeedMultirotor(this);
 }
 
-
 double Vehicle::maximumEquivalentAirspeed()
 {
     return _firmwarePlugin->maximumEquivalentAirspeed(this);
 }
-
 
 double Vehicle::minimumEquivalentAirspeed()
 {
@@ -2781,27 +2779,27 @@ void Vehicle::guidedModeChangeAltitude(double altitudeChange, bool pauseVehicle)
     _firmwarePlugin->guidedModeChangeAltitude(this, altitudeChange, pauseVehicle);
 }
 
-void
-Vehicle::guidedModeChangeGroundSpeed(double groundspeed)
+void Vehicle::guidedModeChangeGroundSpeed(double groundspeed)
 {
-    if (!guidedModeSupported()) {
+    if (!guidedModeSupported())
+    {
         qgcApp()->showAppMessage(guided_mode_not_supported_by_vehicle);
         return;
     }
     _firmwarePlugin->guidedModeChangeGroundSpeed(this, groundspeed);
 }
 
-void
-Vehicle::guidedModeChangeEquivalentAirspeed(double airspeed)
+void Vehicle::guidedModeChangeEquivalentAirspeed(double airspeed)
 {
-    if (!guidedModeSupported()) {
+    if (!guidedModeSupported())
+    {
         qgcApp()->showAppMessage(guided_mode_not_supported_by_vehicle);
         return;
     }
     _firmwarePlugin->guidedModeChangeEquivalentAirspeed(this, airspeed);
 }
 
-void Vehicle::guidedModeOrbit(const QGeoCoordinate& centerCoord, double radius, double amslAltitude)
+void Vehicle::guidedModeOrbit(const QGeoCoordinate &centerCoord, double radius, double amslAltitude)
 {
     if (!orbitModeSupported())
     {
@@ -3578,6 +3576,70 @@ void Vehicle::startCalibration(Vehicle::CalibrationType calType)
                                        defaultComponentId(),          // target component
                                        MAV_CMD_PREFLIGHT_CALIBRATION, // command id
                                        0,                             // 0=first transmission of command
+                                       param1, param2, param3, param4, param5, param6, param7);
+    sendMessageOnLinkThreadSafe(sharedLink.get(), msg);
+}
+
+void Vehicle::setAsioInitLocation(QString latitudeString, QString longitudeString)
+{
+    SharedLinkInterfacePtr sharedLink = vehicleLinkManager()->primaryLink().lock();
+    if (!sharedLink)
+    {
+        qCDebug(VehicleLog) << "setAsioSensorType: primary link gone!";
+        return;
+    }
+
+    // double debug_1 = latitudeString.toDouble();
+    // double debug_2 = longitudeString.toDouble();
+    // debug_1 = debug_2;
+    // debug_2 = debug_1;
+
+    float latitude = latitudeString.toFloat();
+    float longitude = longitudeString.toFloat();
+
+    float param1 = 0;
+    float param2 = 0;
+    float param3 = 0;
+    float param4 = 0;
+    float param5 = latitude;
+    float param6 = longitude;
+    float param7 = 0;
+
+    // We can't use sendMavCommand here since we have no idea how long it will be before the command returns a result. This in turn
+    // causes the retry logic to break down.
+    mavlink_message_t msg;
+    mavlink_msg_command_long_pack_chan(_mavlink->getSystemId(), _mavlink->getComponentId(), sharedLink->mavlinkChannel(), &msg, id(),
+                                       defaultComponentId(),      // target component
+                                       MAV_CMD_ASIO_SET_INIT_LOC, // command id
+                                       0,                         // 0=first transmission of command
+                                       param1, param2, param3, param4, param5, param6, param7);
+    sendMessageOnLinkThreadSafe(sharedLink.get(), msg);
+}
+
+void Vehicle::setAsioSensorType(int type)
+{
+    SharedLinkInterfacePtr sharedLink = vehicleLinkManager()->primaryLink().lock();
+    if (!sharedLink)
+    {
+        qCDebug(VehicleLog) << "setAsioSensorType: primary link gone!";
+        return;
+    }
+
+    float param1 = type;
+    float param2 = 0;
+    float param3 = 0;
+    float param4 = 0;
+    float param5 = 0;
+    float param6 = 0;
+    float param7 = 0;
+
+    // We can't use sendMavCommand here since we have no idea how long it will be before the command returns a result. This in turn
+    // causes the retry logic to break down.
+    mavlink_message_t msg;
+    mavlink_msg_command_long_pack_chan(_mavlink->getSystemId(), _mavlink->getComponentId(), sharedLink->mavlinkChannel(), &msg, id(),
+                                       defaultComponentId(),       // target component
+                                       MAVLINK_MSG_ID_ASIO_STATUS, // command id
+                                       0,                          // 0=first transmission of command
                                        param1, param2, param3, param4, param5, param6, param7);
     sendMessageOnLinkThreadSafe(sharedLink.get(), msg);
 }

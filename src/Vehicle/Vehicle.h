@@ -368,10 +368,10 @@ class Vehicle : public FactGroup
 
     /// Command vehicle to change groundspeed
     ///     @param groundspeed Target horizontal groundspeed
-    Q_INVOKABLE void guidedModeChangeGroundSpeed   (double groundspeed);
+    Q_INVOKABLE void guidedModeChangeGroundSpeed(double groundspeed);
     /// Command vehicle to change equivalent airspeed
     ///     @param airspeed Target equivalent airspeed
-    Q_INVOKABLE void guidedModeChangeEquivalentAirspeed   (double airspeed);
+    Q_INVOKABLE void guidedModeChangeEquivalentAirspeed(double airspeed);
 
     /// Command vehicle to orbit given center point
     ///     @param centerCoord Orit around this point
@@ -449,6 +449,9 @@ class Vehicle : public FactGroup
 
     /// Trigger camera using MAV_CMD_DO_DIGICAM_CONTROL command
     Q_INVOKABLE void triggerSimpleCamera(void);
+
+    Q_INVOKABLE void setAsioSensorType(int type);
+    Q_INVOKABLE void setAsioInitLocation(QString latitudeString, QString longitudeString);
 
 #if !defined(NO_ARDUPILOT_DIALECT)
     Q_INVOKABLE void flashBootloader();
