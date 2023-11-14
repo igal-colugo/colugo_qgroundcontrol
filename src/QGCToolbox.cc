@@ -14,6 +14,7 @@
 #include "GPSManager.h"
 #endif
 #include "ADSBVehicleManager.h"
+#include "Epsilon/EpsilonLinkManager.h"
 #include "FollowMe.h"
 #include "JoystickManager.h"
 #include "LinkManager.h"
@@ -66,8 +67,10 @@ QGCToolbox::QGCToolbox(QGCApplication *app)
     _joystickManager = new JoystickManager(app, this);
     _linkManager = new LinkManager(app, this);
     _nextVisionLinkManager = new NextVisionLinkManager(app, this);
+    _epsilonLinkManager = new EpsilonLinkManager(app, this);
     _mavlinkProtocol = new MAVLinkProtocol(app, this);
     _nextVisionMavlinkProtocol = new NextVisionMAVLinkProtocol(app, this);
+    _epsilonMavlinkProtocol = new EpsilonMAVLinkProtocol(app, this);
     _missionCommandTree = new MissionCommandTree(app, this);
     _multiVehicleManager = new MultiVehicleManager(app, this);
     _mapEngineManager = new QGCMapEngineManager(app, this);
@@ -112,8 +115,10 @@ void QGCToolbox::setChildToolboxes(void)
     _joystickManager->setToolbox(this);
     _linkManager->setToolbox(this);
     _nextVisionLinkManager->setToolbox(this);
+    _epsilonLinkManager->setToolbox(this);
     _mavlinkProtocol->setToolbox(this);
     _nextVisionMavlinkProtocol->setToolbox(this);
+    _epsilonMavlinkProtocol->setToolbox(this);
     _missionCommandTree->setToolbox(this);
     _multiVehicleManager->setToolbox(this);
     _mapEngineManager->setToolbox(this);

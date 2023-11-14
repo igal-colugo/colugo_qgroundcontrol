@@ -30,7 +30,7 @@ const char *JoystickManager::_settingsKeyActiveCamJoystick = "ActiveCamJoystick"
 JoystickManager::JoystickManager(QGCApplication *app, QGCToolbox *toolbox)
     : QGCTool(app, toolbox), _activeJoystick(nullptr), _multiVehicleManager(nullptr), _activeCamJoystick(nullptr) /* NextVision */
       ,
-      _cameraManagement(nullptr) /* NextVision */
+      _cameraManagement(nullptr) /* NextVision */, _epsilonCameraManagement(nullptr) /* Epsilon */
 {
 }
 
@@ -53,6 +53,7 @@ void JoystickManager::setToolbox(QGCToolbox *toolbox)
     _multiVehicleManager = _toolbox->multiVehicleManager();
 
     _cameraManagement = new CameraManagement(nullptr, _multiVehicleManager, this);
+    _epsilonCameraManagement = new EpsilonCameraManagement(nullptr, _multiVehicleManager, this);
 
     QQmlEngine::setObjectOwnership(this, QQmlEngine::CppOwnership);
 }
@@ -65,6 +66,17 @@ CameraManagement *JoystickManager::cameraManagement()
 void JoystickManager::setCameraManagement(CameraManagement *camManagement)
 {
     _cameraManagement = camManagement;
+    emit activeCameraManagementChanged();
+}
+
+EpsilonCameraManagement *JoystickManager::epsilonCameraManagement()
+{
+    return _epsilonCameraManagement;
+}
+
+void JoystickManager::setEpsilonCameraManagement(EpsilonCameraManagement *epsilonCamManagement)
+{
+    _epsilonCameraManagement = epsilonCamManagement;
     emit activeCameraManagementChanged();
 }
 

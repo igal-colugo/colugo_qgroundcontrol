@@ -129,7 +129,7 @@ Item {
         anchors.margins:        _toolsMargin
         anchors.right:          parent.right
         width:                  _rightPanelWidth
-        anchors.top:            commonNextVisionLoader.bottom
+        anchors.top:            (commonNextVisionLoader.visible)?commonNextVisionLoader.bottom:_root.verticalCenter
 
         sourceComponent: {(_nextVisionEnabled < 0)?standard:null}
     }
@@ -177,8 +177,25 @@ Item {
         anchors.margins:        _toolsMargin
         anchors.right:          parent.right
         width:                  _rightPanelWidth
-        anchors.top:            commonStandardLoader.bottom
-        anchors.verticalCenter: _root.verticalCenter
+        anchors.top:
+        {
+            if(_nextVisionEnabled<0)
+              {
+                commonStandardLoader.bottom
+              }
+              else if(_nextVisionEnabled===1)
+              {
+                standardLoader.bottom
+              }
+              else if(_nextVisionEnabled===2)
+              {
+                nextVisionLoader.bottom
+              }
+              else
+              {
+                _root.verticalCenter
+              }
+        }
 
         sourceComponent: {(_asioEnabled===1)?obox:null}
     }

@@ -428,6 +428,14 @@ contains (DEFINES, QGC_ENABLE_PAIRING) {
 #
 
 HEADERS += \
+    src/Epsilon/EpsilonLinkConfiguration.h \
+    src/Epsilon/EpsilonLinkInterface.h \
+    src/Epsilon/EpsilonLinkManager.h \
+    src/Epsilon/EpsilonLinkProtocol.h \
+    src/Epsilon/EpsilonMAVLinkProtocol.h \
+    src/Epsilon/EpsilonTCPLink.h \
+    src/Epsilon/EpsilonUDPLink.h \
+    src/EpsilonExt/EpsilonExt_CameraManagement.h \
     src/NextVision/NextVisionLinkConfiguration.h \
     src/NextVision/NextVisionLinkInterface.h \
     src/NextVision/NextVisionLinkManager.h \
@@ -449,6 +457,14 @@ contains (DEFINES, QGC_ENABLE_PAIRING) {
 }
 
 SOURCES += \
+    src/Epsilon/EpsilonLinkConfiguration.cc \
+    src/Epsilon/EpsilonLinkInterface.cc \
+    src/Epsilon/EpsilonLinkManager.cc \
+    src/Epsilon/EpsilonLinkProtocol.cc \
+    src/Epsilon/EpsilonMAVLinkProtocol.cc \
+    src/Epsilon/EpsilonTCPLink.cc \
+    src/Epsilon/EpsilonUDPLink.cc \
+    src/EpsilonExt/EpsilonExt_CameraManagement.cpp \
     src/NextVision/NextVisionLinkConfiguration.cc \
     src/NextVision/NextVisionLinkInterface.cc \
     src/NextVision/NextVisionLinkManager.cc \
@@ -1539,6 +1555,7 @@ contains (CONFIG, QGC_DISABLE_INSTALLER_SETUP) {
 }
 
 DISTFILES += \
+    src/Epsilon/CMakeLists.txt \
     src/NextVision/CMakeLists.txt \
     src/NextVisionCamera/CMakeLists.txt \
     src/NextVisionCamera/camera_definition_example.xml \

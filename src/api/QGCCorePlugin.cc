@@ -47,6 +47,8 @@ class QGCCorePlugin_p
             delete pCommLinks;
         if (pNextVisionLinks)
             delete pNextVisionLinks;
+        if (pEpsilonLinks)
+            delete pEpsilonLinks;
         if (pOfflineMaps)
             delete pOfflineMaps;
 #if defined(QGC_GST_TAISYNC_ENABLED)
@@ -80,6 +82,7 @@ class QGCCorePlugin_p
     QmlComponentInfo *pGeneral = nullptr;
     QmlComponentInfo *pCommLinks = nullptr;
     QmlComponentInfo *pNextVisionLinks = nullptr;
+    QmlComponentInfo *pEpsilonLinks = nullptr;
     QmlComponentInfo *pOfflineMaps = nullptr;
 #if defined(QGC_GST_TAISYNC_ENABLED)
     QmlComponentInfo *pTaisync = nullptr;
@@ -143,6 +146,13 @@ QVariantList &QGCCorePlugin::settingsPages()
             _p->pNextVisionLinks = new QmlComponentInfo(tr("Next Vision"), QUrl::fromUserInput("qrc:/qml/NextVisionLinkSettings.qml"), QUrl::fromUserInput("qrc:/res/waves.svg"));
             _p->settingsList.append(QVariant::fromValue(reinterpret_cast<QmlComponentInfo *>(_p->pNextVisionLinks)));
         }
+        int epsilonUsed = qgcApp()->toolbox()->settingsManager()->appSettings()->enableEpsilon()->rawValue().toInt();
+        if (epsilonUsed < 0 || epsilonUsed > 1)
+        {
+            _p->pEpsilonLinks = new QmlComponentInfo(tr("Epsilon"), QUrl::fromUserInput("qrc:/qml/EpsilonLinkSettings.qml"), QUrl::fromUserInput("qrc:/res/waves.svg"));
+            _p->settingsList.append(QVariant::fromValue(reinterpret_cast<QmlComponentInfo *>(_p->pEpsilonLinks)));
+        }
+
         _p->pOfflineMaps = new QmlComponentInfo(tr("Offline Maps"), QUrl::fromUserInput("qrc:/qml/OfflineMap.qml"), QUrl::fromUserInput("qrc:/res/waves.svg"));
         _p->settingsList.append(QVariant::fromValue(reinterpret_cast<QmlComponentInfo *>(_p->pOfflineMaps)));
 #if defined(QGC_GST_TAISYNC_ENABLED)

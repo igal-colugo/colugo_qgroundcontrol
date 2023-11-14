@@ -287,6 +287,7 @@
         <file alias="NextVisionLinkSettings.qml">src/ui/preferences/NextVisionLinkSettings.qml</file>
         <file alias="QGroundControl/FlightMap/NextVisionPhotoVideoControl.qml">src/FlightMap/Widgets/NextVisionPhotoVideoControl.qml</file>
         <file alias="QGroundControl/FlightMap/OboxControl.qml">src/FlightMap/Widgets/OboxControl.qml</file>
+        <file alias="EpsilonLinkSettings.qml">src/ui/preferences/EpsilonLinkSettings.qml</file>
     </qresource>
     <qresource prefix="/FirstRunPromptDialogs">
         <file alias="UnitsFirstRunPrompt.qml">src/FirstRunPromptDialogs/UnitsFirstRunPrompt.qml</file>

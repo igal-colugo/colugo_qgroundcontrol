@@ -47,6 +47,7 @@ void QGroundControlQmlGlobal::setToolbox(QGCToolbox *toolbox)
 
     _linkManager = toolbox->linkManager();
     _nextVisionLinkManager = toolbox->nextVisionLinkManager();
+    _epsilonLinkManager = toolbox->epsilonLinkManager();
     _multiVehicleManager = toolbox->multiVehicleManager();
     _mapEngineManager = toolbox->mapEngineManager();
     _qgcPositionManager = toolbox->qgcPositionManager();
