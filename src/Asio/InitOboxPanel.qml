@@ -50,16 +50,16 @@ Rectangle {
         QGCLabel {
             id: _longitudelabel
             text:                   qsTr("Latitude")
-            font.pointSize:         12
+            font.pointSize:         10
             color:                  "white"
-            Layout.preferredWidth:  (_initialize_obox_panel_rectangle.width - _butMargins*2) / 2
+            Layout.preferredWidth:  (_initialize_obox_panel_rectangle.width - _butMargins*2) / 2.2
             leftPadding:_butMargins
         }
         QGCTextField {
             id:                     _latitude
-            Layout.preferredWidth:  (_initialize_obox_panel_rectangle.width - _butMargins*2) / 2
+            Layout.preferredWidth:  (_initialize_obox_panel_rectangle.width - _butMargins*2) / 1.9
             maximumLength:          10
-            font.pointSize:         12
+            font.pointSize:         10
             text:                  {
                _fromVehicleLocation.checked? _activeVehicleCoordinate.latitude : _latitude.text
             }
@@ -75,16 +75,16 @@ Rectangle {
 
         QGCLabel {
             text:                   qsTr("Longitude")
-            font.pointSize:         12
+            font.pointSize:         10
             color:                  "white"
-            Layout.preferredWidth:  (_initialize_obox_panel_rectangle.width - _butMargins*2) / 2
+            Layout.preferredWidth:  (_initialize_obox_panel_rectangle.width - _butMargins*2) / 2.2
             leftPadding:_butMargins
         }
         QGCTextField {
             id:                     _longitude
-            Layout.preferredWidth:  (_initialize_obox_panel_rectangle.width - _butMargins*2) / 2
+            Layout.preferredWidth:  (_initialize_obox_panel_rectangle.width - _butMargins*2) / 1.9
             maximumLength:          10
-            font.pointSize:         12
+            font.pointSize:         10
             text:                    {
                 _fromVehicleLocation.checked? _activeVehicleCoordinate.longitude : _longitude.text
             }
