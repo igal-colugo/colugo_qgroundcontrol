@@ -78,12 +78,7 @@ EpsilonUDPLink::EpsilonUDPLink(SharedEpsilonLinkConfigurationPtr &config)
     {
         qWarning() << "Internal error";
     }
-    auto allAddresses = QNetworkInterface::allAddresses();
-    for (int i = 0; i < allAddresses.count(); i++)
-    {
-        QHostAddress &address = allAddresses[i];
-        _localAddresses.append(QHostAddress(address));
-    }
+
     moveToThread(this);
 }
 
@@ -208,19 +203,19 @@ void EpsilonUDPLink::readBytes()
         // added to the list and will start receiving datagrams from here. Even a port scanner
         // would trigger this.
         // Add host to broadcast list if not yet present, or update its port
-        QHostAddress asender = sender;
-        if (_isIpLocal(sender))
-        {
-            asender = QHostAddress(QString("127.0.0.1"));
-        }
-        QMutexLocker locker(&_sessionTargetsMutex);
-        if (!contains_target(_sessionTargets, asender, senderPort))
-        {
-            qDebug() << "Adding target" << asender << senderPort;
-            EpsilonUDPCLient *target = new EpsilonUDPCLient(asender, senderPort);
-            _sessionTargets.append(target);
-        }
-        locker.unlock();
+        //        QHostAddress asender = sender;
+        //        if (_isIpLocal(sender))
+        //        {
+        //            asender = QHostAddress(QString("127.0.0.1"));
+        //        }
+        //        QMutexLocker locker(&_sessionTargetsMutex);
+        //        if (!contains_target(_sessionTargets, asender, senderPort))
+        //        {
+        //            qDebug() << "Adding target" << asender << senderPort;
+        //            EpsilonUDPCLient *target = new EpsilonUDPCLient(asender, senderPort);
+        //            _sessionTargets.append(target);
+        //        }
+        //        locker.unlock();
     }
     //-- Send whatever is left
     if (databuffer.size())
@@ -317,8 +312,7 @@ void EpsilonUDPLink::_registerZeroconf(uint16_t port, const std::string &regType
 #endif
 }
 
-//--------------------------------------------------------------------------
-//-- UDPConfiguration
+//---------------------------------- UDPConfiguration ----------------------------------
 
 EpsilonUDPConfiguration::EpsilonUDPConfiguration(const QString &name) : EpsilonLinkConfiguration(name)
 {

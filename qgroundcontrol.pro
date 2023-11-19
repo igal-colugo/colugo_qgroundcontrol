@@ -432,7 +432,6 @@ HEADERS += \
     src/Epsilon/EpsilonLinkInterface.h \
     src/Epsilon/EpsilonLinkManager.h \
     src/Epsilon/EpsilonLinkProtocol.h \
-    src/Epsilon/EpsilonMAVLinkProtocol.h \
     src/Epsilon/EpsilonTCPLink.h \
     src/Epsilon/EpsilonUDPLink.h \
     src/EpsilonExt/EpsilonExt_CameraManagement.h \
@@ -461,7 +460,6 @@ SOURCES += \
     src/Epsilon/EpsilonLinkInterface.cc \
     src/Epsilon/EpsilonLinkManager.cc \
     src/Epsilon/EpsilonLinkProtocol.cc \
-    src/Epsilon/EpsilonMAVLinkProtocol.cc \
     src/Epsilon/EpsilonTCPLink.cc \
     src/Epsilon/EpsilonUDPLink.cc \
     src/EpsilonExt/EpsilonExt_CameraManagement.cpp \

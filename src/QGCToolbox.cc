@@ -70,7 +70,7 @@ QGCToolbox::QGCToolbox(QGCApplication *app)
     _epsilonLinkManager = new EpsilonLinkManager(app, this);
     _mavlinkProtocol = new MAVLinkProtocol(app, this);
     _nextVisionMavlinkProtocol = new NextVisionMAVLinkProtocol(app, this);
-    _epsilonMavlinkProtocol = new EpsilonMAVLinkProtocol(app, this);
+    _epsilonLinkProtocol = new EpsilonLinkProtocol(app, this);
     _missionCommandTree = new MissionCommandTree(app, this);
     _multiVehicleManager = new MultiVehicleManager(app, this);
     _mapEngineManager = new QGCMapEngineManager(app, this);
@@ -118,7 +118,7 @@ void QGCToolbox::setChildToolboxes(void)
     _epsilonLinkManager->setToolbox(this);
     _mavlinkProtocol->setToolbox(this);
     _nextVisionMavlinkProtocol->setToolbox(this);
-    _epsilonMavlinkProtocol->setToolbox(this);
+    _epsilonLinkProtocol->setToolbox(this);
     _missionCommandTree->setToolbox(this);
     _multiVehicleManager->setToolbox(this);
     _mapEngineManager->setToolbox(this);

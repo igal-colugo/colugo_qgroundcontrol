@@ -17,7 +17,7 @@
 
 #include "EpsilonLinkConfiguration.h"
 #include "EpsilonLinkInterface.h"
-#include "EpsilonMAVLinkProtocol.h"
+#include "EpsilonLinkProtocol.h"
 #include "QGCLoggingCategory.h"
 #include "QGCToolbox.h"
 #if !defined(__mobile__)
@@ -149,7 +149,7 @@ class EpsilonLinkManager : public QGCTool
     QTimer _portListTimer;
     uint32_t _mavlinkChannelsUsedBitMask;
 
-    EpsilonMAVLinkProtocol *_mavlinkProtocol;
+    EpsilonLinkProtocol *_linkProtocol;
 
     QList<SharedEpsilonLinkInterfacePtr> _rgLinks;
     QList<SharedEpsilonLinkConfigurationPtr> _rgLinkConfigs;

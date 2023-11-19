@@ -35,7 +35,7 @@ EpsilonLinkManager::EpsilonLinkManager(QGCApplication *app, QGCToolbox *toolbox)
     : QGCTool(app, toolbox), _selectedConfigurationId(-1), _configUpdateSuspended(false), _configurationsLoaded(false), _connectionsSuspended(false),
       _mavlinkChannelsUsedBitMask(1) // We never use channel 0 to avoid sequence numbering problems
       ,
-      _mavlinkProtocol(nullptr)
+      _linkProtocol(nullptr)
 {
     qmlRegisterUncreatableType<EpsilonLinkManager>("QGroundControl", 1, 0, "EpsilonLinkManager", "Reference only");
     qmlRegisterUncreatableType<EpsilonLinkConfiguration>("QGroundControl", 1, 0, "EpsilonLinkConfiguration", "Reference only");
@@ -49,7 +49,7 @@ EpsilonLinkManager::~EpsilonLinkManager()
 void EpsilonLinkManager::setToolbox(QGCToolbox *toolbox)
 {
     QGCTool::setToolbox(toolbox);
-    _mavlinkProtocol = _toolbox->epsilonMavlinkProtocol();
+    _linkProtocol = _toolbox->epsilonLinkProtocol();
 }
 
 // This should only be used by Qml code
@@ -81,19 +81,13 @@ bool EpsilonLinkManager::createConnectedLink(SharedEpsilonLinkConfigurationPtr &
 
     if (link)
     {
-        if (false == link->_allocateMavlinkChannel())
-        {
-            qCWarning(EpsilonLinkManagerLog) << "Link failed to setup mavlink channels";
-            return false;
-        }
-
         _rgLinks.append(link);
         _selectedConfigurationId = _rgLinks.count() - 1;
         config->setLink(link);
 
         connect(link.get(), &EpsilonLinkInterface::communicationError, _app, &QGCApplication::criticalMessageBoxOnMainThread);
-        connect(link.get(), &EpsilonLinkInterface::bytesReceived, _mavlinkProtocol, &EpsilonMAVLinkProtocol::receiveBytes);
-        connect(link.get(), &EpsilonLinkInterface::bytesSent, _mavlinkProtocol, &EpsilonMAVLinkProtocol::logSentBytes);
+        connect(link.get(), &EpsilonLinkInterface::bytesReceived, _linkProtocol, &EpsilonLinkProtocol::receiveBytes);
+        connect(link.get(), &EpsilonLinkInterface::bytesSent, _linkProtocol, &EpsilonLinkProtocol::logSentBytes);
         connect(link.get(), &EpsilonLinkInterface::disconnected, this, &EpsilonLinkManager::_linkDisconnected);
 
         if (!link->_connect())
@@ -129,7 +123,6 @@ void EpsilonLinkManager::_linkDisconnected(void)
     disconnect(link, &EpsilonLinkInterface::communicationError, _app, &QGCApplication::criticalMessageBoxOnMainThread);
     disconnect(link, &EpsilonLinkInterface::disconnected, this, &EpsilonLinkManager::_linkDisconnected);
 
-    link->_freeMavlinkChannel();
     for (int i = 0; i < _rgLinks.count(); i++)
     {
         if (_rgLinks[i].get() == link)

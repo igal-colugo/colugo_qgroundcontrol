@@ -11,13 +11,9 @@ EpsilonCameraManagement::EpsilonCameraManagement(QObject *parent, MultiVehicleMa
     this->_joystickManager = joystickManager;
     activeVehicle = _multiVehicleManager->activeVehicle();
     this->_epsilonLinkManager = qgcApp()->toolbox()->epsilonLinkManager();
+
     connect(_multiVehicleManager, &MultiVehicleManager::activeVehicleChanged, this, &EpsilonCameraManagement::_activeVehicleChanged);
     connect(this->_joystickManager, &JoystickManager::activeCamJoystickChanged, this, &EpsilonCameraManagement::_activeCamJoystickChanged);
-
-    /* connect the tile loaded signal to the cache worker */
-    // QGCMapEngine *map_engine = getQGCMapEngine();
-    // QGCCacheWorker *worker = &map_engine->_worker;
-    // connect(worker, &QGCCacheWorker::tileLoaded, this, &CameraManagement::addTileToCahce);
 }
 
 void EpsilonCameraManagement::setUseSeparatedLink(bool set)
@@ -33,16 +29,6 @@ bool EpsilonCameraManagement::getUseSeparatedLink(void)
 void EpsilonCameraManagement::_activeVehicleChanged(Vehicle *activeVehicle)
 {
     this->activeVehicle = activeVehicle;
-    if (activeVehicle)
-    {
-        float time = QDateTime::currentSecsSinceEpoch();
-        /* Sending the system time to the vehicle */
-        sendMavCommandLong(MAV_CMD_DO_DIGICAM_CONTROL, MavExtCmd_SetSystemTime, time, 0, 0, 0, 0, 0);
-
-        /* load all elevation tiles to cache when the Vehicle is connected */
-        // QGCLoadElevationTileSetsTask *taskSave = new QGCLoadElevationTileSetsTask();
-        // getQGCMapEngine()->addTask(taskSave);
-    }
 }
 
 void EpsilonCameraManagement::_activeCamJoystickChanged(Joystick *activeCamJoystick)
@@ -131,7 +117,9 @@ void EpsilonCameraManagement::manualCamControl(float cam_roll_yaw, float cam_pit
 
     /* send the gimbal command to the system only when virtual joystick is disabled */
     if (qgcApp()->toolbox()->settingsManager()->appSettings()->virtualJoystick()->rawValue().toBool() == false)
-        sendGimbalCommand(cam_roll_yaw / (-32768), cam_pitch / (-32768));
+    {
+        sendGimbalCommand((cam_roll_yaw / (-32768)) * 100.0, (cam_pitch / (-32768)) * 100.0);
+    }
 }
 
 bool EpsilonCameraManagement::doBtnFuncToggle(bool pressed, int buttonIndex)
@@ -177,73 +165,85 @@ void EpsilonCameraManagement::doCamAction(QString buttonAction, bool pressed, in
     {
         /* Day/IR toggle */
         if (doAction)
-            sendMavCommandLong(MAV_CMD_DO_DIGICAM_CONTROL, MavExtCmd_SetSensor, _camButtonFuncValue[buttonIndex], 0, 0, 0, 0, 0);
+        {
+        }
     }
     else if (buttonAction == "White Hot / Black Hot")
     {
         /* Polarity Toggle */
         if (doAction)
-            sendMavCommandLong(MAV_CMD_DO_DIGICAM_CONTROL, MavExtCmd_SetIrPolarity, _camButtonFuncValue[buttonIndex], 0, 0, 0, 0, 0);
+        {
+        }
     }
     else if (buttonAction == "Image Capture")
     {
         /* Image Capture */
         if (doAction)
-            sendMavCommandLong(MAV_CMD_DO_DIGICAM_CONTROL, MavExtCmd_TakeSnapShot, 0, 0, 0, 0, 0, 0);
+        {
+        }
     }
     else if (buttonAction == "Single Yaw")
     {
         /* Single Yaw */
         if (doAction)
-            sendMavCommandLong(MAV_CMD_DO_DIGICAM_CONTROL, MavExtCmd_SetSingleYawMode, _camButtonFuncValue[buttonIndex], 0, 0, 0, 0, 0);
+        {
+        }
     }
     else if (buttonAction == "GRR")
     {
         /* GRR */
         if (doAction)
-            sendMavCommandLong(MAV_CMD_DO_DIGICAM_CONTROL, MavExtCmd_SetSystemMode, MavExtCmdArg_GRR, 0, 0, 0, 0, 0);
+        {
+        }
     }
     else if (buttonAction == "NUC")
     {
         /* NUC */
         if (doAction)
-            sendMavCommandLong(MAV_CMD_DO_DIGICAM_CONTROL, MavExtCmd_DoNUC, 0, 0, 0, 0, 0, 0);
+        {
+        }
     }
     else if (buttonAction == "Stow")
     {
         /* Stow */
         if (doAction)
-            sendMavCommandLong(MAV_CMD_DO_DIGICAM_CONTROL, MavExtCmd_SetSystemMode, MavExtCmdArg_Stow, 0, 0, 0, 0, 0);
+        {
+        }
     }
     else if (buttonAction == "Pilot")
     {
         /* Pilot */
         if (doAction)
-            sendMavCommandLong(MAV_CMD_DO_DIGICAM_CONTROL, MavExtCmd_SetSystemMode, MavExtCmdArg_Pilot, 0, 0, 0, 0, 0);
+        {
+        }
     }
     else if (buttonAction == "Retract")
     {
         /* Retract */
         if (doAction)
-            sendMavCommandLong(MAV_CMD_DO_MOUNT_CONTROL, _camButtonFuncValue[buttonIndex], 0, 0, 0, 0, 0, 0);
+        {
+        }
     }
     else if (buttonAction == "Hold Coordinate")
     {
         /* Hold Coordinate */
         if (doAction)
-            sendMavCommandLong(MAV_CMD_DO_DIGICAM_CONTROL, MavExtCmd_SetSystemMode, MavExtCmdArg_Hold, 0, 0, 0, 0, 0);
+        {
+        }
     }
     else if (buttonAction == "Observation")
     {
         /* Observation */
         if (doAction)
-            sendMavCommandLong(MAV_CMD_DO_DIGICAM_CONTROL, MavExtCmd_SetSystemMode, MavExtCmdArg_Observation, 0, 0, 0, 0, 0);
+        {
+        }
     }
     else if (buttonAction == "Record")
     {
         /* Record */
         if (doAction)
-            sendMavCommandLong(MAV_CMD_DO_DIGICAM_CONTROL, MavExtCmd_SetRecordState, _camButtonFuncValue[buttonIndex], 0, 0, 0, 0, 0);
+        {
+        }
     }
 }
 
@@ -291,574 +291,149 @@ void EpsilonCameraManagement::sendGimbalCommand(float cam_roll_yaw, float cam_pi
 
         if (sharedLink != nullptr)
         {
-            mavlink_message_t message;
-            mavlink_msg_command_long_pack_chan(1, 0, sharedLink->mavlinkChannel(), &message, 1, 0, MAV_CMD_DO_DIGICAM_CONTROL, 0, MavExtCmd_SetGimbal, cam_roll_yaw, cam_pitch,
-                                               MavExtCmdArg_ZoomNoChange, (float) this->gndCrsAltitude, 0, 0);
-            uint8_t buffer[MAVLINK_MAX_PACKET_LEN];
-            int len = mavlink_msg_to_send_buffer(buffer, &message);
+            EpsilonLinkProtocol::epsilon_link_message_t message = {};
+            uint8_t buffer[255] = {};
+            epsilon_link_msg_rate_control_pack(&message, cam_roll_yaw, cam_pitch, 0, 0, 0, 0, 0);
+            int len = epsilon_link_msg_to_send_buffer(&buffer[0], &message);
 
             sharedLink->writeBytesThreadSafe((const char *) buffer, len);
         }
     }
-    else
+}
+
+uint16_t EpsilonCameraManagement::epsilon_link_msg_to_send_buffer(uint8_t *buf, const EpsilonLinkProtocol::epsilon_link_message_t *msg)
+{
+    buf[0] = msg->magic[0];
+    buf[1] = msg->magic[1];
+    buf[2] = msg->device_id;
+    buf[3] = msg->message_id;
+    buf[4] = msg->length;
+    buf[5] = msg->header_checksum;
+    memcpy(&buf[6], _EPSILON_PAYLOAD(msg), msg->length);
+    buf[6 + msg->length] = msg->checksum;
+    buf[6 + msg->length + 1] = msg->terminator;
+
+    return 6 + msg->length + 2;
+}
+
+uint16_t EpsilonCameraManagement::epsilon_link_msg_rate_control_pack(EpsilonLinkProtocol::epsilon_link_message_t *msg, int8_t pan_speed, int8_t tilt_speed, int8_t nudge_column,
+                                                                     int8_t nudge_raw, int8_t optical_zoom_speed, int8_t focus_adjustment, int16_t geo_dted)
+{
+
+    EpsilonLinkProtocol::epsilon_rate_control_message_t packet = {};
+
+    msg->magic[0] = 0xAA;
+    msg->magic[1] = 0x55;
+    msg->device_id = 0;
+    msg->message_id = 0x05;
+    msg->length = 8;
+    msg->terminator = 0xFF;
+
+    uint8_t data[3] = {};
+    data[0] = msg->device_id;
+    data[1] = msg->message_id;
+    data[2] = msg->length;
+
+    msg->header_checksum = check_sum_calculation(&data[0], 3);
+
+    packet.pan_speed = pan_speed;
+    packet.tilt_speed = tilt_speed;
+    packet.nudge_column = nudge_column;
+    packet.nudge_raw = nudge_raw;
+    packet.optical_zoom_speed = optical_zoom_speed;
+    packet.focus_adjustment = focus_adjustment;
+    packet.geo_dted = geo_dted;
+
+    uint8_t payload[msg->length] = {};
+
+    memcpy(&payload, &packet, sizeof(packet));
+
+    msg->checksum = check_sum_calculation(&payload[0], msg->length);
+
+    memcpy(_EPSILON_PAYLOAD_NON_CONST(msg), &packet, sizeof(packet));
+
+    return 0;
+}
+
+uint8_t EpsilonCameraManagement::check_sum_calculation(uint8_t *data, int8_t length)
+{
+    uint8_t return_value = 1;
+
+    for (int i = 0; i < length; i++)
     {
-        if (!activeVehicle)
-            return;
-
-        WeakLinkInterfacePtr weakLink = activeVehicle->vehicleLinkManager()->primaryLink();
-        if (weakLink.expired())
-        {
-            return;
-        }
-        SharedLinkInterfacePtr sharedLink = weakLink.lock();
-
-        /* check if joystick is enabled */
-        if (activeVehicle->joystickCamEnabled())
-        {
-            mavlink_message_t message;
-            mavlink_msg_command_long_pack_chan(1, 0, sharedLink->mavlinkChannel(), &message, 1, 0, MAV_CMD_DO_DIGICAM_CONTROL, 0, MavExtCmd_SetGimbal, cam_roll_yaw, cam_pitch,
-                                               MavExtCmdArg_ZoomNoChange, (float) this->gndCrsAltitude, 0, 0);
-            activeVehicle->sendMessageOnLinkThreadSafe(sharedLink.get(), message);
-        }
+        return_value = crc8_Table[return_value ^ (*(data + i))];
     }
-}
 
-/* Sending gimbal Command Messages */
-void EpsilonCameraManagement::sendGimbalVirtualCommand(float cam_roll_yaw, float cam_pitch)
-{
-    if (!activeVehicle)
-        return;
-
-    WeakLinkInterfacePtr weakLink = activeVehicle->vehicleLinkManager()->primaryLink();
-    if (weakLink.expired())
-    {
-        return;
-    }
-    SharedLinkInterfacePtr sharedLink = weakLink.lock();
-
-    /* check if virtual joystick is enabled */
-    if (qgcApp()->toolbox()->settingsManager()->appSettings()->virtualJoystick()->rawValue().toBool() == true)
-    {
-        mavlink_message_t message;
-        mavlink_msg_command_long_pack_chan(1, 0, sharedLink->mavlinkChannel(), &message, 1, 0, MAV_CMD_DO_DIGICAM_CONTROL, 0, MavExtCmd_SetGimbal, cam_roll_yaw, cam_pitch,
-                                           MavExtCmdArg_ZoomNoChange, (float) this->gndCrsAltitude, 0, 0);
-
-        activeVehicle->sendMessageOnLinkThreadSafe(sharedLink.get(), message);
-    }
-}
-
-/* Sending Mavlink Command Long Messages */
-void EpsilonCameraManagement::sendMavCommandLong(MAV_CMD command, float param1, float param2, float param3, float param4, float param5, float param6, float param7)
-{
-    if (_useSeparatedLink == true)
-    {
-        WeakEpsilonLinkInterfacePtr weakLink = this->_epsilonLinkManager->selectedSharedLinkInterfacePointerForLink();
-
-        if (weakLink.expired())
-        {
-            return;
-        }
-        SharedEpsilonLinkInterfacePtr sharedLink = weakLink.lock();
-
-        if (sharedLink != nullptr)
-        {
-            mavlink_message_t message;
-            mavlink_command_long_t cmd;
-
-            memset(&cmd, 0, sizeof(cmd));
-            cmd.target_system = 1;
-            cmd.target_component = 0;
-            cmd.command = command;
-            cmd.confirmation = 0;
-            cmd.param1 = param1;
-            cmd.param2 = param2;
-            cmd.param3 = param3;
-            cmd.param4 = param4;
-            cmd.param5 = param5;
-            cmd.param6 = param6;
-            cmd.param7 = param7;
-            mavlink_msg_command_long_encode_chan(1, 0, sharedLink->mavlinkChannel(), &message, &cmd);
-
-            uint8_t buffer[MAVLINK_MAX_PACKET_LEN];
-            int len = mavlink_msg_to_send_buffer(buffer, &message);
-
-            sharedLink->writeBytesThreadSafe((const char *) buffer, len);
-        }
-    }
-    else
-    {
-        if (!activeVehicle)
-            return;
-
-        WeakLinkInterfacePtr weakLink = activeVehicle->vehicleLinkManager()->primaryLink();
-        if (weakLink.expired())
-        {
-            return;
-        }
-
-        activeVehicle->sendMavCommand(activeVehicle->defaultComponentId(), command, true, param1, param2, param3, param4, param5, param6, param7);
-    }
-}
-
-void EpsilonCameraManagement::addTileToCahce(QString tile_hash, QByteArray tile_data)
-{
-    //_terrainTileManager->addTileToCahce(tile_data, tile_hash);
-}
-
-void EpsilonCameraManagement::getAltAtCoord(float lat, float lon)
-{
-    // double terrainAltitude;
-    QGeoCoordinate coord;
-
-    coord.setLatitude(lat);
-    coord.setLongitude(lon);
-
-    /* check if we have this data cached */
-    //    if (_terrainTileManager->requestCahcedData(coord, terrainAltitude))
-    //        this->gndCrsAltitude = terrainAltitude; /* save the value, will be transmitted to the TRIP2 in the next Gimbal or GndAlt message */
-
-    if (!activeVehicle)
-        return;
-
-    /* when the virtual joystick is disabled set gnd crs alt here */
-    if (qgcApp()->toolbox()->settingsManager()->appSettings()->virtualJoystick()->rawValue().toBool() == false) // || activeVehicle->joystickCamEnabled())
-    {
-        mavlink_message_t message;
-
-        if (!activeVehicle)
-            return;
-
-        WeakLinkInterfacePtr weakLink = activeVehicle->vehicleLinkManager()->primaryLink();
-        if (weakLink.expired())
-        {
-            return;
-        }
-        SharedLinkInterfacePtr sharedLink = weakLink.lock();
-
-        /* when the virtual joystick is disabled send the ground altitude from here instead */
-        mavlink_msg_command_long_pack_chan(1, 0, sharedLink->mavlinkChannel(), &message, 1, 0, MAV_CMD_DO_DIGICAM_CONTROL, 0, MavExtCmd_SetGroundCrossingAlt, (float) this->gndCrsAltitude, 0,
-                                           0, 0, 0, 0);
-        activeVehicle->sendMessageOnLinkThreadSafe(sharedLink.get(), message);
-    }
-}
-
-void EpsilonCameraManagement::pointToCoordinate(float lat, float lon)
-{
-    double terrainAltitude = 0.0;
-
-    _coord.setLatitude(lat);
-    _coord.setLongitude(lon);
-
-    /* first check if we have this data cached */
-    //    if (_terrainTileManager->requestCahcedData(_coord, terrainAltitude) == false)
-    //    {
-    //        TerrainAtCoordinateQuery *terrain = new TerrainAtCoordinateQuery(true);
-    //        connect(terrain, &TerrainAtCoordinateQuery::terrainDataReceived, this, &CameraManagement::_terrainDataReceived);
-    //        QList<QGeoCoordinate> rgCoord;
-    //        rgCoord.append(_coord);
-    //        terrain->requestData(rgCoord);
-    //    }
-    // else
-    //{
-    sendMavCommandLong(MAV_CMD_DO_SET_ROI_LOCATION, 0.0, 0.0, 0.0, 0.0, _coord.latitude(), _coord.longitude(), terrainAltitude);
-    // qDebug() << "00 PTC On lat= " << (int)(_coord.latitude() * 10000000.0) << " lon = " << (int)(_coord.longitude() * 10000000.0 )<< " alt = " << terrainAltitude;
-    //}
-}
-
-void EpsilonCameraManagement::_terrainDataReceived(bool success, QList<double> heights)
-{
-    double _terrainAltitude = success ? heights[0] : 0;
-    sendMavCommandLong(MAV_CMD_DO_SET_ROI_LOCATION, 0.0, 0.0, 0.0, 0.0, _coord.latitude(), _coord.longitude(), _terrainAltitude);
-    // qDebug() << "11 PTC On lat= " << (int)(_coord.latitude() * 10000000.0) << " lon = " << (int)(_coord.longitude() * 10000000.0 )<< " alt = " << _terrainAltitude;
-    // sender()->deleteLater();
-}
-
-void EpsilonCameraManagement::trackOnPosition(float posX, float posY, int chan)
-{
-    // qDebug() << "11 PTC On lat= " << chan <<"\n";
-    /* Sending the track on position command */
-    sendMavCommandLong(MAV_CMD_DO_DIGICAM_CONTROL, MavExtCmd_SetSystemMode, MavExtCmdArg_TrackOnPosition, posX, posY, 0, (float) chan, 0);
+    return return_value;
 }
 
 void EpsilonCameraManagement::setSysModeObsCommand()
 {
     /* Sending the OBS command */
-    sendMavCommandLong(MAV_CMD_DO_DIGICAM_CONTROL, MavExtCmd_SetSystemMode, MavExtCmdArg_Observation, 0, 0, 0, 0, 0);
 }
 
 void EpsilonCameraManagement::setSysModeGrrCommand()
 {
     /* Sending the GRR command */
-    sendMavCommandLong(MAV_CMD_DO_DIGICAM_CONTROL, MavExtCmd_SetSystemMode, MavExtCmdArg_GRR, 0, 0, 0, 0, 0);
-}
-
-void EpsilonCameraManagement::setSysModeTrackCommand()
-{
-    /* Sending the enable tooo see the tracke - than ... track... command */
-    // need to add some delay between commands...
-    sendMavCommandLong(MAV_CMD_DO_DIGICAM_CONTROL, MavExtCmd_SetSystemMode, MavExtCmdArg_TrackOnPosition, 0, 0, 1, 0, 0);
-    sendMavCommandLong(MAV_CMD_DO_DIGICAM_CONTROL, MavExtCmd_SetSystemMode, 39, 1, 0, 0, 0, 0);
-    sendMavCommandLong(MAV_CMD_DO_DIGICAM_CONTROL, MavExtCmd_SetSystemMode, MavExtCmdArg_TrackOnPosition, 0, 0, 2, 0, 0);
-    // sendMavCommandLong(MAV_CMD_DO_DIGICAM_CONTROL, MavExtCmd_SetSystemMode, MavExtCmdArg_TrackOnPosition, 0, 0, 1, 0, 0);
-}
-
-void EpsilonCameraManagement::setSysModeEprCommand()
-{
-    /* Sending the EPR command */
-    sendMavCommandLong(MAV_CMD_DO_DIGICAM_CONTROL, MavExtCmd_SetSystemMode, MavExtCmdArg_EPR, 0, 0, 0, 0, 0);
-}
-
-void EpsilonCameraManagement::setSysModeHoldCommand()
-{
-    /* Sending the Hold command */
-    sendMavCommandLong(MAV_CMD_DO_DIGICAM_CONTROL, MavExtCmd_SetSystemMode, MavExtCmdArg_Hold, 0, 0, 0, 0, 0);
 }
 
 void EpsilonCameraManagement::setSysModePilotCommand()
 {
     /* Sending the Pilot command */
-    sendMavCommandLong(MAV_CMD_DO_DIGICAM_CONTROL, MavExtCmd_SetSystemMode, MavExtCmdArg_Pilot, 0, 0, 0, 0, 0);
 }
 
 void EpsilonCameraManagement::setSysModeStowCommand()
 {
     /* Sending the Stow command */
-    sendMavCommandLong(MAV_CMD_DO_DIGICAM_CONTROL, MavExtCmd_SetSystemMode, MavExtCmdArg_Stow, 0, 0, 0, 0, 0);
-}
-
-void EpsilonCameraManagement::setSysModeRetractCommand()
-{
-    /* Sending the Retract command */
-    sendMavCommandLong(MAV_CMD_DO_MOUNT_CONTROL, 0, 0, 0, 0, 0, 0, 0);
-}
-
-void EpsilonCameraManagement::setSysModeRetractUnlockCommand()
-{
-    /* Sending retract release command */
-    sendMavCommandLong(MAV_CMD_DO_DIGICAM_CONTROL, MavExtCmd_ClearRetractLock, 0, 0, 0, 0, 0, 0);
 }
 
 void EpsilonCameraManagement::setSysZoomStopCommand()
 {
     /* Sending retract release command */
-    sendMavCommandLong(MAV_CMD_DO_DIGICAM_CONTROL, MavExtCmd_SetZoom, 0, 0, 0, 0, 0, 0);
 }
 
 void EpsilonCameraManagement::setSysZoomInCommand()
 {
     /* Sending retract release command */
-    sendMavCommandLong(MAV_CMD_DO_DIGICAM_CONTROL, MavExtCmd_SetZoom, 1, 0, 0, 0, 0, 0);
 }
 
 void EpsilonCameraManagement::setSysZoomOutCommand()
 {
     /* Sending retract release command */
-    sendMavCommandLong(MAV_CMD_DO_DIGICAM_CONTROL, MavExtCmd_SetZoom, 2, 0, 0, 0, 0, 0);
-}
-
-void EpsilonCameraManagement::setSysSensorToggleCommand()
-{
-    /* Toggle the system sensor */
-    sendMavCommandLong(MAV_CMD_DO_DIGICAM_CONTROL, MavExtCmd_SetSensor, MavExtCmdArg_ToggleSensor, 0, 0, 0, 0, 0);
 }
 
 void EpsilonCameraManagement::setSysSensorDayCommand(void)
 {
     /* Set the system sensor */
-    sendMavCommandLong(MAV_CMD_DO_DIGICAM_CONTROL, MavExtCmd_SetSensor, MavExtCmdArg_DaySensor, 0, 0, 0, 0, 0);
 }
 
 void EpsilonCameraManagement::setSysSensorIrCommand(void)
 {
     /* Set the system sensor */
-    sendMavCommandLong(MAV_CMD_DO_DIGICAM_CONTROL, MavExtCmd_SetSensor, MavExtCmdArg_IrSensor, 0, 0, 0, 0, 0);
-}
-
-void EpsilonCameraManagement::setSysIrPolarityToggleCommand(void)
-{
-    /* Set the system sensor */
-    sendMavCommandLong(MAV_CMD_DO_DIGICAM_CONTROL, MavExtCmd_SetIrPolarity, MavExtCmdArg_TogglePolarity, 0, 0, 0, 0, 0);
-}
-
-void EpsilonCameraManagement::setSysIrPolarityWHCommand(void)
-{
-    /* Set the system sensor */
-    sendMavCommandLong(MAV_CMD_DO_DIGICAM_CONTROL, MavExtCmd_SetIrPolarity, MavExtCmdArg_WhiteHot, 0, 0, 0, 0, 0);
-}
-
-void EpsilonCameraManagement::setSysIrPolarityBHCommand(void)
-{
-    /* Set the system sensor */
-    sendMavCommandLong(MAV_CMD_DO_DIGICAM_CONTROL, MavExtCmd_SetIrPolarity, MavExtCmdArg_BlackHot, 0, 0, 0, 0, 0);
-}
-
-void EpsilonCameraManagement::setSysIrColorPCommand(void)
-{
-    /* Set the system sensor */
-    sendMavCommandLong(MAV_CMD_DO_DIGICAM_CONTROL, MavExtCmd_SetIrColor, MavExtCmdArg_Color_P, 0, 0, 0, 0, 0);
-}
-
-void EpsilonCameraManagement::setSysIrBWPCommand(void)
-{
-    /* Set the system sensor */
-    sendMavCommandLong(MAV_CMD_DO_DIGICAM_CONTROL, MavExtCmd_SetIrColor, MavExtCmdArg_BW_P, 0, 0, 0, 0, 0);
-}
-
-void EpsilonCameraManagement::setSysIrNUCCommand(void)
-{
-    /* Set the system sensor */
-    sendMavCommandLong(MAV_CMD_DO_DIGICAM_CONTROL, MavExtCmd_DoNUC, 0, 0, 0, 0, 0, 0);
-}
-
-void EpsilonCameraManagement::setSysIrGainLevelCommand(int cmd)
-{
-    /* Set the gain/level command */
-    sendMavCommandLong(MAV_CMD_DO_DIGICAM_CONTROL, MavExtCmd_SetIRGainLevel, cmd, 0, 0, 0, 0, 0);
-}
-
-void EpsilonCameraManagement::setSysRecToggleCommand(int chan)
-{
-    /* Set the system sensor */
-    sendMavCommandLong(MAV_CMD_DO_DIGICAM_CONTROL, MavExtCmd_SetRecordState, MavExtCmdArg_Toggle, (float) chan, 0, 0, 0, 0);
 }
 
 void EpsilonCameraManagement::setSysRecOnCommand(int chan)
 {
     /* Set the system sensor */
-    sendMavCommandLong(MAV_CMD_DO_DIGICAM_CONTROL, MavExtCmd_SetRecordState, MavExtCmdArg_Enable, (float) chan, 0, 0, 0, 0);
 }
 
 void EpsilonCameraManagement::setSysRecOffCommand(int chan)
 {
     /* Set the system sensor */
-    sendMavCommandLong(MAV_CMD_DO_DIGICAM_CONTROL, MavExtCmd_SetRecordState, MavExtCmdArg_Disable, (float) chan, 0, 0, 0, 0);
 }
 
 void EpsilonCameraManagement::setSysSnapshotCommand(int chan)
 {
     /* Set the system sensor */
-    sendMavCommandLong(MAV_CMD_DO_DIGICAM_CONTROL, MavExtCmd_TakeSnapShot, (float) chan, 0, 0, 0, 0, 0);
-}
-
-void EpsilonCameraManagement::setSysAutoSnapshotCommand(int interval, int count, bool inf, int chan)
-{
-    /* Set the system sensor */
-    /* inf override */
-    if (inf)
-        count = -1;
-
-    sendMavCommandLong(MAV_CMD_DO_DIGICAM_CONTROL, MavExtCmd_SnapShotInterval, (float) interval, (float) count, (float) chan, 0, 0, 0);
 }
 
 void EpsilonCameraManagement::setSysFOVCommand(float fov_value)
 {
     /* Set the system sensor */
-    sendMavCommandLong(MAV_CMD_DO_DIGICAM_CONTROL, MavExtCmd_SetFOV, fov_value, 0, 0, 0, 0, 0);
-}
-
-void EpsilonCameraManagement::setSysModeLocalPositionCommand(int pitch, int roll)
-{
-    /* Set the system sensor */
-    sendMavCommandLong(MAV_CMD_DO_DIGICAM_CONTROL, MavExtCmd_SetSystemMode, MavExtCmdArg_LocalPosition, pitch, roll, 0, 0, 0);
-}
-
-void EpsilonCameraManagement::setSysModeGlobalPositionCommand(int elevation, int azimuth)
-{
-    /* Set the system sensor */
-    sendMavCommandLong(MAV_CMD_DO_DIGICAM_CONTROL, MavExtCmd_SetSystemMode, MavExtCmdArg_GlobalPosition, elevation, azimuth, 0, 0, 0);
-}
-
-void EpsilonCameraManagement::setSysSingleYawOnCommand(void)
-{
-    /* Set the system sensor */
-    sendMavCommandLong(MAV_CMD_DO_DIGICAM_CONTROL, MavExtCmd_SetSingleYawMode, 1, 0, 0, 0, 0, 0);
-}
-
-void EpsilonCameraManagement::setSysSingleYawOffCommand(void)
-{
-    /* Set the system sensor */
-    sendMavCommandLong(MAV_CMD_DO_DIGICAM_CONTROL, MavExtCmd_SetSingleYawMode, 0, 0, 0, 0, 0, 0);
-}
-
-void EpsilonCameraManagement::setSysFlyAboveOnCommand(void)
-{
-    /* Set the system sensor */
-    sendMavCommandLong(MAV_CMD_DO_DIGICAM_CONTROL, MavExtCmd_SetFlyAbove, 1, 0, 0, 0, 0, 0);
-}
-
-void EpsilonCameraManagement::setSysFlyAboveOffCommand(void)
-{
-    /* Set the system sensor */
-    sendMavCommandLong(MAV_CMD_DO_DIGICAM_CONTROL, MavExtCmd_SetFlyAbove, 0, 0, 0, 0, 0, 0);
-}
-
-void EpsilonCameraManagement::setSysFollowOnCommand(void)
-{
-    /* Set the system sensor */
-    sendMavCommandLong(MAV_CMD_DO_DIGICAM_CONTROL, MavExtCmd_SetFollowMode, 1, 0, 0, 0, 0, 0);
-}
-
-void EpsilonCameraManagement::setSysFollowOffCommand(void)
-{
-    /* Set the system sensor */
-    sendMavCommandLong(MAV_CMD_DO_DIGICAM_CONTROL, MavExtCmd_SetFollowMode, 0, 0, 0, 0, 0, 0);
-}
-
-void EpsilonCameraManagement::setSysNadirCommand(void)
-{
-    /* Set the system sensor */
-    sendMavCommandLong(MAV_CMD_DO_DIGICAM_CONTROL, MavExtCmd_SetSystemMode, MavExtCmdArg_Nadir, 0, 0, 0, 0, 0);
-}
-
-void EpsilonCameraManagement::setSysNadirScanCommand(void)
-{
-    /* Set the system sensor */
-    sendMavCommandLong(MAV_CMD_DO_DIGICAM_CONTROL, MavExtCmd_SetSystemMode, MavExtCmdArg_NadirScan, 0, 0, 0, 0, 0);
-}
-
-void EpsilonCameraManagement::setSysObjDetOnCommand(void)
-{
-    /* Set the system sensor */
-    sendMavCommandLong(MAV_CMD_DO_DIGICAM_CONTROL, MavExtCmd_DetectionControl, MavExtCmdArg_DetectorEnDis, 1, 0, 0, 0, 0);
-}
-
-void EpsilonCameraManagement::setSysObjDetOffCommand(void)
-{
-    /* Set the system sensor */
-    sendMavCommandLong(MAV_CMD_DO_DIGICAM_CONTROL, MavExtCmd_DetectionControl, MavExtCmdArg_DetectorEnDis, 0, 0, 0, 0, 0);
-}
-
-void EpsilonCameraManagement::setSysObjDetSetNetTypeCommand(int netType)
-{
-    /* Set the system sensor */
-    sendMavCommandLong(MAV_CMD_DO_DIGICAM_CONTROL, MavExtCmd_DetectionControl, MavExtCmdArg_DetectorSelect, (float) netType, 0, 0, 0, 0);
-}
-
-void EpsilonCameraManagement::setSysObjDetSetConfThresCommand(float confThres)
-{
-    /* Set the system sensor */
-    sendMavCommandLong(MAV_CMD_DO_DIGICAM_CONTROL, MavExtCmd_DetectionControl, MavExtCmdArg_DetectorConfThres, confThres, 0, 0, 0, 0);
-}
-
-void EpsilonCameraManagement::setSysObjDetSetFireThresCommand(float fireThres)
-{
-    /* Set the system sensor */
-    sendMavCommandLong(MAV_CMD_DO_DIGICAM_CONTROL, MavExtCmd_DetectionControl, MavExtCmdArg_DetectorFireThres, fireThres, 0, 0, 0, 0);
-}
-
-void EpsilonCameraManagement::setSysGeoAVGOnCommand(void)
-{
-    /* Set the system sensor */
-    sendMavCommandLong(MAV_CMD_DO_DIGICAM_CONTROL, MavExtCmd_SetGeoAvg, 1, 0, 0, 0, 0, 0);
-}
-
-void EpsilonCameraManagement::setSysGeoAVGOffCommand(void)
-{
-    /* Set the system sensor */
-    sendMavCommandLong(MAV_CMD_DO_DIGICAM_CONTROL, MavExtCmd_SetGeoAvg, 0, 0, 0, 0, 0, 0);
-}
-
-void EpsilonCameraManagement::setSysVividEnabled(bool enabled)
-{
-    /* Set the system sensor */
-    sendMavCommandLong(MAV_CMD_DO_DIGICAM_CONTROL, MavExtCmd_SetVividState, enabled ? 1 : 0, 0, 0, 0, 0, 0);
-}
-
-void EpsilonCameraManagement::setSysSetFocusState(bool IsNear, bool IsFar, bool IsInf)
-{
-    auto _state = MavExtCmdArg_Stop;
-
-    if (IsNear)
-        _state = MavExtCmdArg_Near;
-    if (IsFar)
-        _state = MavExtCmdArg_Far;
-    if (IsInf)
-        _state = MavExtCmdArg_Inf;
-
-    /* Set Focus State */
-    sendMavCommandLong(MAV_CMD_DO_DIGICAM_CONTROL, MavExtCmd_SetFocusState, (float) (int) _state, 0, 0, 0, 0, 0);
-}
-
-void EpsilonCameraManagement::doRescue()
-{
-    /* Set Focus State */
-    sendMavCommandLong(MAV_CMD_DO_DIGICAM_CONTROL, MavExtCmd_DoRescue, 0, 0, 0, 0, 0, 0);
-}
-
-void EpsilonCameraManagement::setCameraMotorState(bool enabled)
-{
-    /* Set Focus State */
-    sendMavCommandLong(MAV_CMD_DO_DIGICAM_CONTROL, MavExtCmd_SetCameraMotorState, enabled ? 1 : 0, 0, 0, 0, 0, 0);
 }
 
 bool EpsilonCameraManagement::getShouldUiEnabledRescueElement()
 {
     /* Set Focus State */
     return m_should_enable_rescue_btn == 1;
-}
-
-void EpsilonCameraManagement::setSysMode2DScanCommand()
-{
-    /* Sending the OBS command */
-    sendMavCommandLong(MAV_CMD_DO_DIGICAM_CONTROL, MavExtCmd_SetSystemMode, MavExtCmdArg_2DScan, 0, 0, 0, 0, 0);
-}
-
-void EpsilonCameraManagement::setSysStreamModeCommand(int chan0Mode, int chan1Mode)
-{
-    /* Sending the OBS command */
-    sendMavCommandLong(MAV_CMD_DO_DIGICAM_CONTROL, MavExtCmd_StreamControl, MavExtCmdArg_SetStreamMode, (float) chan0Mode, (float) chan1Mode, 0, 0, 0);
-}
-
-void EpsilonCameraManagement::setSysPIPModeCommand(int mode)
-{
-    /* Sending the OBS command */
-    sendMavCommandLong(MAV_CMD_DO_DIGICAM_CONTROL, MavExtCmd_StreamControl, MavExtCmdArg_SetPIPMode, (float) mode, 0, 0, 0, 0);
-}
-
-void EpsilonCameraManagement::setSysSBSModeCommand(int mode)
-{
-    /* Sending the OBS command */
-    sendMavCommandLong(MAV_CMD_DO_DIGICAM_CONTROL, MavExtCmd_StreamControl, MavExtCmdArg_SetSBSMode, (float) mode, 0, 0, 0, 0);
-}
-
-void EpsilonCameraManagement::setSysVMDOnCommand(void)
-{
-    /* Sending the OBS command */
-    sendMavCommandLong(MAV_CMD_DO_DIGICAM_CONTROL, MavExtCmd_VMDControl, MavExtCmdArg_VMDEnable, 1, 0, 0, 0, 0);
-}
-
-void EpsilonCameraManagement::setSysVMDOffCommand(void)
-{
-    /* Sending the OBS command */
-    sendMavCommandLong(MAV_CMD_DO_DIGICAM_CONTROL, MavExtCmd_VMDControl, MavExtCmdArg_VMDEnable, 0, 0, 0, 0, 0);
-}
-
-void EpsilonCameraManagement::setSysModeUnstabilizedPositionCommand(int pitch, int roll)
-{
-    /* Set the system sensor */
-    sendMavCommandLong(MAV_CMD_DO_DIGICAM_CONTROL, MavExtCmd_SetSystemMode, MavExtCmdArg_UnstabilizedPosition, pitch, roll, 0, 0, 0);
-}
-
-void EpsilonCameraManagement::setSysActiveTrackerCommand(int index)
-{
-    /* Set the active tracker */
-    sendMavCommandLong(MAV_CMD_DO_DIGICAM_CONTROL, MavExtCmd_TrackControl, MavExtCmdArg_SetActiveTracker, index, 0, 0, 0, 0);
-}
-
-void EpsilonCameraManagement::setSysPrimaryTrackerCommand(int index)
-{
-    /* Set the primary tracker */
-    sendMavCommandLong(MAV_CMD_DO_DIGICAM_CONTROL, MavExtCmd_TrackControl, MavExtCmdArg_SetPrimaryTracker, index, 0, 0, 0, 0);
-}
-
-void EpsilonCameraManagement::setSysTrackerROICommand(int index)
-{
-    /* Set the primary tracker */
-    sendMavCommandLong(MAV_CMD_DO_DIGICAM_CONTROL, MavExtCmd_TrackControl, MavExtCmdArg_SetTrackerROI, index, 0, 0, 0, 0);
-}
-
-void EpsilonCameraManagement::setSysSetIRNoiseReductionLevelCommand(int index)
-{
-    /* Set the IR Noise Reduction level */
-    sendMavCommandLong(MAV_CMD_DO_DIGICAM_CONTROL, MavExtCmd_SetIRNoiseReductionLevel, index, 0, 0, 0, 0, 0);
 }

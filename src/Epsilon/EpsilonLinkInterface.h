@@ -58,17 +58,6 @@ class EpsilonLinkInterface : public QThread
 
     virtual bool isConnected(void) const = 0;
 
-    uint8_t mavlinkChannel(void) const;
-    bool mavlinkChannelIsSet(void) const;
-
-    bool decodedFirstMavlinkPacket(void) const
-    {
-        return _decodedFirstMavlinkPacket;
-    }
-    bool setDecodedFirstMavlinkPacket(bool decodedFirstMavlinkPacket)
-    {
-        return _decodedFirstMavlinkPacket = decodedFirstMavlinkPacket;
-    }
     void writeBytesThreadSafe(const char *bytes, int length);
     void addVehicleReference(void);
     void removeVehicleReference(void);
@@ -89,17 +78,6 @@ class EpsilonLinkInterface : public QThread
 
     SharedEpsilonLinkConfigurationPtr _config;
 
-    ///
-    /// \brief _allocateMavlinkChannel
-    ///     Called by the LinkManager during LinkInterface construction
-    /// instructing the link to setup channels.
-    ///
-    /// Default implementation allocates a single channel. But some link types
-    /// (such as MockLink) need more than one.
-    ///
-    virtual bool _allocateMavlinkChannel();
-    virtual void _freeMavlinkChannel();
-
   private slots:
     virtual void _writeBytes(const QByteArray) = 0; // Not thread safe if called directly, only writeBytesThreadSafe is thread safe
 
@@ -107,12 +85,8 @@ class EpsilonLinkInterface : public QThread
     // connect is private since all links should be created through LinkManager::createConnectedLink calls
     virtual bool _connect(void) = 0;
 
-    uint8_t _mavlinkChannel = std::numeric_limits<uint8_t>::max();
-    bool _decodedFirstMavlinkPacket = false;
     bool _isPX4Flow = false;
     int _vehicleReferenceCount = 0;
-
-    QMap<int /* vehicle id */, MavlinkMessagesTimer *> _mavlinkMessagesTimers;
 };
 
 typedef std::shared_ptr<EpsilonLinkInterface> SharedEpsilonLinkInterfacePtr;
