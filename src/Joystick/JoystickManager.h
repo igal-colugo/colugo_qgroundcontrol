@@ -12,7 +12,7 @@
 
 #pragma once
 
-#include "EpsilonExt/EpsilonExt_CameraManagement.h"
+#include "Epsilon/EpsilonCameraManagement.h"
 #include "Joystick.h"
 #include "MultiVehicleManager.h"
 #include "NextVisionExt/NvExt_CameraManagement.h"

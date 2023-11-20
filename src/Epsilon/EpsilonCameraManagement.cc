@@ -1,29 +1,18 @@
-#include "EpsilonExt_CameraManagement.h"
+#include "EpsilonCameraManagement.h"
 #include "JoystickManager.h"
 #include "QGCApplication.h"
 #include "SettingsManager.h"
 
-// Q_GLOBAL_STATIC(TerrainTileManager, _terrainTileManager)
 EpsilonCameraManagement::EpsilonCameraManagement(QObject *parent, MultiVehicleManager *multiVehicleManager, JoystickManager *joystickManager)
     : QObject(parent), _multiVehicleManager(nullptr), activeVehicle(nullptr), _joystickManager(nullptr)
 {
     this->_multiVehicleManager = multiVehicleManager;
+    this->activeVehicle = _multiVehicleManager->activeVehicle();
     this->_joystickManager = joystickManager;
-    activeVehicle = _multiVehicleManager->activeVehicle();
     this->_epsilonLinkManager = qgcApp()->toolbox()->epsilonLinkManager();
 
     connect(_multiVehicleManager, &MultiVehicleManager::activeVehicleChanged, this, &EpsilonCameraManagement::_activeVehicleChanged);
     connect(this->_joystickManager, &JoystickManager::activeCamJoystickChanged, this, &EpsilonCameraManagement::_activeCamJoystickChanged);
-}
-
-void EpsilonCameraManagement::setUseSeparatedLink(bool set)
-{
-    _useSeparatedLink = set;
-}
-
-bool EpsilonCameraManagement::getUseSeparatedLink(void)
-{
-    return _useSeparatedLink;
 }
 
 void EpsilonCameraManagement::_activeVehicleChanged(Vehicle *activeVehicle)
@@ -83,17 +72,11 @@ void EpsilonCameraManagement::manualCamControl(float cam_roll_yaw, float cam_pit
         // bool button_value = (buttons & (1 << buttonIndex)) ? true :false;
         AssignedButtonAction *button_action = button_actions.at(buttonIndex);
         if (!button_action)
+        {
             continue;
+        }
         doCamAction(button_action->action, buttons[buttonIndex], buttonIndex);
     }
-
-    /* call the button functions for each button */
-    /* for (int buttonIndex=0; buttonIndex<activeJoystick->totalButtonCount(); buttonIndex++)
-     {
-         bool button_value = (buttons & (1 << buttonIndex)) ? true :false;
-         doCamAction(_camButtonActionsMap[buttonIndex],button_value,buttonIndex);
-
-     }*/
 
     /* Calculating the zoom value */
     int zoomValue = getZoomValue(buttons, button_actions);
@@ -280,111 +263,97 @@ EpsilonCameraManagement::MavlinkExtSetGimbalArgs EpsilonCameraManagement::getZoo
 /* Sending gimbal Command Messages */
 void EpsilonCameraManagement::sendGimbalCommand(float cam_roll_yaw, float cam_pitch)
 {
-    if (_useSeparatedLink == true)
+    WeakEpsilonLinkInterfacePtr weakLink = this->_epsilonLinkManager->selectedSharedLinkInterfacePointerForLink();
+    if (weakLink.expired())
     {
-        WeakEpsilonLinkInterfacePtr weakLink = this->_epsilonLinkManager->selectedSharedLinkInterfacePointerForLink();
-        if (weakLink.expired())
-        {
-            return;
-        }
-        SharedEpsilonLinkInterfacePtr sharedLink = weakLink.lock();
+        return;
+    }
+    SharedEpsilonLinkInterfacePtr sharedLink = weakLink.lock();
 
-        if (sharedLink != nullptr)
-        {
-            EpsilonLinkProtocol::epsilon_link_message_t message = {};
-            uint8_t buffer[255] = {};
-            epsilon_link_msg_rate_control_pack(&message, cam_roll_yaw, cam_pitch, 0, 0, 0, 0, 0);
-            int len = epsilon_link_msg_to_send_buffer(&buffer[0], &message);
+    if (sharedLink != nullptr)
+    {
+        EpsilonLinkProtocol *linkProtocol = this->_epsilonLinkManager->linkProtocol();
 
-            sharedLink->writeBytesThreadSafe((const char *) buffer, len);
-        }
+        EpsilonLinkProtocol::epsilon_link_message_t message = {};
+        uint8_t buffer[EPSILON_LINK_MAX_PAYLOAD_LEN] = {};
+        linkProtocol->epsilon_link_msg_rate_control_pack(&message, cam_roll_yaw, cam_pitch, 0, 0, 0, 0, 0);
+        int len = linkProtocol->epsilon_link_msg_to_send_buffer(&buffer[0], &message);
+
+        sharedLink->writeBytesThreadSafe((const char *) buffer, len);
     }
 }
 
-uint16_t EpsilonCameraManagement::epsilon_link_msg_to_send_buffer(uint8_t *buf, const EpsilonLinkProtocol::epsilon_link_message_t *msg)
-{
-    buf[0] = msg->magic[0];
-    buf[1] = msg->magic[1];
-    buf[2] = msg->device_id;
-    buf[3] = msg->message_id;
-    buf[4] = msg->length;
-    buf[5] = msg->header_checksum;
-    memcpy(&buf[6], _EPSILON_PAYLOAD(msg), msg->length);
-    buf[6 + msg->length] = msg->checksum;
-    buf[6 + msg->length + 1] = msg->terminator;
-
-    return 6 + msg->length + 2;
-}
-
-uint16_t EpsilonCameraManagement::epsilon_link_msg_rate_control_pack(EpsilonLinkProtocol::epsilon_link_message_t *msg, int8_t pan_speed, int8_t tilt_speed, int8_t nudge_column,
-                                                                     int8_t nudge_raw, int8_t optical_zoom_speed, int8_t focus_adjustment, int16_t geo_dted)
-{
-
-    EpsilonLinkProtocol::epsilon_rate_control_message_t packet = {};
-
-    msg->magic[0] = 0xAA;
-    msg->magic[1] = 0x55;
-    msg->device_id = 0;
-    msg->message_id = 0x05;
-    msg->length = 8;
-    msg->terminator = 0xFF;
-
-    uint8_t data[3] = {};
-    data[0] = msg->device_id;
-    data[1] = msg->message_id;
-    data[2] = msg->length;
-
-    msg->header_checksum = check_sum_calculation(&data[0], 3);
-
-    packet.pan_speed = pan_speed;
-    packet.tilt_speed = tilt_speed;
-    packet.nudge_column = nudge_column;
-    packet.nudge_raw = nudge_raw;
-    packet.optical_zoom_speed = optical_zoom_speed;
-    packet.focus_adjustment = focus_adjustment;
-    packet.geo_dted = geo_dted;
-
-    uint8_t payload[msg->length] = {};
-
-    memcpy(&payload, &packet, sizeof(packet));
-
-    msg->checksum = check_sum_calculation(&payload[0], msg->length);
-
-    memcpy(_EPSILON_PAYLOAD_NON_CONST(msg), &packet, sizeof(packet));
-
-    return 0;
-}
-
-uint8_t EpsilonCameraManagement::check_sum_calculation(uint8_t *data, int8_t length)
-{
-    uint8_t return_value = 1;
-
-    for (int i = 0; i < length; i++)
-    {
-        return_value = crc8_Table[return_value ^ (*(data + i))];
-    }
-
-    return return_value;
-}
-
-void EpsilonCameraManagement::setSysModeObsCommand()
-{
-    /* Sending the OBS command */
-}
-
-void EpsilonCameraManagement::setSysModeGrrCommand()
-{
-    /* Sending the GRR command */
-}
-
-void EpsilonCameraManagement::setSysModePilotCommand()
+void EpsilonCameraManagement::setCameraScreenInformationCommand(uint switch_flags)
 {
     /* Sending the Pilot command */
+
+    WeakEpsilonLinkInterfacePtr weakLink = this->_epsilonLinkManager->selectedSharedLinkInterfacePointerForLink();
+    if (weakLink.expired())
+    {
+        return;
+    }
+    SharedEpsilonLinkInterfacePtr sharedLink = weakLink.lock();
+
+    if (sharedLink != nullptr)
+    {
+        EpsilonLinkProtocol *linkProtocol = this->_epsilonLinkManager->linkProtocol();
+
+        EpsilonLinkProtocol::epsilon_link_message_t message = {};
+        uint8_t buffer[EPSILON_LINK_MAX_PAYLOAD_LEN] = {};
+        linkProtocol->epsilon_link_msg_on_screen_information_pack(&message, (uint16_t) switch_flags);
+        int len = linkProtocol->epsilon_link_msg_to_send_buffer(&buffer[0], &message);
+
+        sharedLink->writeBytesThreadSafe((const char *) buffer, len);
+    }
 }
 
-void EpsilonCameraManagement::setSysModeStowCommand()
+void EpsilonCameraManagement::setCameraOrderCommand(uint order)
 {
-    /* Sending the Stow command */
+    /* Sending the Pilot command */
+
+    WeakEpsilonLinkInterfacePtr weakLink = this->_epsilonLinkManager->selectedSharedLinkInterfacePointerForLink();
+    if (weakLink.expired())
+    {
+        return;
+    }
+    SharedEpsilonLinkInterfacePtr sharedLink = weakLink.lock();
+
+    if (sharedLink != nullptr)
+    {
+        EpsilonLinkProtocol *linkProtocol = this->_epsilonLinkManager->linkProtocol();
+
+        EpsilonLinkProtocol::epsilon_link_message_t message = {};
+        uint8_t buffer[EPSILON_LINK_MAX_PAYLOAD_LEN] = {};
+        linkProtocol->epsilon_link_msg_camera_order_pack(&message, (uint8_t) order);
+        int len = linkProtocol->epsilon_link_msg_to_send_buffer(&buffer[0], &message);
+
+        sharedLink->writeBytesThreadSafe((const char *) buffer, len);
+    }
+}
+
+void EpsilonCameraManagement::setCameraModeCommand(uint control_mode)
+{
+    /* Sending the camera command */
+
+    EpsilonLinkProtocol::epsilon_control_mode_t mode = (EpsilonLinkProtocol::epsilon_control_mode_t) control_mode;
+    WeakEpsilonLinkInterfacePtr weakLink = this->_epsilonLinkManager->selectedSharedLinkInterfacePointerForLink();
+    if (weakLink.expired())
+    {
+        return;
+    }
+    SharedEpsilonLinkInterfacePtr sharedLink = weakLink.lock();
+
+    if (sharedLink != nullptr)
+    {
+        EpsilonLinkProtocol *linkProtocol = this->_epsilonLinkManager->linkProtocol();
+
+        EpsilonLinkProtocol::epsilon_link_message_t message = {};
+        uint8_t buffer[EPSILON_LINK_MAX_PAYLOAD_LEN] = {};
+        linkProtocol->epsilon_link_msg_control_mode_pack(&message, mode, 0, 0, 0, 0, 0);
+        int len = linkProtocol->epsilon_link_msg_to_send_buffer(&buffer[0], &message);
+
+        sharedLink->writeBytesThreadSafe((const char *) buffer, len);
+    }
 }
 
 void EpsilonCameraManagement::setSysZoomStopCommand()
@@ -395,11 +364,49 @@ void EpsilonCameraManagement::setSysZoomStopCommand()
 void EpsilonCameraManagement::setSysZoomInCommand()
 {
     /* Sending retract release command */
+
+    WeakEpsilonLinkInterfacePtr weakLink = this->_epsilonLinkManager->selectedSharedLinkInterfacePointerForLink();
+    if (weakLink.expired())
+    {
+        return;
+    }
+    SharedEpsilonLinkInterfacePtr sharedLink = weakLink.lock();
+
+    if (sharedLink != nullptr)
+    {
+        EpsilonLinkProtocol *linkProtocol = this->_epsilonLinkManager->linkProtocol();
+
+        EpsilonLinkProtocol::epsilon_link_message_t message = {};
+        uint8_t buffer[EPSILON_LINK_MAX_PAYLOAD_LEN] = {};
+        linkProtocol->epsilon_link_msg_digital_zoom_pack(&message, 1);
+        int len = linkProtocol->epsilon_link_msg_to_send_buffer(&buffer[0], &message);
+
+        sharedLink->writeBytesThreadSafe((const char *) buffer, len);
+    }
 }
 
 void EpsilonCameraManagement::setSysZoomOutCommand()
 {
     /* Sending retract release command */
+
+    WeakEpsilonLinkInterfacePtr weakLink = this->_epsilonLinkManager->selectedSharedLinkInterfacePointerForLink();
+    if (weakLink.expired())
+    {
+        return;
+    }
+    SharedEpsilonLinkInterfacePtr sharedLink = weakLink.lock();
+
+    if (sharedLink != nullptr)
+    {
+        EpsilonLinkProtocol *linkProtocol = this->_epsilonLinkManager->linkProtocol();
+
+        EpsilonLinkProtocol::epsilon_link_message_t message = {};
+        uint8_t buffer[EPSILON_LINK_MAX_PAYLOAD_LEN] = {};
+        linkProtocol->epsilon_link_msg_digital_zoom_pack(&message, -1);
+        int len = linkProtocol->epsilon_link_msg_to_send_buffer(&buffer[0], &message);
+
+        sharedLink->writeBytesThreadSafe((const char *) buffer, len);
+    }
 }
 
 void EpsilonCameraManagement::setSysSensorDayCommand(void)

@@ -32,10 +32,7 @@ QGC_LOGGING_CATEGORY(EpsilonLinkManagerVerboseLog, "EpsilonLinkManagerVerboseLog
 const char *EpsilonLinkManager::_defaultUDPLinkName = "UDP Link (AutoConnect)";
 
 EpsilonLinkManager::EpsilonLinkManager(QGCApplication *app, QGCToolbox *toolbox)
-    : QGCTool(app, toolbox), _selectedConfigurationId(-1), _configUpdateSuspended(false), _configurationsLoaded(false), _connectionsSuspended(false),
-      _mavlinkChannelsUsedBitMask(1) // We never use channel 0 to avoid sequence numbering problems
-      ,
-      _linkProtocol(nullptr)
+    : QGCTool(app, toolbox), _selectedConfigurationId(-1), _configUpdateSuspended(false), _configurationsLoaded(false), _connectionsSuspended(false), _linkProtocol(nullptr)
 {
     qmlRegisterUncreatableType<EpsilonLinkManager>("QGroundControl", 1, 0, "EpsilonLinkManager", "Reference only");
     qmlRegisterUncreatableType<EpsilonLinkConfiguration>("QGroundControl", 1, 0, "EpsilonLinkConfiguration", "Reference only");
@@ -424,34 +421,4 @@ SharedEpsilonLinkConfigurationPtr EpsilonLinkManager::addConfiguration(EpsilonLi
     _rgLinkConfigs.append(SharedEpsilonLinkConfigurationPtr(config));
 
     return _rgLinkConfigs.last();
-}
-
-uint8_t EpsilonLinkManager::allocateMavlinkChannel(void)
-{
-    // Find a mavlink channel to use for this link
-    for (uint8_t mavlinkChannel = 0; mavlinkChannel < MAVLINK_COMM_NUM_BUFFERS; mavlinkChannel++)
-    {
-        if (!(_mavlinkChannelsUsedBitMask & 1 << mavlinkChannel))
-        {
-            mavlink_reset_channel_status(mavlinkChannel);
-            // Start the channel on Mav 1 protocol
-            mavlink_status_t *mavlinkStatus = mavlink_get_channel_status(mavlinkChannel);
-            mavlinkStatus->flags |= MAVLINK_STATUS_FLAG_OUT_MAVLINK1;
-            _mavlinkChannelsUsedBitMask |= 1 << mavlinkChannel;
-            qCDebug(EpsilonLinkManagerLog) << "allocateMavlinkChannel" << mavlinkChannel;
-            return mavlinkChannel;
-        }
-    }
-    qWarning(EpsilonLinkManagerLog) << "allocateMavlinkChannel: all channels reserved!";
-    return invalidMavlinkChannel(); // All channels reserved
-}
-
-void EpsilonLinkManager::freeMavlinkChannel(uint8_t channel)
-{
-    qCDebug(EpsilonLinkManagerLog) << "freeMavlinkChannel" << channel;
-    if (invalidMavlinkChannel() == channel)
-    {
-        return;
-    }
-    _mavlinkChannelsUsedBitMask &= ~(1 << channel);
 }

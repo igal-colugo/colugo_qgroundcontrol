@@ -51,6 +51,7 @@ Item {
 
     property int _nextVisionEnabled: QGroundControl.settingsManager.appSettings.enableNextVision.value
     property int _asioEnabled: QGroundControl.settingsManager.appSettings.enableAsio.value
+    property int _epsilonEnabled: QGroundControl.settingsManager.appSettings.enableEpsilon.value
 
     QGCToolInsets {
         id:                     _totalToolInsets
@@ -170,6 +171,17 @@ Item {
         sourceComponent: {(_nextVisionEnabled===2)?nextVision:null}
     }
 
+    Loader
+    {
+        id:epsilonLoader
+        anchors.margins:        _toolsMargin
+        anchors.right:          parent.right
+        width:                  _rightPanelWidth
+        anchors.top:            (standardLoader.visible)?standardLoader.bottom:_root.verticalCenter
+
+        sourceComponent: {(_epsilonEnabled===-1)?epsilon:null}
+    }
+
     //Load Obox
     Loader
     {
@@ -195,6 +207,11 @@ Item {
               {
                 _root.verticalCenter
               }
+
+            if(_epsilonEnabled<0)
+            {
+               epsilonLoader.bottom
+            }
         }
 
         sourceComponent: {(_asioEnabled===1)?obox:null}
@@ -203,14 +220,14 @@ Item {
     Component {
         id: standard
         PhotoVideoControl {
-            id:photoVideoControl
+            id:standardPhotoVideoControl
         }
     }
 
     Component {
         id: nextVision
         NextVisionPhotoVideoControl {
-            id:photoVideoControl
+            id:nextVisionPhotoVideoControl
         }
     }
 
@@ -218,6 +235,13 @@ Item {
         id: obox
         OboxControl {
             id:oboxControl
+        }
+    }
+
+    Component {
+        id: epsilon
+        EpsilonPhotoVideoControl {
+            id:epsilonPhotoVideoControl
         }
     }
 

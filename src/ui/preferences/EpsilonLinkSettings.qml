@@ -132,14 +132,6 @@ Rectangle {
             enabled:    _currentSelection && _currentSelection.link
             onClicked:  _currentSelection.link.disconnect()
         }
-        QGCCheckBox {
-            id:             checkBox
-            text:           "Use separated link"
-            onClicked:      { joystickManager.epsilonCameraManagement.setUseSeparatedLink(checked)}
-            Component.onCompleted: {
-                checked = joystickManager.epsilonCameraManagement.getUseSeparatedLink()
-            }
-    }
     }
 
     Loader {

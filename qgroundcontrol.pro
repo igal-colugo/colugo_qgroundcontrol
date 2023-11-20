@@ -428,13 +428,13 @@ contains (DEFINES, QGC_ENABLE_PAIRING) {
 #
 
 HEADERS += \
+    src/Epsilon/EpsilonCameraManagement.h \
     src/Epsilon/EpsilonLinkConfiguration.h \
     src/Epsilon/EpsilonLinkInterface.h \
     src/Epsilon/EpsilonLinkManager.h \
     src/Epsilon/EpsilonLinkProtocol.h \
     src/Epsilon/EpsilonTCPLink.h \
     src/Epsilon/EpsilonUDPLink.h \
-    src/EpsilonExt/EpsilonExt_CameraManagement.h \
     src/NextVision/NextVisionLinkConfiguration.h \
     src/NextVision/NextVisionLinkInterface.h \
     src/NextVision/NextVisionLinkManager.h \
@@ -456,13 +456,13 @@ contains (DEFINES, QGC_ENABLE_PAIRING) {
 }
 
 SOURCES += \
+    src/Epsilon/EpsilonCameraManagement.cc \
     src/Epsilon/EpsilonLinkConfiguration.cc \
     src/Epsilon/EpsilonLinkInterface.cc \
     src/Epsilon/EpsilonLinkManager.cc \
     src/Epsilon/EpsilonLinkProtocol.cc \
     src/Epsilon/EpsilonTCPLink.cc \
     src/Epsilon/EpsilonUDPLink.cc \
-    src/EpsilonExt/EpsilonExt_CameraManagement.cpp \
     src/NextVision/NextVisionLinkConfiguration.cc \
     src/NextVision/NextVisionLinkInterface.cc \
     src/NextVision/NextVisionLinkManager.cc \

@@ -47,6 +47,7 @@ class EpsilonLinkManager : public QGCTool
     EpsilonLinkManager(QGCApplication *app, QGCToolbox *toolbox);
     ~EpsilonLinkManager();
 
+    Q_PROPERTY(EpsilonLinkProtocol *_linkProtocol READ linkProtocol CONSTANT)
     Q_PROPERTY(QmlObjectListModel *linkConfigurations READ _qmlLinkConfigurations CONSTANT)
     Q_PROPERTY(QStringList linkTypeStrings READ linkTypeStrings CONSTANT)
 
@@ -66,6 +67,11 @@ class EpsilonLinkManager : public QGCTool
     Q_INVOKABLE void shutdown(void);
 
     // Property accessors
+
+    EpsilonLinkProtocol *linkProtocol(void)
+    {
+        return _linkProtocol;
+    }
 
     QList<SharedEpsilonLinkInterfacePtr> links(void)
     {
@@ -108,16 +114,6 @@ class EpsilonLinkManager : public QGCTool
     // Override from QGCTool
     virtual void setToolbox(QGCToolbox *toolbox);
 
-    static constexpr uint8_t invalidMavlinkChannel(void)
-    {
-        return std::numeric_limits<uint8_t>::max();
-    }
-
-    /// Allocates a mavlink channel for use
-    /// @return Mavlink channel index, invalidMavlinkChannel() for no channels available
-    uint8_t allocateMavlinkChannel(void);
-    void freeMavlinkChannel(uint8_t channel);
-
     /// If you are going to hold a reference to a LinkInterface* in your object you must reference count it
     /// by using this method to get access to the shared pointer.
     SharedEpsilonLinkInterfacePtr sharedLinkInterfacePointerForLink(EpsilonLinkInterface *link, bool ignoreNull = false);
@@ -147,7 +143,6 @@ class EpsilonLinkManager : public QGCTool
     bool _connectionsSuspended;          ///< true: all new connections should not be allowed
     QString _connectionsSuspendedReason; ///< User visible reason for suspension
     QTimer _portListTimer;
-    uint32_t _mavlinkChannelsUsedBitMask;
 
     EpsilonLinkProtocol *_linkProtocol;
 

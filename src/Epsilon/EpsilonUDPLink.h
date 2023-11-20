@@ -43,6 +43,7 @@ class EpsilonUDPCLient
 class EpsilonUDPConfiguration : public EpsilonLinkConfiguration
 {
     Q_OBJECT
+
   public:
     Q_PROPERTY(quint16 localPort READ localPort WRITE setLocalPort NOTIFY localPortChanged)
     Q_PROPERTY(QStringList hostList READ hostList NOTIFY hostListChanged)
