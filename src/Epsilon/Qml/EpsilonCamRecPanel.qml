@@ -19,7 +19,7 @@ Rectangle {
     visible:            true
 
     property int _heightTotal: mainlabel.height+lrlabel.height+
-                               localrec.height+videoChannelSelect.height+
+                               localrec.height+
                                rrlabel.height+firstRow.height+
                                aslabel.height+secondRow.height+
                                thirdRow.height+lastRow.height+
@@ -57,6 +57,8 @@ Rectangle {
     property bool   _videoIsRecording:                          _videoStreamRecording
     property bool   _canShootInCurrentMode:                     _videoStreamCanShoot || _simpleCameraAvailable
     property bool   _isShootingInCurrentMode:                   _videoStreamIsShootingInCurrentMode || _simpleCameraIsShootingInCurrentMode
+
+    property string _file_name: "COLUGO"
 
     function toggleShooting() {
         console.log("toggleShooting", _anyVideoStreamAvailable)
@@ -121,37 +123,6 @@ Rectangle {
         }
     }
 
-
-
-    RowLayout {
-        id:                         videoChannelSelect
-        anchors.horizontalCenter:   parent.horizontalCenter
-        anchors.top:                localrec.bottom
-        anchors.margins:            _margins
-        spacing:                    _butMargins
-        visible:                    true
-
-        QGCLabel {
-            id:                 vclabel
-            text:               qsTr("Video Channel ")
-            font.family:        ScreenTools.demiboldFontFamily
-            font.pointSize:     ScreenTools.isMobile? point_size : ScreenTools.mediumFontPointSize
-            height:             ScreenTools.smallFontPointSize
-            color:              "white"
-        }
-
-        QGCComboBox {
-            id:             videoChannelCombo
-            sizeToContents: true
-            centeredLabel:  true
-            font.pointSize: ScreenTools.isMobile? point_size : ScreenTools.mediumFontPointSize
-            leftPadding:    0
-            rightPadding:   0
-            model:          _videoChannelsStr
-        }
-
-    }
-
     QGCLabel {
         id:                 rrlabel
         text:               qsTr("Remote Recording ")
@@ -159,7 +130,7 @@ Rectangle {
         font.family:        ScreenTools.demiboldFontFamily
         font.pointSize:     ScreenTools.isMobile? point_size : ScreenTools.mediumFontPointSize
         anchors.horizontalCenter:  parent.horizontalCenter
-        anchors.top:        videoChannelSelect.bottom
+        anchors.top:        localrec.bottom
         height:             ScreenTools.smallFontPointSize
         color:              "white"
     }
@@ -180,8 +151,7 @@ Rectangle {
             leftPadding:    0
             rightPadding:   0
             onReleased: {
-                if( videoChannelCombo.currentIndex >= 0 )
-                    joystickManager.cameraManagement.setSysRecOnCommand(videoChannelCombo.currentIndex);
+                    joystickManager.epsilonCameraManagement.setVideoRecordingCommand(1,_file_name);
             }
         }
         QGCButton {
@@ -192,8 +162,7 @@ Rectangle {
             leftPadding:    0
             rightPadding:   0
             onReleased: {
-                if( videoChannelCombo.currentIndex >= 0 )
-                    joystickManager.cameraManagement.setSysRecOffCommand(videoChannelCombo.currentIndex);
+                joystickManager.epsilonCameraManagement.setVideoRecordingCommand(2,_file_name);
             }
         }
         QGCButton {
@@ -204,8 +173,7 @@ Rectangle {
             leftPadding:    0
             rightPadding:   0
             onReleased: {
-                if( videoChannelCombo.currentIndex >= 0 )
-                    joystickManager.cameraManagement.setSysSnapshotCommand(videoChannelCombo.currentIndex);
+                    joystickManager.epsilonCameraManagement.setDoSnapshotCommand(1, 1, 1, 0, 0, _file_name);
             }
         }
     }

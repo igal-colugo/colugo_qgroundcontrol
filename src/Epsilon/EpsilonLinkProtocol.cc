@@ -160,6 +160,9 @@ void EpsilonLinkProtocol::receiveBytes(EpsilonLinkInterface *link, QByteArray b)
                 //_startLogging();
                 epsilon_global_status_t global_status;
                 _epsilon_link_msg_global_status_decode(&_message, &global_status);
+
+                int debug_1 = 1;
+                debug_1 = debug_1 + 1;
             }
 
             // The packet is emitted as a whole
@@ -766,6 +769,108 @@ uint16_t EpsilonLinkProtocol::epsilon_link_msg_camera_order_pack(EpsilonLinkProt
     msg->header_checksum = _check_sum_calculation(&data[0], 3);
 
     packet.order = order;
+
+    uint8_t payload[msg->length] = {};
+
+    memcpy(&payload, &packet, sizeof(packet));
+
+    msg->checksum = _check_sum_calculation(&payload[0], msg->length);
+
+    memcpy(_EPSILON_PAYLOAD_NON_CONST(msg), &packet, sizeof(packet));
+
+    return 0;
+}
+
+uint16_t EpsilonLinkProtocol::epsilon_link_msg_focus_mode_pack(EpsilonLinkProtocol::epsilon_link_message_t *msg, uint8_t switch_mode)
+{
+    EpsilonLinkProtocol::epsilon_focus_mode_message_t packet = {};
+
+    msg->magic[0] = EPSILON_LINK_STX_1;
+    msg->magic[1] = EPSILON_LINK_STX_2;
+    msg->device_id = 0;
+    msg->message_id = 0x10;
+    msg->length = 1;
+    msg->terminator = 0xFF;
+
+    uint8_t data[3] = {};
+    data[0] = msg->device_id;
+    data[1] = msg->message_id;
+    data[2] = msg->length;
+
+    msg->header_checksum = _check_sum_calculation(&data[0], 3);
+
+    packet.switch_mode = switch_mode;
+
+    uint8_t payload[msg->length] = {};
+
+    memcpy(&payload, &packet, sizeof(packet));
+
+    msg->checksum = _check_sum_calculation(&payload[0], msg->length);
+
+    memcpy(_EPSILON_PAYLOAD_NON_CONST(msg), &packet, sizeof(packet));
+
+    return 0;
+}
+
+uint16_t EpsilonLinkProtocol::epsilon_link_msg_do_snapshot_pack(EpsilonLinkProtocol::epsilon_link_message_t *msg, uint8_t frame_step, uint8_t number_of_snapshots, uint8_t source,
+                                                                uint8_t format, uint8_t metadata, uint8_t file_name[32])
+{
+    EpsilonLinkProtocol::epsilon_do_snapshot_message_t packet = {};
+
+    msg->magic[0] = EPSILON_LINK_STX_1;
+    msg->magic[1] = EPSILON_LINK_STX_2;
+    msg->device_id = 0;
+    msg->message_id = 0x08;
+    msg->length = 37;
+    msg->terminator = 0xFF;
+
+    uint8_t data[3] = {};
+    data[0] = msg->device_id;
+    data[1] = msg->message_id;
+    data[2] = msg->length;
+
+    msg->header_checksum = _check_sum_calculation(&data[0], 3);
+
+    packet.frame_step = frame_step;
+    packet.number_of_snapshots = number_of_snapshots;
+    packet.source = source;
+    packet.format = format;
+    packet.metadata = metadata;
+
+    memcpy(&packet.file_name, &file_name, 32);
+
+    uint8_t payload[msg->length] = {};
+
+    memcpy(&payload, &packet, sizeof(packet));
+
+    msg->checksum = _check_sum_calculation(&payload[0], msg->length);
+
+    memcpy(_EPSILON_PAYLOAD_NON_CONST(msg), &packet, sizeof(packet));
+
+    return 0;
+}
+
+uint16_t EpsilonLinkProtocol::epsilon_link_msg_video_recording_pack(EpsilonLinkProtocol::epsilon_link_message_t *msg, uint8_t recording_state, uint8_t file_name[32])
+{
+    EpsilonLinkProtocol::epsilon_video_recording_message_t packet = {};
+
+    msg->magic[0] = EPSILON_LINK_STX_1;
+    msg->magic[1] = EPSILON_LINK_STX_2;
+    msg->device_id = 0;
+    msg->message_id = 0x09;
+    msg->length = 33;
+    msg->terminator = 0xFF;
+
+    uint8_t data[3] = {};
+    data[0] = msg->device_id;
+    data[1] = msg->message_id;
+    data[2] = msg->length;
+
+    msg->header_checksum = _check_sum_calculation(&data[0], 3);
+
+    packet.recording_state = recording_state;
+
+    memcpy(&packet.file_name, &file_name, 32);
 
     uint8_t payload[msg->length] = {};
 

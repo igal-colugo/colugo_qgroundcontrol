@@ -331,6 +331,88 @@ void EpsilonCameraManagement::setCameraOrderCommand(uint order)
     }
 }
 
+void EpsilonCameraManagement::setFocusModeCommand(uint switch_mode)
+{
+    /* Sending the Pilot command */
+
+    WeakEpsilonLinkInterfacePtr weakLink = this->_epsilonLinkManager->selectedSharedLinkInterfacePointerForLink();
+    if (weakLink.expired())
+    {
+        return;
+    }
+    SharedEpsilonLinkInterfacePtr sharedLink = weakLink.lock();
+
+    if (sharedLink != nullptr)
+    {
+        EpsilonLinkProtocol *linkProtocol = this->_epsilonLinkManager->linkProtocol();
+
+        EpsilonLinkProtocol::epsilon_link_message_t message = {};
+        uint8_t buffer[EPSILON_LINK_MAX_PAYLOAD_LEN] = {};
+        linkProtocol->epsilon_link_msg_focus_mode_pack(&message, (uint8_t) switch_mode);
+        int len = linkProtocol->epsilon_link_msg_to_send_buffer(&buffer[0], &message);
+
+        sharedLink->writeBytesThreadSafe((const char *) buffer, len);
+    }
+}
+
+void EpsilonCameraManagement::setDoSnapshotCommand(uint frame_step, uint number_of_snapshots, uint source, uint format, uint metadata, QString file_name)
+{
+    /* Sending the Pilot command */
+
+    WeakEpsilonLinkInterfacePtr weakLink = this->_epsilonLinkManager->selectedSharedLinkInterfacePointerForLink();
+    if (weakLink.expired())
+    {
+        return;
+    }
+    SharedEpsilonLinkInterfacePtr sharedLink = weakLink.lock();
+
+    if (sharedLink != nullptr)
+    {
+        EpsilonLinkProtocol *linkProtocol = this->_epsilonLinkManager->linkProtocol();
+
+        EpsilonLinkProtocol::epsilon_link_message_t message = {};
+        uint8_t buffer[EPSILON_LINK_MAX_PAYLOAD_LEN] = {};
+        uint8_t _file_name[32] = {};
+        for (int i = 0; i < file_name.size(); i++)
+        {
+            _file_name[i] = (uint8_t)(file_name.at(i).unicode());
+        }
+        linkProtocol->epsilon_link_msg_do_snapshot_pack(&message, (uint8_t) frame_step, (uint8_t) number_of_snapshots, (uint8_t) source, (uint8_t) format, (uint8_t) metadata, _file_name);
+        int len = linkProtocol->epsilon_link_msg_to_send_buffer(&buffer[0], &message);
+
+        sharedLink->writeBytesThreadSafe((const char *) buffer, len);
+    }
+}
+
+void EpsilonCameraManagement::setVideoRecordingCommand(uint recording_state, QString file_name)
+{
+    /* Sending the Pilot command */
+
+    WeakEpsilonLinkInterfacePtr weakLink = this->_epsilonLinkManager->selectedSharedLinkInterfacePointerForLink();
+    if (weakLink.expired())
+    {
+        return;
+    }
+    SharedEpsilonLinkInterfacePtr sharedLink = weakLink.lock();
+
+    if (sharedLink != nullptr)
+    {
+        EpsilonLinkProtocol *linkProtocol = this->_epsilonLinkManager->linkProtocol();
+
+        EpsilonLinkProtocol::epsilon_link_message_t message = {};
+        uint8_t buffer[EPSILON_LINK_MAX_PAYLOAD_LEN] = {};
+        uint8_t _file_name[32] = {};
+        for (int i = 0; i < file_name.size(); i++)
+        {
+            _file_name[i] = (uint8_t)(file_name.at(i).unicode());
+        }
+        linkProtocol->epsilon_link_msg_video_recording_pack(&message, (uint8_t) recording_state, _file_name);
+        int len = linkProtocol->epsilon_link_msg_to_send_buffer(&buffer[0], &message);
+
+        sharedLink->writeBytesThreadSafe((const char *) buffer, len);
+    }
+}
+
 void EpsilonCameraManagement::setCameraModeCommand(uint control_mode)
 {
     /* Sending the camera command */

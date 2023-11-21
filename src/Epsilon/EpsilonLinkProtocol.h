@@ -95,6 +95,9 @@ class EpsilonLinkProtocol : public QGCTool
     PACKED_STRUCT(typedef struct __epsilon_camera_order_message { uint8_t order; })
     epsilon_camera_order_message_t;
 
+    PACKED_STRUCT(typedef struct __epsilon_focus_mode_message { uint8_t switch_mode; })
+    epsilon_focus_mode_message_t;
+
     PACKED_STRUCT(typedef struct __epsilon_control_mode_message {
         int8_t mode;
         uint16_t pixel_pos_x;
@@ -139,6 +142,22 @@ class EpsilonLinkProtocol : public QGCTool
         uint8_t geo_att_uncertainty;
     })
     epsilon_global_status_t;
+
+    PACKED_STRUCT(typedef struct __epsilon_do_snapshot_message {
+        uint8_t frame_step;
+        uint8_t number_of_snapshots;
+        uint8_t source;
+        uint8_t format;
+        uint8_t metadata;
+        uint8_t file_name[32];
+    })
+    epsilon_do_snapshot_message_t;
+
+    PACKED_STRUCT(typedef struct __epsilon_video_recording_message {
+        uint8_t recording_state;
+        uint8_t file_name[32];
+    })
+    epsilon_video_recording_message_t;
 
     typedef enum
     {
@@ -235,7 +254,14 @@ class EpsilonLinkProtocol : public QGCTool
 
     uint16_t epsilon_link_msg_camera_order_pack(EpsilonLinkProtocol::epsilon_link_message_t *msg, uint8_t order);
 
+    uint16_t epsilon_link_msg_focus_mode_pack(EpsilonLinkProtocol::epsilon_link_message_t *msg, uint8_t switch_mode);
+
     uint16_t epsilon_link_msg_to_send_buffer(uint8_t *buf, const EpsilonLinkProtocol::epsilon_link_message_t *msg);
+
+    uint16_t epsilon_link_msg_do_snapshot_pack(EpsilonLinkProtocol::epsilon_link_message_t *msg, uint8_t frame_step, uint8_t number_of_snapshots, uint8_t source, uint8_t format,
+                                               uint8_t metadata, uint8_t file_name[32]);
+
+    uint16_t epsilon_link_msg_video_recording_pack(EpsilonLinkProtocol::epsilon_link_message_t *msg, uint8_t recording_state, uint8_t file_name[32]);
 
   public slots:
     /** @brief Receive bytes from a communication interface */

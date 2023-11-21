@@ -48,6 +48,9 @@ class EpsilonCameraManagement : public QObject
 
     Q_INVOKABLE void setCameraModeCommand(uint control_mode);
     Q_INVOKABLE void setCameraOrderCommand(uint order);
+    Q_INVOKABLE void setFocusModeCommand(uint switch_mode);
+    Q_INVOKABLE void setDoSnapshotCommand(uint frame_step, uint number_of_snapshots, uint source, uint format, uint metadata, QString file_name);
+    Q_INVOKABLE void setVideoRecordingCommand(uint recording_state, QString file_name);
 
     Q_INVOKABLE void setSysZoomStopCommand(void);
     Q_INVOKABLE void setSysZoomInCommand(void);

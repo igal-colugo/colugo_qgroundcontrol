@@ -156,42 +156,33 @@ Rectangle {
             showBorder:     true
             font.pointSize: ScreenTools.isMobile? point_size : ScreenTools.smallFontPointSize
             pointSize:      ScreenTools.isMobile? point_size : ScreenTools.defaultFontPointSize
-            text:           qsTr("Near")
+            text:           qsTr("Auto")
             leftPadding:    0
             rightPadding:   0
             onPressed: {
-                joystickManager.cameraManagement.setSysSetFocusState(true, false, false);
-            }
-            onReleased: {
-                joystickManager.cameraManagement.setSysSetFocusState(false, false, false);
+                joystickManager.epsilonCameraManagement.setFocusModeCommand(0);
             }
         }
         QGCButton {
             showBorder:     true
             font.pointSize: ScreenTools.isMobile? point_size : ScreenTools.smallFontPointSize
             pointSize:      ScreenTools.isMobile? point_size : ScreenTools.defaultFontPointSize
-            text:           qsTr("Inf")
+            text:           qsTr("Manual")
             leftPadding:    0
             rightPadding:   0
             onPressed: {
-                joystickManager.cameraManagement.setSysSetFocusState(false, false, true);
-            }
-            onReleased: {
-                joystickManager.cameraManagement.setSysSetFocusState(false, false, false);
+                joystickManager.epsilonCameraManagement.setFocusModeCommand(1);
             }
         }
         QGCButton {
             showBorder:     true
             font.pointSize: ScreenTools.isMobile? point_size : ScreenTools.smallFontPointSize
             pointSize:      ScreenTools.isMobile? point_size : ScreenTools.defaultFontPointSize
-            text:           qsTr("Far")
+            text:           qsTr("One shot")
             leftPadding:    0
             rightPadding:   0
             onPressed: {
-                joystickManager.cameraManagement.setSysSetFocusState(false, true, false);
-            }
-            onReleased: {
-                joystickManager.cameraManagement.setSysSetFocusState(false, false, false);
+               joystickManager.epsilonCameraManagement.setFocusModeCommand(2);
             }
         }
     }
@@ -253,7 +244,7 @@ Rectangle {
         visible:                    true
 
         QGCLabel {
-            text:                   qsTr(" Info")
+            text:                   qsTr("Screen info")
             font.pointSize:         ScreenTools.isMobile ? point_size : 9
             color:                  "White"
         }
