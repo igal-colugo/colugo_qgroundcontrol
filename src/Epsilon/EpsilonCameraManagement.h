@@ -46,26 +46,24 @@ class EpsilonCameraManagement : public QObject
 
     std::atomic<uint8_t> m_should_enable_rescue_btn{};
 
+    // Q_PROPERTY(int8_t opticalZoomSpeed READ getOpticalZoomSpeed WRITE setOpticalZoomSpeed)
+
     Q_INVOKABLE void setCameraModeCommand(uint control_mode);
     Q_INVOKABLE void setCameraOrderCommand(uint order);
     Q_INVOKABLE void setFocusModeCommand(uint switch_mode);
     Q_INVOKABLE void setDoSnapshotCommand(uint frame_step, uint number_of_snapshots, uint source, uint format, uint metadata, QString file_name);
     Q_INVOKABLE void setVideoRecordingCommand(uint recording_state, QString file_name);
+    Q_INVOKABLE void setSysDigitalZoomInCommand(void);
+    Q_INVOKABLE void setSysDigitalZoomOutCommand(void);
 
-    Q_INVOKABLE void setSysZoomStopCommand(void);
-    Q_INVOKABLE void setSysZoomInCommand(void);
-    Q_INVOKABLE void setSysZoomOutCommand(void);
-
-    Q_INVOKABLE void setSysSensorDayCommand(void);
-    Q_INVOKABLE void setSysSensorIrCommand(void);
-    Q_INVOKABLE void setSysRecOnCommand(int chan);
-    Q_INVOKABLE void setSysRecOffCommand(int chan);
-    Q_INVOKABLE void setSysSnapshotCommand(int chan);
     Q_INVOKABLE void setSysFOVCommand(float fov_value);
     Q_INVOKABLE void setCameraScreenInformationCommand(uint switch_flags);
 
     // UI state management functions (called periodically, their result is meant to update Qml proprties dynamically)
     Q_INVOKABLE bool getShouldUiEnabledRescueElement();
+
+    Q_INVOKABLE int getOpticalZoomSpeed(void) const;
+    Q_INVOKABLE void setOpticalZoomSpeed(int opticalZoomSpeed);
 
   protected:
     MultiVehicleManager *_multiVehicleManager;
@@ -75,6 +73,7 @@ class EpsilonCameraManagement : public QObject
     EpsilonLinkManager *_epsilonLinkManager;
 
   private:
+    int8_t _opticalZoomSpeed;
     void doCamAction(QString buttonAction, bool pressed, int buttonIndex);
     bool doBtnFuncToggle(bool pressed, int buttonIndex);
     MavlinkExtSetGimbalArgs getZoomValue(unsigned char *buttons, QList<AssignedButtonAction *> button_actions);

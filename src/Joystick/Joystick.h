@@ -12,6 +12,7 @@
 
 #pragma once
 
+#include <QElapsedTimer>
 #include <QObject>
 #include <QThread>
 
@@ -330,6 +331,7 @@ class Joystick : public QThread
     void _handleCamHat(float *roll_yaw, float *pitch);
     int _camPitchRollAxle;
     int _camTimeDivider;
+    int _camTimeDividerMax;
     QmlObjectListModel _assignableCamButtonActions;
     QStringList _availableCamActionTitles;
     /* ------------------------------------------------------------------------------------------------------*/
@@ -475,6 +477,20 @@ class Joystick : public QThread
     static const char *_buttonActionRetract;
     static const char *_buttonActionHoldCord;
     /* ------------------------------------------------------------------------------------------------------*/
+
+    /* Epsilon Added configuration keys for Camera Joystick
+     * ------------------------------------------------------------------------------------------------------*/
+
+    static const char *_buttonActionRate;
+    static const char *_buttonActionRateAid;
+    static const char *_buttonActionTrackingStationary;
+    static const char *_buttonActionTrackingVehicle;
+    static const char *_buttonActionTrackingScene;
+    static const char *_buttonActionTrackingStatic;
+    static const char *_buttonActionGeoLock;
+    /* ------------------------------------------------------------------------------------------------------*/
+
+    // QElapsedTimer m_stopwatchElapsed;
 
   private slots:
     void _activeVehicleChanged(Vehicle *activeVehicle);

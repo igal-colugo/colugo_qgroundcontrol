@@ -9,6 +9,7 @@
 
 #include "JoystickManager.h"
 #include "QGCApplication.h"
+#include "SettingsManager.h"
 
 #include <QQmlEngine>
 
@@ -52,8 +53,17 @@ void JoystickManager::setToolbox(QGCToolbox *toolbox)
 
     _multiVehicleManager = _toolbox->multiVehicleManager();
 
-    _cameraManagement = new CameraManagement(nullptr, _multiVehicleManager, this);
-    _epsilonCameraManagement = new EpsilonCameraManagement(nullptr, _multiVehicleManager, this);
+    int8_t nextVisionEnabled = qgcApp()->toolbox()->settingsManager()->appSettings()->enableNextVision()->rawValue().toInt();
+    int8_t epsilonEnabled = qgcApp()->toolbox()->settingsManager()->appSettings()->enableEpsilon()->rawValue().toInt();
+
+    if (nextVisionEnabled != 1)
+    {
+        _cameraManagement = new CameraManagement(nullptr, _multiVehicleManager, this);
+    }
+    if (epsilonEnabled != 1)
+    {
+        _epsilonCameraManagement = new EpsilonCameraManagement(nullptr, _multiVehicleManager, this);
+    }
 
     QQmlEngine::setObjectOwnership(this, QQmlEngine::CppOwnership);
 }

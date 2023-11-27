@@ -1,273 +1,402 @@
-import QtQuick          2.3
+import QtQuick 2.3
 import QtQuick.Controls 1.2
-import QtQuick.Controls.Styles  1.4
-import QtQuick.Dialogs  1.2
-import QtQuick.Layouts  1.2
+import QtQuick.Controls.Styles 1.4
+import QtQuick.Dialogs 1.2
+import QtQuick.Layouts 1.2
 
-import QGroundControl               1.0
-import QGroundControl.Palette       1.0
-import QGroundControl.Controls      1.0
-import QGroundControl.ScreenTools   1.0
-import QGroundControl.Controllers   1.0
-import QGroundControl.FactSystem    1.0
-import QGroundControl.FactControls  1.0
+import QGroundControl 1.0
+import QGroundControl.Palette 1.0
+import QGroundControl.Controls 1.0
+import QGroundControl.ScreenTools 1.0
+import QGroundControl.Controllers 1.0
+import QGroundControl.FactSystem 1.0
+import QGroundControl.FactControls 1.0
 import QGroundControl.SettingsManager 1.0
 
-Rectangle {
+Item {
     id: widgetQuick
-    height:             _heightTotal
-    color:              Qt.rgba(0.0,0.0,0.0,0.25)
-    visible:            true
 
-    property int _heightTotal: mainlabel.height+firstRow.height+
-                               secondRow.height+thirdRow.height+
-                               fourthRow.height+
-                               lastRow.height+
-                               (_margins*12)
+    anchors.fill: parent
 
-    QGCLabel {
-        id:                 mainlabel
-        text:               qsTr("QUICK")
-        anchors.margins:    ScreenTools.isMobile ? _margins * 1.6 : _margins
-        font.family:        ScreenTools.demiboldFontFamily
-        font.pointSize:     ScreenTools.largeFontPointSize
-        anchors.horizontalCenter:  parent.horizontalCenter
-        anchors.top:        parent.top
-        height:             ScreenTools.defaultFontPixelHeight
-        color:              "White"
-    }
+    //color: Qt.rgba(0.0, 0.0, 0.0, 0.25)
+    visible: true
 
-    RowLayout {
-        id:                         firstRow
-        anchors.horizontalCenter:   parent.horizontalCenter
-        anchors.top:                mainlabel.bottom
-        anchors.margins:            _margins * 4
-        spacing:                    _butMargins
-        visible:                    true
+    GridLayout {
+        id: grid
 
-        QGCButton {
-            showBorder:     true
-            font.pointSize: ScreenTools.isMobile? point_size : ScreenTools.smallFontPointSize
-            pointSize:      ScreenTools.isMobile? point_size : ScreenTools.defaultFontPointSize
-            text:           qsTr("RATE")
-            leftPadding:    0
-            rightPadding:   0            
-            onReleased: {
-                joystickManager.epsilonCameraManagement.setCameraModeCommand(1);
-            }
+        columns: 6
+        rows: 7
+        anchors.fill: parent
+        anchors.margins: 3
+        columnSpacing: 5
+        rowSpacing: 5
+
+        onWidthChanged: {
+            console.log("Camera mode:", grid.width, grid.height)
         }
-        QGCButton {
-            showBorder:     true
-            font.pointSize: ScreenTools.isMobile? point_size : ScreenTools.smallFontPointSize
-            pointSize:      ScreenTools.isMobile? point_size : ScreenTools.defaultFontPointSize
-            text:           qsTr("PILOT")
-            leftPadding:    0
-            rightPadding:   0
-            onReleased: {
-                joystickManager.epsilonCameraManagement.setCameraModeCommand(9);
-            }
-        }
-        QGCButton {
-            showBorder:     true
-            font.pointSize: ScreenTools.isMobile? point_size : ScreenTools.smallFontPointSize
-            pointSize:      ScreenTools.isMobile? point_size : ScreenTools.defaultFontPointSize
-            text:           qsTr("STOW")
-            leftPadding:    0
-            rightPadding:   0
-            onReleased: {
-                joystickManager.epsilonCameraManagement.setCameraModeCommand(8);
-            }
-        }
-    }
-
-    RowLayout {
-        id:                         secondRow
-        anchors.horizontalCenter:   parent.horizontalCenter
-        anchors.top:                firstRow.bottom
-        anchors.margins:            _margins
-        spacing:                    _butMargins
-        visible:                    true
-
-        QGCButton {
-            showBorder:     true
-            font.pointSize: ScreenTools.isMobile? point_size : ScreenTools.smallFontPointSize
-            pointSize:      ScreenTools.isMobile? point_size : ScreenTools.defaultFontPointSize
-            text:           qsTr("DAY")
-            leftPadding:    0
-            rightPadding:   0
-            onReleased: {
-                joystickManager.epsilonCameraManagement.setCameraOrderCommand(0);
-            }
-        }
-        QGCButton {
-            showBorder:     true
-            font.pointSize: ScreenTools.isMobile? point_size : ScreenTools.smallFontPointSize
-            pointSize:      ScreenTools.isMobile? point_size : ScreenTools.defaultFontPointSize
-            text:           qsTr("THERMAL")
-            leftPadding:    0
-            rightPadding:   0
-            onReleased: {
-                joystickManager.epsilonCameraManagement.setCameraOrderCommand(1);
-            }
-        }
-    }
-
-    RowLayout {
-        id:                         thirdRow
-        anchors.horizontalCenter:   parent.horizontalCenter
-        anchors.top:                secondRow.bottom
-        anchors.margins:            _margins
-        spacing:                    _butMargins
-        visible:                    true
-
-        QGCButton {
-            showBorder:     true
-            font.pointSize: ScreenTools.isMobile? point_size : ScreenTools.smallFontPointSize
-            pointSize:      ScreenTools.isMobile? point_size : ScreenTools.defaultFontPointSize
-            text:           qsTr("Zoom In")
-            leftPadding:    0
-            rightPadding:   0
-            onPressed: {
-                joystickManager.epsilonCameraManagement.setSysZoomInCommand();
-            }
-        }
-        QGCButton {
-            showBorder:     true
-            font.pointSize: ScreenTools.isMobile? point_size : ScreenTools.smallFontPointSize
-            pointSize:      ScreenTools.isMobile? point_size : ScreenTools.defaultFontPointSize
-            text:           qsTr("Zoom Out")
-            leftPadding:    0
-            rightPadding:   0
-            onPressed: {
-                joystickManager.epsilonCameraManagement.setSysZoomOutCommand();
-            }
-        }
-    }
-
-    RowLayout {
-        id:                         fourthRow
-        anchors.horizontalCenter:   parent.horizontalCenter
-        anchors.top:                thirdRow.bottom
-        anchors.margins:            _margins
-        spacing:                    _butMargins
-        visible:                    true
-
-        QGCButton {
-            showBorder:     true
-            font.pointSize: ScreenTools.isMobile? point_size : ScreenTools.smallFontPointSize
-            pointSize:      ScreenTools.isMobile? point_size : ScreenTools.defaultFontPointSize
-            text:           qsTr("Auto")
-            leftPadding:    0
-            rightPadding:   0
-            onPressed: {
-                joystickManager.epsilonCameraManagement.setFocusModeCommand(0);
-            }
-        }
-        QGCButton {
-            showBorder:     true
-            font.pointSize: ScreenTools.isMobile? point_size : ScreenTools.smallFontPointSize
-            pointSize:      ScreenTools.isMobile? point_size : ScreenTools.defaultFontPointSize
-            text:           qsTr("Manual")
-            leftPadding:    0
-            rightPadding:   0
-            onPressed: {
-                joystickManager.epsilonCameraManagement.setFocusModeCommand(1);
-            }
-        }
-        QGCButton {
-            showBorder:     true
-            font.pointSize: ScreenTools.isMobile? point_size : ScreenTools.smallFontPointSize
-            pointSize:      ScreenTools.isMobile? point_size : ScreenTools.defaultFontPointSize
-            text:           qsTr("One shot")
-            leftPadding:    0
-            rightPadding:   0
-            onPressed: {
-               joystickManager.epsilonCameraManagement.setFocusModeCommand(2);
-            }
-        }
-    }
-
-    RowLayout {
-        id:                         fifthRowOptional
-        anchors.horizontalCenter:   parent.horizontalCenter
-        anchors.top:                fourthRow.bottom
-        anchors.margins:            _margins
-        spacing:                    _butMargins
-        visible:                    false
-
-        QGCButton {
-            id:             rescueBtn
-            showBorder:     true
-            font.pointSize: ScreenTools.isMobile? point_size : ScreenTools.smallFontPointSize
-            pointSize:      ScreenTools.isMobile? point_size * 1.5 : ScreenTools.defaultFontPointSize * 1.5
-            text:           qsTr("")
-            leftPadding:    17
-            rightPadding:   17
-            onPressed: {
-                if (fifthRowOptional.visible)
-                    joystickManager.cameraManagement.doRescue();
-            }
-
-            Timer {
-                interval: 200; running: true; repeat: true
-                onTriggered: {
-
-                    if (fifthRowOptional.visible == false)
-                    {
-                        fifthRowOptional.visible = joystickManager.cameraManagement.getShouldUiEnabledRescueElement();
-                        if (fifthRowOptional.visible)
-                        {
-                            widgetQuick.height += fifthRowOptional.height;
-                            lastRow.anchors.topMargin += fifthRowOptional.height + _butMargins;
-                            lastRow.update();
-                            repeat = false;
-                        }
-                    }
-                }
-            }
-
-            QGCColoredImage {
-                source:         "qrc:///qmlimages/resources/dark_rescue_icon.png"
-                fillMode:       Image.PreserveAspectFit
-                color:          "transparent"
-                anchors.fill:   parent
-            }
-        }
-    }
-
-    RowLayout {
-        id:                         lastRow
-        anchors.horizontalCenter:   parent.horizontalCenter
-        anchors.top:                fourthRow.bottom
-        anchors.margins:            _margins
-        spacing:                    _butMargins
-        visible:                    true
 
         QGCLabel {
-            text:                   qsTr("Screen info")
-            font.pointSize:         ScreenTools.isMobile ? point_size : 9
-            color:                  "White"
+
+            id: mainlabel
+
+            height: ScreenTools.defaultFontPixelHeight
+
+            text: qsTr("QUICK")
+            font.family: ScreenTools.demiboldFontFamily
+            font.pointSize: ScreenTools.largeFontPointSize
+            color: "White"
+
+            horizontalAlignment: Text.AlignHCenter
+            verticalAlignment: Text.AlignVCenter
+
+            Layout.columnSpan: 6
+            Layout.fillHeight: false
+            Layout.fillWidth: true
+        }
+
+        QGCButton {
+
+            id: _rateModeButton
+
+            showBorder: true
+            font.pointSize: ScreenTools.isMobile ? point_size : ScreenTools.smallFontPointSize
+            pointSize: ScreenTools.isMobile ? point_size : ScreenTools.defaultFontPointSize
+            text: qsTr("RATE")
+
+            Layout.rowSpan: 1
+            Layout.columnSpan: 2
+
+            Layout.preferredHeight: -1
+            Layout.preferredWidth: -1
+            Layout.fillWidth: true
+            Layout.fillHeight: true
+            Layout.alignment: Qt.AlignLeft
+
+            onReleased: {
+                joystickManager.epsilonCameraManagement.setCameraModeCommand(1)
+            }
+        }
+
+        QGCButton {
+
+            id: _pilotModeButton
+
+            showBorder: true
+            font.pointSize: ScreenTools.isMobile ? point_size : ScreenTools.smallFontPointSize
+            pointSize: ScreenTools.isMobile ? point_size : ScreenTools.defaultFontPointSize
+            text: qsTr("PILOT")
+
+            Layout.rowSpan: 1
+            Layout.columnSpan: 2
+
+            Layout.preferredHeight: -1
+            Layout.preferredWidth: -1
+            Layout.fillWidth: true
+            Layout.fillHeight: true
+            Layout.alignment: Qt.AlignLeft
+
+            onReleased: {
+                joystickManager.epsilonCameraManagement.setCameraModeCommand(9)
+            }
+        }
+
+        QGCButton {
+
+            id: _stowModeButton
+
+            showBorder: true
+            font.pointSize: ScreenTools.isMobile ? point_size : ScreenTools.smallFontPointSize
+            pointSize: ScreenTools.isMobile ? point_size : ScreenTools.defaultFontPointSize
+            text: qsTr("STOW")
+
+            Layout.rowSpan: 1
+            Layout.columnSpan: 2
+
+            Layout.preferredHeight: -1
+            Layout.preferredWidth: -1
+            Layout.fillWidth: true
+            Layout.fillHeight: true
+            Layout.alignment: Qt.AlignLeft
+
+            onReleased: {
+                joystickManager.epsilonCameraManagement.setCameraModeCommand(8)
+            }
+        }
+
+        QGCButton {
+
+            id: _dayModeButton
+
+            showBorder: true
+            font.pointSize: ScreenTools.isMobile ? point_size : ScreenTools.smallFontPointSize
+            pointSize: ScreenTools.isMobile ? point_size : ScreenTools.defaultFontPointSize
+            text: qsTr("DAY")
+
+            Layout.rowSpan: 1
+            Layout.columnSpan: 3
+
+            Layout.preferredHeight: -1
+            Layout.preferredWidth: -1
+            Layout.fillWidth: true
+            Layout.fillHeight: true
+            Layout.alignment: Qt.AlignLeft
+
+            onReleased: {
+                joystickManager.epsilonCameraManagement.setCameraOrderCommand(0)
+            }
+        }
+
+        QGCButton {
+
+            id: _thermalModeButton
+
+            showBorder: true
+            font.pointSize: ScreenTools.isMobile ? point_size : ScreenTools.smallFontPointSize
+            pointSize: ScreenTools.isMobile ? point_size : ScreenTools.defaultFontPointSize
+            text: qsTr("THERMAL")
+
+            Layout.rowSpan: 1
+            Layout.columnSpan: 3
+
+            Layout.preferredHeight: -1
+            Layout.preferredWidth: -1
+            Layout.fillWidth: true
+            Layout.fillHeight: true
+            Layout.alignment: Qt.AlignLeft
+
+            onReleased: {
+                joystickManager.epsilonCameraManagement.setCameraOrderCommand(1)
+            }
+        }
+
+        QGCButton {
+
+            id: _opticalZoomInModeButton
+
+            showBorder: true
+            font.pointSize: ScreenTools.isMobile ? point_size : ScreenTools.smallFontPointSize
+            pointSize: ScreenTools.isMobile ? point_size : ScreenTools.defaultFontPointSize
+            text: qsTr("OZOOMI")
+
+            Layout.rowSpan: 1
+            Layout.columnSpan: 3
+
+            Layout.preferredHeight: -1
+            Layout.preferredWidth: -1
+            Layout.fillWidth: true
+            Layout.fillHeight: true
+            Layout.alignment: Qt.AlignLeft
+
+            onPressed: {
+                joystickManager.epsilonCameraManagement.setOpticalZoomSpeed(6)
+            }
+            onReleased: {
+                joystickManager.epsilonCameraManagement.setOpticalZoomSpeed(0)
+            }
+        }
+
+        QGCButton {
+
+            id: _opticalZoomOutModeButton
+
+            showBorder: true
+            font.pointSize: ScreenTools.isMobile ? point_size : ScreenTools.smallFontPointSize
+            pointSize: ScreenTools.isMobile ? point_size : ScreenTools.defaultFontPointSize
+            text: qsTr("OZOOMO")
+
+            Layout.rowSpan: 1
+            Layout.columnSpan: 3
+
+            Layout.preferredHeight: -1
+            Layout.preferredWidth: -1
+            Layout.fillWidth: true
+            Layout.fillHeight: true
+            Layout.alignment: Qt.AlignLeft
+
+            onPressed: {
+                joystickManager.epsilonCameraManagement.setOpticalZoomSpeed(-6)
+            }
+            onReleased: {
+                joystickManager.epsilonCameraManagement.setOpticalZoomSpeed(0)
+            }
+        }
+
+        QGCButton {
+
+            id: _digitalZoomInModeButton
+
+            showBorder: true
+            font.pointSize: ScreenTools.isMobile ? point_size : ScreenTools.smallFontPointSize
+            pointSize: ScreenTools.isMobile ? point_size : ScreenTools.defaultFontPointSize
+            text: qsTr("DZOOMI")
+
+            Layout.rowSpan: 1
+            Layout.columnSpan: 3
+
+            Layout.preferredHeight: -1
+            Layout.preferredWidth: -1
+            Layout.fillWidth: true
+            Layout.fillHeight: true
+            Layout.alignment: Qt.AlignLeft
+
+            onPressed: {
+                joystickManager.epsilonCameraManagement.setSysZoomInCommand()
+            }
+        }
+
+        QGCButton {
+
+            id: _digitalZoomOutModeButton
+
+            showBorder: true
+            font.pointSize: ScreenTools.isMobile ? point_size : ScreenTools.smallFontPointSize
+            pointSize: ScreenTools.isMobile ? point_size : ScreenTools.defaultFontPointSize
+            text: qsTr("DZOOMO")
+
+            Layout.rowSpan: 1
+            Layout.columnSpan: 3
+
+            Layout.preferredHeight: -1
+            Layout.preferredWidth: -1
+            Layout.fillWidth: true
+            Layout.fillHeight: true
+            Layout.alignment: Qt.AlignLeft
+
+            onPressed: {
+                joystickManager.epsilonCameraManagement.setSysZoomOutCommand()
+            }
+        }
+
+        QGCButton {
+
+            id: _autoFocusModeButton
+
+            showBorder: true
+            font.pointSize: ScreenTools.isMobile ? point_size : ScreenTools.smallFontPointSize
+            pointSize: ScreenTools.isMobile ? point_size : ScreenTools.defaultFontPointSize
+            text: qsTr("DZOOMO")
+
+            Layout.rowSpan: 1
+            Layout.columnSpan: 2
+
+            Layout.preferredHeight: -1
+            Layout.preferredWidth: -1
+            Layout.fillWidth: true
+            Layout.fillHeight: true
+            Layout.alignment: Qt.AlignLeft
+
+            onPressed: {
+                joystickManager.epsilonCameraManagement.setFocusModeCommand(0)
+            }
+        }
+
+        QGCButton {
+
+            id: _manualFocusModeButton
+
+            showBorder: true
+            font.pointSize: ScreenTools.isMobile ? point_size : ScreenTools.smallFontPointSize
+            pointSize: ScreenTools.isMobile ? point_size : ScreenTools.defaultFontPointSize
+            text: qsTr("MAN")
+
+            Layout.rowSpan: 1
+            Layout.columnSpan: 2
+
+            Layout.preferredHeight: -1
+            Layout.preferredWidth: -1
+            Layout.fillWidth: true
+            Layout.fillHeight: true
+            Layout.alignment: Qt.AlignLeft
+
+            onPressed: {
+                joystickManager.epsilonCameraManagement.setFocusModeCommand(1)
+            }
+        }
+
+        QGCButton {
+
+            id: _oneShotFocusModeButton
+
+            showBorder: true
+            font.pointSize: ScreenTools.isMobile ? point_size : ScreenTools.smallFontPointSize
+            pointSize: ScreenTools.isMobile ? point_size : ScreenTools.defaultFontPointSize
+            text: qsTr("SHOT")
+
+            Layout.rowSpan: 1
+            Layout.columnSpan: 2
+
+            Layout.preferredHeight: -1
+            Layout.preferredWidth: -1
+            Layout.fillWidth: true
+            Layout.fillHeight: true
+            Layout.alignment: Qt.AlignLeft
+
+            onPressed: {
+                joystickManager.epsilonCameraManagement.setFocusModeCommand(2)
+            }
+        }
+
+        QGCLabel {
+
+            id: _setCameraScreenInformationLabel
+
+            height: ScreenTools.defaultFontPixelHeight
+
+            text: qsTr("INFO")
+            font.family: ScreenTools.demiboldFontFamily
+            font.pointSize: ScreenTools.largeFontPointSize
+            color: "White"
+
+            horizontalAlignment: Text.AlignHCenter
+            verticalAlignment: Text.AlignVCenter
+
+            Layout.columnSpan: 2
+            Layout.fillHeight: false
+            Layout.fillWidth: true
         }
 
         QGCTextField {
-            id:                     _fovDeg
-            Layout.preferredWidth:  ScreenTools.isMobile ? 90 : 45
-            maximumLength:          4
-            font.pointSize:         ScreenTools.isMobile ? point_size : 9
-            text:                   qsTr("2047")
+
+            id: _setCameraScreenInformationField
+
+            Layout.rowSpan: 1
+            Layout.columnSpan: 2
+
+            Layout.preferredHeight: -1
+            Layout.preferredWidth: -1
+            Layout.fillWidth: true
+            Layout.fillHeight: true
+            Layout.alignment: Qt.AlignLeft
+
+            maximumLength: 4
+            font.pointSize: ScreenTools.isMobile ? point_size : 9
+            text: qsTr("2047")
         }
 
         QGCButton {
-            showBorder:                 true
-            font.pointSize: ScreenTools.isMobile? point_size : ScreenTools.smallFontPointSize
-            pointSize:      ScreenTools.isMobile? point_size : ScreenTools.defaultFontPointSize
-            text:                       qsTr("Set")
-            leftPadding:                0
-            rightPadding:               0
+
+            id: _setCameraScreenInformationButton
+
+            showBorder: true
+            font.pointSize: ScreenTools.isMobile ? point_size : ScreenTools.smallFontPointSize
+            pointSize: ScreenTools.isMobile ? point_size : ScreenTools.defaultFontPointSize
+            text: qsTr("SET")
+
+            Layout.rowSpan: 1
+            Layout.columnSpan: 2
+
+            Layout.preferredHeight: -1
+            Layout.preferredWidth: -1
+            Layout.fillWidth: true
+            Layout.fillHeight: true
+            Layout.alignment: Qt.AlignLeft
+
             onReleased: {
-                if(parseInt(_fovDeg.text)>=0 && parseInt(_fovDeg.text)<=2047)
-                {
-                    joystickManager.epsilonCameraManagement.setCameraScreenInformationCommand(parseInt(_fovDeg.text));
+                if (parseInt(_setCameraScreenInformationField.text) >= 0
+                        && parseInt(
+                            _setCameraScreenInformationField.text) <= 2047) {
+                    joystickManager.epsilonCameraManagement.setCameraScreenInformationCommand(
+                                parseInt(_setCameraScreenInformationField.text))
                 }
             }
         }

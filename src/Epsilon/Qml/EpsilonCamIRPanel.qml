@@ -1,183 +1,142 @@
-import QtQuick          2.3
+import QtQuick 2.3
 import QtQuick.Controls 1.2
-import QtQuick.Dialogs  1.2
-import QtQuick.Layouts  1.2
+import QtQuick.Dialogs 1.2
+import QtQuick.Layouts 1.2
 
-import QGroundControl               1.0
-import QGroundControl.Palette       1.0
-import QGroundControl.Controls      1.0
-import QGroundControl.ScreenTools   1.0
-import QGroundControl.Controllers   1.0
-import QGroundControl.FactSystem    1.0
-import QGroundControl.FactControls  1.0
+import QGroundControl 1.0
+import QGroundControl.Palette 1.0
+import QGroundControl.Controls 1.0
+import QGroundControl.ScreenTools 1.0
+import QGroundControl.Controllers 1.0
+import QGroundControl.FactSystem 1.0
+import QGroundControl.FactControls 1.0
 
-Rectangle {    
-    height:             _heightTotal
-    color:              Qt.rgba(0.0,0.0,0.0,0.25)
-    visible:            true
+Item {
+    anchors.fill: parent
+    visible: true
 
-    property int _heightTotal: mainlabel.height+firstRow.height+secondRow.height+thirdRow.height+irNrLabel.height+fourthRow.height+(_margins*12)
-    property var _irNrLevels: [ "Low" , "Medium" , "High" ]
+    GridLayout {
 
-    QGCLabel {
-        id:                 mainlabel
-        text:               qsTr("IR")
-        anchors.margins:    ScreenTools.isMobile ? _margins * 1.6 : _margins
-        font.family:        ScreenTools.demiboldFontFamily
-        font.pointSize:     ScreenTools.largeFontPointSize
-        anchors.horizontalCenter:  parent.horizontalCenter
-        anchors.top:        parent.top
-        height:             ScreenTools.defaultFontPixelHeight
-        color:              "White"
-    }
+        id: grid
 
-    RowLayout {
-        id:                         firstRow
-        anchors.horizontalCenter:   parent.horizontalCenter
-        anchors.top:                mainlabel.bottom
-        anchors.margins:            _margins * 4
-        spacing:                    _butMargins
-        visible:                    true
+        columns: 2
+        rows: 3
+        anchors.fill: parent
+        anchors.margins: 3
+        columnSpacing: 5
+        rowSpacing: 5
+
+        onWidthChanged: {
+            console.log("IR mode:", grid.width, grid.height)
+        }
+
+        QGCLabel {
+
+            id: mainlabel
+
+            height: ScreenTools.defaultFontPixelHeight
+
+            text: qsTr("IR")
+            font.family: ScreenTools.demiboldFontFamily
+            font.pointSize: ScreenTools.largeFontPointSize
+            color: "White"
+
+            horizontalAlignment: Text.AlignHCenter
+            verticalAlignment: Text.AlignVCenter
+
+            Layout.columnSpan: 2
+            Layout.fillHeight: false
+            Layout.fillWidth: true
+        }
 
         QGCButton {
-            showBorder:     true
-            font.pointSize: ScreenTools.isMobile? point_size : ScreenTools.smallFontPointSize
-            pointSize:      ScreenTools.isMobile? point_size : ScreenTools.defaultFontPointSize
-            text:           qsTr("DAY")
-            leftPadding:    0
-            rightPadding:   0
+
+            id: _dayModeButton
+
+            showBorder: true
+            font.pointSize: ScreenTools.isMobile ? point_size : ScreenTools.smallFontPointSize
+            pointSize: ScreenTools.isMobile ? point_size : ScreenTools.defaultFontPointSize
+            text: qsTr("DAY")
+
+            Layout.rowSpan: 1
+            Layout.columnSpan: 1
+
+            Layout.preferredHeight: -1
+            Layout.preferredWidth: -1
+            Layout.fillWidth: true
+            Layout.fillHeight: true
+            Layout.alignment: Qt.AlignLeft
+
             onReleased: {
-                joystickManager.cameraManagement.setSysSensorDayCommand();
+                joystickManager.epsilonCameraManagement.setCameraOrderCommand(0);
             }
         }
+
         QGCButton {
-            showBorder:     true
-            font.pointSize: ScreenTools.isMobile? point_size : ScreenTools.smallFontPointSize
-            pointSize:      ScreenTools.isMobile? point_size : ScreenTools.defaultFontPointSize
-            text:           qsTr("THERMAL")
-            leftPadding:    0
-            rightPadding:   0
+
+            id: _thermalModeButton
+
+            showBorder: true
+            font.pointSize: ScreenTools.isMobile ? point_size : ScreenTools.smallFontPointSize
+            pointSize: ScreenTools.isMobile ? point_size : ScreenTools.defaultFontPointSize
+            text: qsTr("THER")
+
+            Layout.rowSpan: 1
+            Layout.columnSpan: 1
+
+            Layout.preferredHeight: -1
+            Layout.preferredWidth: -1
+            Layout.fillWidth: true
+            Layout.fillHeight: true
+            Layout.alignment: Qt.AlignLeft
+
             onReleased: {
-                joystickManager.cameraManagement.setSysSensorIrCommand();
+                joystickManager.epsilonCameraManagement.setCameraOrderCommand(1);
             }
         }
-    }
-
-    RowLayout {
-        id:                         secondRow
-        anchors.horizontalCenter:   parent.horizontalCenter
-        anchors.top:                firstRow.bottom
-        anchors.margins:            _margins
-        spacing:                    _butMargins
-        visible:                    true
 
         QGCButton {
-            showBorder:     true
-            font.pointSize: ScreenTools.isMobile? point_size : ScreenTools.smallFontPointSize
-            pointSize:      ScreenTools.isMobile? point_size : ScreenTools.defaultFontPointSize
-            text:           qsTr("WhiteHot")
-            leftPadding:    0
-            rightPadding:   0
+
+            id: _daySpotModeButton
+
+            showBorder: true
+            font.pointSize: ScreenTools.isMobile ? point_size : ScreenTools.smallFontPointSize
+            pointSize: ScreenTools.isMobile ? point_size : ScreenTools.defaultFontPointSize
+            text: qsTr("DAY SPOT")
+
+            Layout.rowSpan: 1
+            Layout.columnSpan: 1
+
+            Layout.preferredHeight: -1
+            Layout.preferredWidth: -1
+            Layout.fillWidth: true
+            Layout.fillHeight: true
+            Layout.alignment: Qt.AlignLeft
+
             onReleased: {
-                joystickManager.cameraManagement.setSysIrPolarityWHCommand();
+                joystickManager.epsilonCameraManagement.setCameraOrderCommand(2);
             }
         }
-        QGCButton {
-            showBorder:     true
-            font.pointSize: ScreenTools.isMobile? point_size : ScreenTools.smallFontPointSize
-            pointSize:      ScreenTools.isMobile? point_size : ScreenTools.defaultFontPointSize
-            text:           qsTr("BlackHot")
-            leftPadding:    0
-            rightPadding:   0
-            onReleased: {
-                joystickManager.cameraManagement.setSysIrPolarityBHCommand();
-            }
-        }
-    }
-
-    RowLayout {
-        id:                         thirdRow
-        anchors.horizontalCenter:   parent.horizontalCenter
-        anchors.top:                secondRow.bottom
-        anchors.margins:            _margins
-        spacing:                    _butMargins
-        visible:                    true
 
         QGCButton {
-            showBorder:     true
-            font.pointSize: ScreenTools.isMobile? point_size : ScreenTools.smallFontPointSize
-            pointSize:      ScreenTools.isMobile? point_size : ScreenTools.defaultFontPointSize
-            text:           qsTr("Color.P")
-            leftPadding:    0
-            rightPadding:   0
-            onReleased: {
-                joystickManager.cameraManagement.setSysIrColorPCommand();
-            }
-        }
-        QGCButton {
-            showBorder:     true
-            font.pointSize: ScreenTools.isMobile? point_size : ScreenTools.smallFontPointSize
-            pointSize:      ScreenTools.isMobile? point_size : ScreenTools.defaultFontPointSize
-            text:           qsTr("NUC")
-            leftPadding:    0
-            rightPadding:   0
-            onReleased: {
-                joystickManager.cameraManagement.setSysIrNUCCommand();
-            }
-        }
-        QGCButton {
-            showBorder:     true
-            font.pointSize: ScreenTools.isMobile? point_size : ScreenTools.smallFontPointSize
-            pointSize:      ScreenTools.isMobile? point_size : ScreenTools.defaultFontPointSize
-            text:           qsTr("B/W.P")
-            leftPadding:    0
-            rightPadding:   0
-            onReleased: {
-                joystickManager.cameraManagement.setSysIrBWPCommand();
-            }
-        }
-    }
 
-    QGCLabel {
-        id:                 irNrLabel
-        text:               qsTr("IR Noise Reduction")
-        anchors.margins:    _margins
-        font.family:        ScreenTools.demiboldFontFamily
-        font.pointSize:     ScreenTools.isMobile ? point_size : ScreenTools.mediumFontPointSize
-        anchors.horizontalCenter:  parent.horizontalCenter
-        anchors.top:        thirdRow.bottom
-        color:              "white"
-        height:             ScreenTools.smallFontPointSize
-    }
+            id: _thermalSecModeButton
 
-    RowLayout {
-        id:                         fourthRow
-        anchors.horizontalCenter:   parent.horizontalCenter
-        anchors.top:                irNrLabel.bottom
-        anchors.margins:            _margins * 2
-        spacing:                    _butMargins
-        visible:                    true
+            showBorder: true
+            font.pointSize: ScreenTools.isMobile ? point_size : ScreenTools.smallFontPointSize
+            pointSize: ScreenTools.isMobile ? point_size : ScreenTools.defaultFontPointSize
+            text: qsTr("THER SEC")
+            Layout.rowSpan: 1
+            Layout.columnSpan: 1
 
-        QGCComboBox {
-            id:             irNrLevelsCombo
-            sizeToContents: true
-            centeredLabel:  true
-            font.pointSize: ScreenTools.isMobile? point_size : ScreenTools.mediumFontPointSize
-            leftPadding:    0
-            rightPadding:   12
-            model:          _irNrLevels
-        }
+            Layout.preferredHeight: -1
+            Layout.preferredWidth: -1
+            Layout.fillWidth: true
+            Layout.fillHeight: true
+            Layout.alignment: Qt.AlignLeft
 
-        QGCButton {
-            showBorder:     true
-            font.pointSize: ScreenTools.isMobile? point_size : ScreenTools.smallFontPointSize
-            pointSize:      ScreenTools.isMobile? point_size : ScreenTools.defaultFontPointSize
-            text:           qsTr("Set")
-            leftPadding:    0
-            rightPadding:   0
             onReleased: {
-                if(irNrLevelsCombo.currentIndex >=0 )
-                    joystickManager.cameraManagement.setSysSetIRNoiseReductionLevelCommand(irNrLevelsCombo.currentIndex);
+                joystickManager.epsilonCameraManagement.setCameraOrderCommand(3);
             }
         }
     }

@@ -393,8 +393,6 @@
         <file alias="EpsilonCamMultiTrackControlPanel.qml">src/Epsilon/Qml/EpsilonCamMultiTrackControlPanel.qml</file>
         <file alias="EpsilonCamObjDetPanel.qml">src/Epsilon/Qml/EpsilonCamObjDetPanel.qml</file>
         <file alias="EpsilonCamPosPanel.qml">src/Epsilon/Qml/EpsilonCamPosPanel.qml</file>
-        <file alias="EpsilonCamQuick1Panel.qml">src/Epsilon/Qml/EpsilonCamQuick1Panel.qml</file>
-        <file alias="EpsilonCamQuick2Panel.qml">src/Epsilon/Qml/EpsilonCamQuick2Panel.qml</file>
         <file alias="EpsilonCamQuickPanel.qml">src/Epsilon/Qml/EpsilonCamQuickPanel.qml</file>
         <file alias="EpsilonCamRecPanel.qml">src/Epsilon/Qml/EpsilonCamRecPanel.qml</file>
         <file alias="EpsilonCamStreamControlPanel.qml">src/Epsilon/Qml/EpsilonCamStreamControlPanel.qml</file>

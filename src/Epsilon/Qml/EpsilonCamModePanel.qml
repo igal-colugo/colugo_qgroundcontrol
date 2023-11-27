@@ -1,246 +1,264 @@
-import QtQuick          2.3
+import QtQuick 2.3
 import QtQuick.Controls 1.2
-import QtQuick.Controls.Styles  1.4
-import QtQuick.Dialogs  1.2
-import QtQuick.Layouts  1.2
+import QtQuick.Controls.Styles 1.4
+import QtQuick.Dialogs 1.2
+import QtQuick.Layouts 1.2
 
-import QGroundControl               1.0
-import QGroundControl.Palette       1.0
-import QGroundControl.Controls      1.0
-import QGroundControl.ScreenTools   1.0
-import QGroundControl.Controllers   1.0
-import QGroundControl.FactSystem    1.0
-import QGroundControl.FactControls  1.0
+import QGroundControl 1.0
+import QGroundControl.Palette 1.0
+import QGroundControl.Controls 1.0
+import QGroundControl.ScreenTools 1.0
+import QGroundControl.Controllers 1.0
+import QGroundControl.FactSystem 1.0
+import QGroundControl.FactControls 1.0
 import QGroundControl.SettingsManager 1.0
 
-Rectangle {
-    height:             _heightTotal
-    color:              Qt.rgba(0.0,0.0,0.0,0.25)
-    visible:            true
+//import "../../QmlControls"
 
-    property int _heightTotal: mainlabel.height+firstRow.height+secondRow.height+thirdRow.height+fourthRow.height+lastRow.height+(_margins*12)
+Item {
+    anchors.fill: parent
+    visible: true
 
+    GridLayout {
 
-    QGCLabel {
-        id:                 mainlabel
-        text:               qsTr("MODE")
-        anchors.margins:    ScreenTools.isMobile ? _margins * 1.6 : _margins
-        font.family:        ScreenTools.demiboldFontFamily
-        font.pointSize:     ScreenTools.largeFontPointSize
-        anchors.horizontalCenter:  parent.horizontalCenter
-        anchors.top:        parent.top
-        height:             ScreenTools.defaultFontPixelHeight
-        color:              "White"
-    }
+        id: grid
 
-    RowLayout {
-        id:                         firstRow
-        anchors.horizontalCenter:   parent.horizontalCenter
-        anchors.top:                mainlabel.bottom
-        anchors.margins:            _margins * 4
-        spacing:                    _butMargins
-        visible:                    true
+        columns: 6
+        rows: 5
+        anchors.fill: parent
+        anchors.margins: 3
+        columnSpacing: 5
+        rowSpacing: 5
 
-        QGCButton {
-            showBorder:     true
-            font.pointSize: ScreenTools.isMobile? point_size : ScreenTools.smallFontPointSize
-            pointSize:      ScreenTools.isMobile? point_size : ScreenTools.defaultFontPointSize
-            text:           qsTr("HOLD")
-            leftPadding:    0
-            rightPadding:   0
-            onReleased: {
-                joystickManager.cameraManagement.setSysModeHoldCommand();
-            }
-        }
-        QGCButton {
-            showBorder:     true
-            font.pointSize: ScreenTools.isMobile? point_size : ScreenTools.smallFontPointSize
-            pointSize:      ScreenTools.isMobile? point_size : ScreenTools.defaultFontPointSize
-            text:           qsTr("RATE")
-            leftPadding:    0
-            rightPadding:   0
-            onReleased: {
-                joystickManager.epsilonCameraManagement.setCameraModeCommand(1);
-            }
-        }
-        QGCButton {
-            showBorder:     true
-            font.pointSize: ScreenTools.isMobile? point_size : ScreenTools.smallFontPointSize
-            pointSize:      ScreenTools.isMobile? point_size : ScreenTools.defaultFontPointSize
-            text:           qsTr("GRR")
-            leftPadding:    0
-            rightPadding:   0
-            onReleased: {
-                joystickManager.cameraManagement.setSysModeGrrCommand();
-            }
+        onWidthChanged: {
+            console.log("Camera mode:", grid.width, grid.height)
         }
 
-        //igal shit
-        QGCButton {
-            showBorder:     true
-            font.pointSize: ScreenTools.isMobile? point_size : ScreenTools.smallFontPointSize
-            pointSize:      ScreenTools.isMobile? point_size : ScreenTools.defaultFontPointSize
-            text:           qsTr("TRACK")
-            leftPadding:    0
-            rightPadding:   0
-            onReleased: {
-                joystickManager.cameraManagement.setSysModeTrackCommand();
-            }
-        }
-    }
+        QGCLabel {
 
-    RowLayout {
-        id:                         secondRow
-        anchors.horizontalCenter:   parent.horizontalCenter
-        anchors.top:                firstRow.bottom
-        anchors.margins:            _margins
-        spacing:                    _butMargins
-        visible:                    true
+            id: mainlabel
+
+            height: ScreenTools.defaultFontPixelHeight
+
+            text: qsTr("MODE")
+            font.family: ScreenTools.demiboldFontFamily
+            font.pointSize: ScreenTools.largeFontPointSize
+            color: "White"
+
+            horizontalAlignment: Text.AlignHCenter
+            verticalAlignment: Text.AlignVCenter
+
+            Layout.columnSpan: 6
+            Layout.fillHeight: false
+            Layout.fillWidth: true
+        }
 
         QGCButton {
-            showBorder:     true
-            font.pointSize: ScreenTools.isMobile? point_size : ScreenTools.smallFontPointSize
-            pointSize:      ScreenTools.isMobile? point_size : ScreenTools.defaultFontPointSize
-            text:           qsTr("PILOT")
-            leftPadding:    0
-            rightPadding:   0
-            onReleased: {
-                joystickManager.epsilonCameraManagement.setCameraModeCommand(9);
-            }
-        }
-        QGCButton {
-            showBorder:     true
-            font.pointSize: ScreenTools.isMobile? point_size : ScreenTools.smallFontPointSize
-            pointSize:      ScreenTools.isMobile? point_size : ScreenTools.defaultFontPointSize
-            text:           qsTr("STOW")
-            leftPadding:    0
-            rightPadding:   0
-            onReleased: {
-                joystickManager.epsilonCameraManagement.setCameraModeCommand(8);
-            }
-        }
-        QGCButton {
-            showBorder:     true
-            font.pointSize: ScreenTools.isMobile? point_size : ScreenTools.smallFontPointSize
-            pointSize:      ScreenTools.isMobile? point_size : ScreenTools.defaultFontPointSize
-            text:           qsTr("EPR")
-            leftPadding:    0
-            rightPadding:   0
-            onReleased: {
-                joystickManager.cameraManagement.setSysModeEprCommand();
-            }
-        }
-    }
 
-    RowLayout {
-        id:                         thirdRow
-        anchors.horizontalCenter:   parent.horizontalCenter
-        anchors.top:                secondRow.bottom
-        anchors.margins:            _margins
-        spacing:                    _butMargins
-        visible:                    true
+            id: _rateModeButton
 
-        QGCButton {
-            showBorder:     true
-            font.pointSize: ScreenTools.isMobile? point_size : ScreenTools.smallFontPointSize
-            pointSize:      ScreenTools.isMobile? point_size : ScreenTools.defaultFontPointSize
-            text:           qsTr("RETRACT")
-            leftPadding:    0
-            rightPadding:   0
-            onReleased: {
-                joystickManager.cameraManagement.setSysModeRetractCommand();
-            }
-        }
-        QGCButton {
-            showBorder:     true
-            font.pointSize: ScreenTools.isMobile? point_size : ScreenTools.smallFontPointSize
-            pointSize:      ScreenTools.isMobile? point_size : ScreenTools.defaultFontPointSize
-            text:           qsTr("RETRACT.R")
-            leftPadding:    0
-            rightPadding:   0
-            onReleased: {
-                joystickManager.cameraManagement.setSysModeRetractUnlockCommand();
-            }
-        }
-    }
+            showBorder: true
+            font.pointSize: ScreenTools.isMobile ? point_size : ScreenTools.smallFontPointSize
+            pointSize: ScreenTools.isMobile ? point_size : ScreenTools.defaultFontPointSize
+            text: qsTr("RATE")
 
-    RowLayout {
-        id:                         fourthRow
-        anchors.horizontalCenter:   parent.horizontalCenter
-        anchors.top:                thirdRow.bottom
-        anchors.margins:            _margins
-        spacing:                    _butMargins
-        visible:                    true
+            Layout.rowSpan: 1
+            Layout.columnSpan: 3
 
-        QGCButton {
-            showBorder:     true
-            font.pointSize: ScreenTools.isMobile? point_size : ScreenTools.smallFontPointSize
-            pointSize:      ScreenTools.isMobile? point_size : ScreenTools.defaultFontPointSize
-            text:           qsTr("Nadir")
-            leftPadding:    0
-            rightPadding:   0
+            Layout.preferredHeight: -1
+            Layout.preferredWidth: -1
+            Layout.fillWidth: true
+            Layout.fillHeight: true
+            Layout.alignment: Qt.AlignLeft
+
             onReleased: {
-                joystickManager.cameraManagement.setSysNadirCommand();
-            }
-        }
-        QGCButton {
-            showBorder:     true
-            font.pointSize: ScreenTools.isMobile? point_size : ScreenTools.smallFontPointSize
-            pointSize:      ScreenTools.isMobile? point_size : ScreenTools.defaultFontPointSize
-            text:           qsTr("Nadir Scan")
-            leftPadding:    0
-            rightPadding:   0
-            onReleased: {
-                joystickManager.cameraManagement.setSysNadirScanCommand();
+                joystickManager.epsilonCameraManagement.setCameraModeCommand(1)
             }
         }
 
         QGCButton {
-            showBorder:     true
-            font.pointSize: ScreenTools.isMobile? point_size : ScreenTools.smallFontPointSize
-            pointSize:      ScreenTools.isMobile? point_size : ScreenTools.defaultFontPointSize
-            text:           qsTr("2D Scan")
-            leftPadding:    0
-            rightPadding:   0
-            onReleased: {
-                joystickManager.cameraManagement.setSysMode2DScanCommand();
-            }
-        }
-    }
 
-    RowLayout {
-        id:                         lastRow
-        anchors.horizontalCenter:   parent.horizontalCenter
-        anchors.top:                fourthRow.bottom
-        anchors.margins:            _margins
-        spacing:                    _butMargins
-        visible:                    true
+            id: _rateAidModeButton
 
-        QGCButton {
-            showBorder:     true
-            font.pointSize: ScreenTools.isMobile? point_size : ScreenTools.smallFontPointSize
-            pointSize:      ScreenTools.isMobile? point_size : ScreenTools.defaultFontPointSize
-            text:           qsTr("Motors Off")
-            leftPadding:    0
-            rightPadding:   0
+            showBorder: true
+            font.pointSize: ScreenTools.isMobile ? point_size : ScreenTools.smallFontPointSize
+            pointSize: ScreenTools.isMobile ? point_size : ScreenTools.defaultFontPointSize
+            text: qsTr("RATE AID")
+
+            Layout.rowSpan: 1
+            Layout.columnSpan: 3
+
+            Layout.preferredHeight: -1
+            Layout.preferredWidth: -1
+            Layout.fillWidth: true
+            Layout.fillHeight: true
+            Layout.alignment: Qt.AlignLeft
+
             onReleased: {
-                joystickManager.cameraManagement.setCameraMotorState(false);
+                joystickManager.epsilonCameraManagement.setCameraModeCommand(2)
             }
         }
 
         QGCButton {
-            showBorder:     true
-            font.pointSize: ScreenTools.isMobile? point_size : ScreenTools.smallFontPointSize
-            pointSize:      ScreenTools.isMobile? point_size : ScreenTools.defaultFontPointSize
-            text:           qsTr("Motors On")
-            leftPadding:    0
-            rightPadding:   0
+
+            id: _stowModeButton
+
+            showBorder: true
+            font.pointSize: ScreenTools.isMobile ? point_size : ScreenTools.smallFontPointSize
+            pointSize: ScreenTools.isMobile ? point_size : ScreenTools.defaultFontPointSize
+            text: qsTr("STOW")
+
+            Layout.rowSpan: 1
+            Layout.columnSpan: 2
+
+            Layout.preferredHeight: -1
+            Layout.preferredWidth: -1
+            Layout.fillWidth: true
+            Layout.fillHeight: true
+            Layout.alignment: Qt.AlignLeft
+
             onReleased: {
-                joystickManager.cameraManagement.setCameraMotorState(true);
+                joystickManager.epsilonCameraManagement.setCameraModeCommand(8)
             }
         }
 
+        QGCButton {
+
+            id: _pilotModeButton
+
+            showBorder: true
+            font.pointSize: ScreenTools.isMobile ? point_size : ScreenTools.smallFontPointSize
+            pointSize: ScreenTools.isMobile ? point_size : ScreenTools.defaultFontPointSize
+            text: qsTr("PILOT")
+
+            Layout.rowSpan: 1
+            Layout.columnSpan: 2
+
+            Layout.preferredHeight: -1
+            Layout.preferredWidth: -1
+            Layout.fillWidth: true
+            Layout.fillHeight: true
+            Layout.alignment: Qt.AlignLeft
+
+            onReleased: {
+                joystickManager.epsilonCameraManagement.setCameraModeCommand(9)
+                console.log("Pilot btn:", _pilotModeButton.width, grid.height)
+            }
+        }
+
+        QGCButton {
+
+            id: _geoLockModeButton
+
+            showBorder: true
+            font.pointSize: ScreenTools.isMobile ? point_size : ScreenTools.smallFontPointSize
+            pointSize: ScreenTools.isMobile ? point_size : ScreenTools.defaultFontPointSize
+            text: qsTr("GEO LOCK")
+
+            Layout.rowSpan: 1
+            Layout.columnSpan: 2
+
+            Layout.preferredHeight: -1
+            Layout.preferredWidth: -1
+            Layout.fillWidth: true
+            Layout.fillHeight: true
+            Layout.alignment: Qt.AlignLeft
+
+            onReleased: {
+                joystickManager.epsilonCameraManagement.setCameraModeCommand(7)
+            }
+        }
+
+        QGCButton {
+
+            id: _trackStationaryModeButton
+
+            showBorder: true
+            font.pointSize: ScreenTools.isMobile ? point_size : ScreenTools.smallFontPointSize
+            pointSize: ScreenTools.isMobile ? point_size : ScreenTools.defaultFontPointSize
+            text: qsTr("TRCK STAT")
+
+            Layout.rowSpan: 1
+            Layout.columnSpan: 3
+
+            Layout.preferredHeight: -1
+            Layout.preferredWidth: -1
+            Layout.fillWidth: true
+            Layout.fillHeight: true
+            Layout.alignment: Qt.AlignLeft
+
+            onReleased: {
+                joystickManager.epsilonCameraManagement.setCameraModeCommand(3)
+            }
+        }
+
+        QGCButton {
+
+            id: _trackVehicleModeButton
+
+            showBorder: true
+            font.pointSize: ScreenTools.isMobile ? point_size : ScreenTools.smallFontPointSize
+            pointSize: ScreenTools.isMobile ? point_size : ScreenTools.defaultFontPointSize
+            text: qsTr("TRCK VHCL")
+
+            Layout.rowSpan: 1
+            Layout.columnSpan: 3
+
+            Layout.preferredHeight: -1
+            Layout.preferredWidth: -1
+            Layout.fillWidth: true
+            Layout.fillHeight: true
+            Layout.alignment: Qt.AlignLeft
+
+            onReleased: {
+                joystickManager.epsilonCameraManagement.setCameraModeCommand(4)
+            }
+        }
+
+        QGCButton {
+
+            id: _trackSceneModeButton
+
+            showBorder: true
+            font.pointSize: ScreenTools.isMobile ? point_size : ScreenTools.smallFontPointSize
+            pointSize: ScreenTools.isMobile ? point_size : ScreenTools.defaultFontPointSize
+            text: qsTr("TRCK SCN")
+
+            Layout.rowSpan: 1
+            Layout.columnSpan: 3
+
+            Layout.preferredHeight: -1
+            Layout.preferredWidth: -1
+            Layout.fillWidth: true
+            Layout.fillHeight: true
+            Layout.alignment: Qt.AlignLeft
+
+            onReleased: {
+                joystickManager.epsilonCameraManagement.setCameraModeCommand(5)
+            }
+        }
+
+        QGCButton {
+
+            id: _trackStaticModeButton
+
+            showBorder: true
+            font.pointSize: ScreenTools.isMobile ? point_size : ScreenTools.smallFontPointSize
+            pointSize: ScreenTools.isMobile ? point_size : ScreenTools.defaultFontPointSize
+            text: qsTr("TRCK STAC")
+
+            Layout.rowSpan: 1
+            Layout.columnSpan: 3
+
+            Layout.preferredHeight: -1
+            Layout.preferredWidth: -1
+            Layout.fillWidth: true
+            Layout.fillHeight: true
+            Layout.alignment: Qt.AlignLeft
+
+            onReleased: {
+                joystickManager.epsilonCameraManagement.setCameraModeCommand(6)
+            }
+        }
     }
 }
-
-

@@ -4,7 +4,7 @@
 #include "SettingsManager.h"
 
 EpsilonCameraManagement::EpsilonCameraManagement(QObject *parent, MultiVehicleManager *multiVehicleManager, JoystickManager *joystickManager)
-    : QObject(parent), _multiVehicleManager(nullptr), activeVehicle(nullptr), _joystickManager(nullptr)
+    : QObject(parent), _multiVehicleManager(nullptr), activeVehicle(nullptr), _joystickManager(nullptr), _opticalZoomSpeed(0)
 {
     this->_multiVehicleManager = multiVehicleManager;
     this->activeVehicle = _multiVehicleManager->activeVehicle();
@@ -13,6 +13,16 @@ EpsilonCameraManagement::EpsilonCameraManagement(QObject *parent, MultiVehicleMa
 
     connect(_multiVehicleManager, &MultiVehicleManager::activeVehicleChanged, this, &EpsilonCameraManagement::_activeVehicleChanged);
     connect(this->_joystickManager, &JoystickManager::activeCamJoystickChanged, this, &EpsilonCameraManagement::_activeCamJoystickChanged);
+}
+
+void EpsilonCameraManagement::setOpticalZoomSpeed(int opticalZoomSpeed)
+{
+    _opticalZoomSpeed = (uint8_t) opticalZoomSpeed;
+}
+
+int EpsilonCameraManagement::getOpticalZoomSpeed(void) const
+{
+    return (int) _opticalZoomSpeed;
 }
 
 void EpsilonCameraManagement::_activeVehicleChanged(Vehicle *activeVehicle)
@@ -87,13 +97,16 @@ void EpsilonCameraManagement::manualCamControl(float cam_roll_yaw, float cam_pit
         switch (zoomValue)
         {
         case MavExtCmdArg_ZoomIn:
-            setSysZoomInCommand();
+            // setSysZoomInCommand();
+            setOpticalZoomSpeed(6);
             break;
         case MavExtCmdArg_ZoomOut:
-            setSysZoomOutCommand();
+            // setSysZoomOutCommand();
+            setOpticalZoomSpeed(-6);
             break;
         case MavExtCmdArg_ZoomStop:
-            setSysZoomStopCommand();
+            // etSysZoomStopCommand();
+            setOpticalZoomSpeed(0);
             break;
         }
     }
@@ -132,6 +145,8 @@ bool EpsilonCameraManagement::doBtnFuncToggle(bool pressed, int buttonIndex)
 void EpsilonCameraManagement::doCamAction(QString buttonAction, bool pressed, int buttonIndex)
 {
     bool doAction = doBtnFuncToggle(pressed, buttonIndex);
+    QString _file_name = "COLUGO";
+    static int dayThermal = 0;
 
     if (buttonAction.isEmpty())
         return;
@@ -149,6 +164,16 @@ void EpsilonCameraManagement::doCamAction(QString buttonAction, bool pressed, in
         /* Day/IR toggle */
         if (doAction)
         {
+            if (dayThermal == 0)
+            {
+                setCameraOrderCommand(1);
+                dayThermal = 1;
+            }
+            else
+            {
+                setCameraOrderCommand(0);
+                dayThermal = 0;
+            }
         }
     }
     else if (buttonAction == "White Hot / Black Hot")
@@ -163,27 +188,23 @@ void EpsilonCameraManagement::doCamAction(QString buttonAction, bool pressed, in
         /* Image Capture */
         if (doAction)
         {
+            setDoSnapshotCommand(1, 1, 1, 0, 0, _file_name);
         }
     }
-    else if (buttonAction == "Single Yaw")
+    else if (buttonAction == "Rate")
     {
-        /* Single Yaw */
+        /* Rate */
         if (doAction)
         {
+            setCameraModeCommand(1);
         }
     }
-    else if (buttonAction == "GRR")
+    else if (buttonAction == "Rate Aid")
     {
-        /* GRR */
+        /* Rate Aid */
         if (doAction)
         {
-        }
-    }
-    else if (buttonAction == "NUC")
-    {
-        /* NUC */
-        if (doAction)
-        {
+            setCameraModeCommand(2);
         }
     }
     else if (buttonAction == "Stow")
@@ -191,6 +212,7 @@ void EpsilonCameraManagement::doCamAction(QString buttonAction, bool pressed, in
         /* Stow */
         if (doAction)
         {
+            setCameraModeCommand(8);
         }
     }
     else if (buttonAction == "Pilot")
@@ -198,27 +220,7 @@ void EpsilonCameraManagement::doCamAction(QString buttonAction, bool pressed, in
         /* Pilot */
         if (doAction)
         {
-        }
-    }
-    else if (buttonAction == "Retract")
-    {
-        /* Retract */
-        if (doAction)
-        {
-        }
-    }
-    else if (buttonAction == "Hold Coordinate")
-    {
-        /* Hold Coordinate */
-        if (doAction)
-        {
-        }
-    }
-    else if (buttonAction == "Observation")
-    {
-        /* Observation */
-        if (doAction)
-        {
+            setCameraModeCommand(9);
         }
     }
     else if (buttonAction == "Record")
@@ -276,7 +278,7 @@ void EpsilonCameraManagement::sendGimbalCommand(float cam_roll_yaw, float cam_pi
 
         EpsilonLinkProtocol::epsilon_link_message_t message = {};
         uint8_t buffer[EPSILON_LINK_MAX_PAYLOAD_LEN] = {};
-        linkProtocol->epsilon_link_msg_rate_control_pack(&message, cam_roll_yaw, cam_pitch, 0, 0, 0, 0, 0);
+        linkProtocol->epsilon_link_msg_rate_control_pack(&message, cam_roll_yaw, cam_pitch, 0, 0, _opticalZoomSpeed, 0, 0);
         int len = linkProtocol->epsilon_link_msg_to_send_buffer(&buffer[0], &message);
 
         sharedLink->writeBytesThreadSafe((const char *) buffer, len);
@@ -438,12 +440,7 @@ void EpsilonCameraManagement::setCameraModeCommand(uint control_mode)
     }
 }
 
-void EpsilonCameraManagement::setSysZoomStopCommand()
-{
-    /* Sending retract release command */
-}
-
-void EpsilonCameraManagement::setSysZoomInCommand()
+void EpsilonCameraManagement::setSysDigitalZoomInCommand()
 {
     /* Sending retract release command */
 
@@ -467,7 +464,7 @@ void EpsilonCameraManagement::setSysZoomInCommand()
     }
 }
 
-void EpsilonCameraManagement::setSysZoomOutCommand()
+void EpsilonCameraManagement::setSysDigitalZoomOutCommand()
 {
     /* Sending retract release command */
 
@@ -489,31 +486,6 @@ void EpsilonCameraManagement::setSysZoomOutCommand()
 
         sharedLink->writeBytesThreadSafe((const char *) buffer, len);
     }
-}
-
-void EpsilonCameraManagement::setSysSensorDayCommand(void)
-{
-    /* Set the system sensor */
-}
-
-void EpsilonCameraManagement::setSysSensorIrCommand(void)
-{
-    /* Set the system sensor */
-}
-
-void EpsilonCameraManagement::setSysRecOnCommand(int chan)
-{
-    /* Set the system sensor */
-}
-
-void EpsilonCameraManagement::setSysRecOffCommand(int chan)
-{
-    /* Set the system sensor */
-}
-
-void EpsilonCameraManagement::setSysSnapshotCommand(int chan)
-{
-    /* Set the system sensor */
 }
 
 void EpsilonCameraManagement::setSysFOVCommand(float fov_value)
