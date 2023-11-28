@@ -14,7 +14,6 @@ import QGroundControl.FactControls 1.0
 import QGroundControl.SettingsManager 1.0
 
 //import "../../QmlControls"
-
 Item {
     anchors.fill: parent
     visible: true
@@ -154,7 +153,7 @@ Item {
             showBorder: true
             font.pointSize: ScreenTools.isMobile ? point_size : ScreenTools.smallFontPointSize
             pointSize: ScreenTools.isMobile ? point_size : ScreenTools.defaultFontPointSize
-            text: qsTr("GEO LOCK")
+            text: qsTr("GEO LCK")
 
             Layout.rowSpan: 1
             Layout.columnSpan: 2

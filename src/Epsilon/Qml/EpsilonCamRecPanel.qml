@@ -125,13 +125,10 @@ Item {
 
         Rectangle {
 
-            property var rowSpan: 1
-            property var columSpan: 6
-
             id: localrec
 
-            width: parent.width/parent.columns
-            height: width
+            height: parent.height / parent.rows
+            width: height
 
             color: Qt.rgba(0, 0, 0, 0)
             radius: width * 0.5
@@ -195,7 +192,7 @@ Item {
             Layout.preferredHeight: -1
             Layout.preferredWidth: -1
             Layout.fillWidth: true
-            Layout.fillHeight: false
+            Layout.fillHeight: true
             Layout.alignment: Qt.AlignLeft
 
             onClicked: {
@@ -219,7 +216,7 @@ Item {
             Layout.preferredHeight: -1
             Layout.preferredWidth: -1
             Layout.fillWidth: true
-            Layout.fillHeight: false
+            Layout.fillHeight: true
             Layout.alignment: Qt.AlignLeft
 
             onClicked: {
@@ -243,10 +240,10 @@ Item {
             Layout.preferredHeight: -1
             Layout.preferredWidth: -1
             Layout.fillWidth: true
-            Layout.fillHeight: false
+            Layout.fillHeight: true
             Layout.alignment: Qt.AlignLeft
 
-            onClicked:  {
+            onClicked: {
                 joystickManager.epsilonCameraManagement.setDoSnapshotCommand(
                             1, 1, 1, 0, 0, _file_name)
             }

@@ -85,7 +85,7 @@ Item {
             showBorder: true
             font.pointSize: ScreenTools.isMobile ? point_size : ScreenTools.smallFontPointSize
             pointSize: ScreenTools.isMobile ? point_size : ScreenTools.defaultFontPointSize
-            text: qsTr("PILOT")
+            text: qsTr("PLT")
 
             Layout.rowSpan: 1
             Layout.columnSpan: 2
@@ -108,7 +108,7 @@ Item {
             showBorder: true
             font.pointSize: ScreenTools.isMobile ? point_size : ScreenTools.smallFontPointSize
             pointSize: ScreenTools.isMobile ? point_size : ScreenTools.defaultFontPointSize
-            text: qsTr("STOW")
+            text: qsTr("STW")
 
             Layout.rowSpan: 1
             Layout.columnSpan: 2
@@ -275,7 +275,7 @@ Item {
             showBorder: true
             font.pointSize: ScreenTools.isMobile ? point_size : ScreenTools.smallFontPointSize
             pointSize: ScreenTools.isMobile ? point_size : ScreenTools.defaultFontPointSize
-            text: qsTr("DZOOMO")
+            text: qsTr("AUTO")
 
             Layout.rowSpan: 1
             Layout.columnSpan: 2
