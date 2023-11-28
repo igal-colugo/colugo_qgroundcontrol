@@ -25,14 +25,19 @@ import QGroundControl.FactSystem 1.0
 import QGroundControl.FactControls 1.0
 
 Rectangle {
-    height: 300
-    width: parent.width
+
+    id: _mainRectangle
+
+    anchors.fill: parent
+
     color: "#80000000"
     radius: _margins
     anchors.margins: 3
 
     property real _margins: ScreenTools.defaultFontPixelHeight / 2
     property real _butMargins: ScreenTools.defaultFontPixelHeight / 4
+
+    property bool _parent_width_changed: false
 
     /* nextvision panel resources */
     property int _panel_index: 0
@@ -46,16 +51,29 @@ Rectangle {
         enabled: true
         onClicked: {
 
+            //            if (_parent_width_changed === false) {
+
+            //                _parent_width_changed = true
+            //                _mainRectangle.width = 20
+            //                console.log("rectangle:", _mainRectangle.width,
+            //                            _mainRectangle.height)
+            //            } else {
+            //                _parent_width_changed = false
+            //                _mainRectangle.width = 300
+            //                console.log("rectangle:", _mainRectangle.width,
+            //                            _mainRectangle.height)
+            //            }
         }
     }
 
     function updatePanelIndex(dir) {
-        if (_panel_index + dir >= _panel_index_max)
+        if (_panel_index + dir >= _panel_index_max) {
             _panel_index = 0
-        else if (_panel_index + dir < _panel_index_min)
+        } else if (_panel_index + dir < _panel_index_min) {
             _panel_index = _panel_index_max - 1
-        else
+        } else {
             _panel_index += dir
+        }
     }
 
     QGCPalette {
