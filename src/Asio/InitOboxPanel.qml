@@ -1,125 +1,176 @@
-import QtQuick          2.3
+import QtQuick 2.3
 import QtQuick.Controls 1.2
-import QtQuick.Controls.Styles  1.4
-import QtQuick.Dialogs  1.2
-import QtQuick.Layouts  1.2
-import QtPositioning    5.3
+import QtQuick.Controls.Styles 1.4
+import QtQuick.Dialogs 1.2
+import QtQuick.Layouts 1.2
+import QtPositioning 5.3
 
-import QGroundControl               1.0
-import QGroundControl.Palette       1.0
-import QGroundControl.Controls      1.0
-import QGroundControl.ScreenTools   1.0
-import QGroundControl.Controllers   1.0
-import QGroundControl.FactSystem    1.0
-import QGroundControl.FactControls  1.0
+import QGroundControl 1.0
+import QGroundControl.Palette 1.0
+import QGroundControl.Controls 1.0
+import QGroundControl.ScreenTools 1.0
+import QGroundControl.Controllers 1.0
+import QGroundControl.FactSystem 1.0
+import QGroundControl.FactControls 1.0
 import QGroundControl.SettingsManager 1.0
 
-Rectangle {
-    id: _initialize_obox_panel_rectangle
-    height:             _heightTotal
-    color:              Qt.rgba(0.0,0.0,0.0,0.25)
-    visible:            true
-    radius:     _margins
+Item {
+    anchors.fill: parent
+    visible: true
 
-    property int _heightTotal: mainlabel.height + firstRow.height + secondRow.height+lastRow.height + (_margins*8)
-
-    property var    _activeVehicle:             QGroundControl.multiVehicleManager.activeVehicle
-    property var    _activeVehicleCoordinate:   _activeVehicle ? _activeVehicle.coordinate : QtPositioning.coordinate()
+    property var _activeVehicle: QGroundControl.multiVehicleManager.activeVehicle
+    property var _activeVehicleCoordinate: _activeVehicle ? _activeVehicle.coordinate : QtPositioning.coordinate()
     // The following properties relate to a simple camera
-    property var    _flyViewSettings:                           QGroundControl.settingsManager.flyViewSettings
+    property var _flyViewSettings: QGroundControl.settingsManager.flyViewSettings
 
-    QGCLabel {
-        id:                 mainlabel
-        text:               qsTr("OBOX init")
-        anchors.margins:    _margins
-        font.family:        ScreenTools.demiboldFontFamily
-        font.pointSize:     ScreenTools.largeFontPointSize
-        anchors.horizontalCenter:  parent.horizontalCenter
-        anchors.top:        parent.top
-        color:              "white"
-        height:             ScreenTools.defaultFontPixelHeight
-    }
+    GridLayout {
 
-    RowLayout {
-        id:                         firstRow
-        anchors.top:                mainlabel.bottom
-        anchors.margins:            _margins * 4
-        spacing:                    _butMargins
-        visible:                    true
+        id: grid
+
+        columns: 2
+        rows: 4
+        anchors.fill: parent
+        anchors.margins: 3
+        columnSpacing: 5
+        rowSpacing: 5
+
+        onWidthChanged: {
+            console.log("Obox init:", grid.width, grid.height)
+        }
 
         QGCLabel {
+
+            id: _mainlabel
+
+            height: ScreenTools.defaultFontPixelHeight
+
+            text: qsTr("OBOX INIT")
+            font.family: ScreenTools.demiboldFontFamily
+            font.pointSize: ScreenTools.largeFontPointSize
+            color: "White"
+
+            horizontalAlignment: Text.AlignHCenter
+            verticalAlignment: Text.AlignVCenter
+
+            Layout.columnSpan: 2
+            Layout.fillHeight: false
+            Layout.fillWidth: true
+        }
+
+        QGCLabel {
+
+            id: _latitudelabel
+
+            height: ScreenTools.defaultFontPixelHeight
+
+            text: qsTr("LAT")
+            font.family: ScreenTools.demiboldFontFamily
+            font.pointSize: ScreenTools.largeFontPointSize
+            color: "White"
+
+            horizontalAlignment: Text.AlignLeft
+            verticalAlignment: Text.AlignVCenter
+
+            Layout.columnSpan: 1
+            Layout.fillHeight: false
+            Layout.fillWidth: true
+        }
+
+        QGCTextField {
+            id: _latitude
+
+            maximumLength: 10
+            font.pointSize: 10
+            text: {
+                _fromVehicleLocation.checked ? _activeVehicleCoordinate.latitude : _latitude.text
+            }
+
+            Layout.rowSpan: 1
+            Layout.columnSpan: 1
+
+            Layout.preferredHeight: -1
+            Layout.preferredWidth: -1
+            Layout.fillWidth: true
+            Layout.fillHeight: true
+            Layout.alignment: Qt.AlignLeft
+        }
+
+        QGCLabel {
+
             id: _longitudelabel
-            text:                   qsTr("Latitude")
-            font.pointSize:         12
-            color:                  "white"
-            Layout.preferredWidth:  (_initialize_obox_panel_rectangle.width - _butMargins*2) / 2
-            leftPadding:_butMargins
+
+            height: ScreenTools.defaultFontPixelHeight
+
+            text: qsTr("LON")
+            font.family: ScreenTools.demiboldFontFamily
+            font.pointSize: ScreenTools.largeFontPointSize
+            color: "White"
+
+            horizontalAlignment: Text.AlignLeft
+            verticalAlignment: Text.AlignVCenter
+
+            Layout.alignment: Qt.AlignLeft | Qt.AlignTop
+            Layout.columnSpan: 1
+            Layout.fillHeight: false
+            Layout.fillWidth: true
         }
+
         QGCTextField {
-            id:                     _latitude
-            Layout.preferredWidth:  (_initialize_obox_panel_rectangle.width - _butMargins*2) / 2
-            maximumLength:          10
-            font.pointSize:         12
-            text:                  {
-               _fromVehicleLocation.checked? _activeVehicleCoordinate.latitude : _latitude.text
+            id: _longitude
+
+            maximumLength: 10
+            font.pointSize: 10
+            text: {
+                _fromVehicleLocation.checked ? _activeVehicleCoordinate.latitude : _latitude.text
             }
-        }
-    }
 
-    RowLayout {
-        id:                         secondRow
-        anchors.top:                firstRow.bottom
-        anchors.margins:            _margins
-        spacing:                    _butMargins
-        visible:                    true
+            Layout.rowSpan: 1
+            Layout.columnSpan: 1
 
-        QGCLabel {
-            text:                   qsTr("Longitude")
-            font.pointSize:         12
-            color:                  "white"
-            Layout.preferredWidth:  (_initialize_obox_panel_rectangle.width - _butMargins*2) / 2
-            leftPadding:_butMargins
+            Layout.preferredHeight: -1
+            Layout.preferredWidth: -1
+            Layout.fillWidth: true
+            Layout.fillHeight: true
+            Layout.alignment: Qt.AlignLeft
         }
-        QGCTextField {
-            id:                     _longitude
-            Layout.preferredWidth:  (_initialize_obox_panel_rectangle.width - _butMargins*2) / 2
-            maximumLength:          10
-            font.pointSize:         12
-            text:                    {
-                _fromVehicleLocation.checked? _activeVehicleCoordinate.longitude : _longitude.text
-            }
-        }
-    }
-
-    RowLayout {
-        id:                         lastRow
-        anchors.top:                secondRow.bottom
-        spacing:                    _butMargins
-        anchors.margins:            _margins
-        visible:                    true
 
         QGCButton {
-            showBorder:     true
-            font.pointSize: ScreenTools.isMobile? point_size : ScreenTools.smallFontPointSize
-            pointSize:      ScreenTools.isMobile? point_size : ScreenTools.defaultFontPointSize
-            text:           qsTr("Init")
-            leftPadding:    0
-            Layout.leftMargin: _margins
+
+            id: _initOboxButton
+
+            showBorder: true
+            font.pointSize: ScreenTools.isMobile ? point_size : ScreenTools.smallFontPointSize
+            pointSize: ScreenTools.isMobile ? point_size : ScreenTools.defaultFontPointSize
+            text: qsTr("INIT")
+
+            Layout.rowSpan: 1
+            Layout.columnSpan: 1
+
+            Layout.preferredHeight: -1
+            Layout.preferredWidth: -1
+            Layout.fillWidth: true
+            Layout.fillHeight: true
+            Layout.alignment: Qt.AlignLeft
+
             onReleased: {
-                if( _activeVehicle !== null)
-                {
-                    _activeVehicle.setAsioInitLocation( _latitude.text,_longitude.text);
-                }
+                joystickManager.epsilonCameraManagement.setCameraOrderCommand(1)
             }
         }
 
         QGCCheckBox {
-            id:                     _fromVehicleLocation
-            text:                   qsTr("get from vehicle")
-            textColor:              "white"
-            textFontPointSize:      ScreenTools.isMobile ? point_size : 9
+            id: _fromVehicleLocation
+            text: qsTr("VEHICLE")
+            textColor: "white"
+            textFontPointSize: ScreenTools.isMobile ? point_size : 9
+
+            Layout.rowSpan: 1
+            Layout.columnSpan: 1
+
+            Layout.preferredHeight: -1
+            Layout.preferredWidth: -1
+            Layout.fillWidth: true
+            Layout.fillHeight: true
+            Layout.alignment: Qt.AlignLeft
         }
     }
 }
-
-

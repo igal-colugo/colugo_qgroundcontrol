@@ -12,6 +12,7 @@
 
 #pragma once
 
+#include "Epsilon/EpsilonCameraManagement.h"
 #include "Joystick.h"
 #include "MultiVehicleManager.h"
 #include "NextVisionExt/NvExt_CameraManagement.h"
@@ -62,6 +63,7 @@ class JoystickManager : public QGCTool
     void setActiveJoystickName(const QString &name);
 
     Q_PROPERTY(CameraManagement *cameraManagement READ cameraManagement WRITE setCameraManagement NOTIFY activeCameraManagementChanged)
+    Q_PROPERTY(EpsilonCameraManagement *epsilonCameraManagement READ epsilonCameraManagement WRITE setEpsilonCameraManagement NOTIFY activeCameraManagementChanged)
 
     void restartJoystickCheckTimer(void);
 
@@ -70,6 +72,14 @@ class JoystickManager : public QGCTool
 
     CameraManagement *cameraManagement(void);
     void setCameraManagement(CameraManagement *camManagement);
+
+    /* Epsilon Added code for Camera Joystick*/
+    /* ------------------------------------------------------------------------------------------------------*/
+
+    EpsilonCameraManagement *epsilonCameraManagement(void);
+    void setEpsilonCameraManagement(EpsilonCameraManagement *epsilonCamManagement);
+
+    /* ------------------------------------------------------------------------------------------------------*/
 
   public slots:
     void init();
@@ -106,6 +116,13 @@ class JoystickManager : public QGCTool
     Joystick *_activeCamJoystick;
     CameraManagement *_cameraManagement;
     static const char *_settingsKeyActiveCamJoystick;
+    /* ------------------------------------------------------------------------------------------------------*/
+
+    /* Epsilon Added code for Camera Joystick*/
+    /* ------------------------------------------------------------------------------------------------------*/
+
+    EpsilonCameraManagement *_epsilonCameraManagement;
+
     /* ------------------------------------------------------------------------------------------------------*/
 
     int _joystickCheckTimerCounter;

@@ -12,4 +12,6 @@ add_custom_target(UiPreferencesQml
 		SerialSettings.qml
 		TcpSettings.qml
 		UdpSettings.qml
+		NextVisionLinkSettings.qml
+		EpsilonLinkSettings.qml
 )

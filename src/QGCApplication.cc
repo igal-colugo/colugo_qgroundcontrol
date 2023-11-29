@@ -35,6 +35,7 @@
 #include "AutoPilotPlugin.h"
 #include "CmdLineOptParser.h"
 #include "ESP8266ComponentController.h"
+#include "Epsilon/EpsilonLinkManager.h"
 #include "FirmwarePluginManager.h"
 #include "FlightMapSettings.h"
 #include "FlightPathSegment.h"
@@ -608,6 +609,7 @@ bool QGCApplication::_initForNormalAppBoot()
     // Load known link configurations
     toolbox()->linkManager()->loadLinkConfigurationList();
     toolbox()->nextVisionLinkManager()->loadLinkConfigurationList();
+    toolbox()->epsilonLinkManager()->loadLinkConfigurationList();
 
     // Probe for joysticks
     toolbox()->joystickManager()->init();

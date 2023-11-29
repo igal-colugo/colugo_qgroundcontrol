@@ -20,9 +20,12 @@ class JoystickManager;
 class FollowMe;
 class LinkManager;
 class NextVisionLinkManager;
+class EpsilonLinkManager;
 class CameraManagement;
+class EpsilonCameraManagement;
 class MAVLinkProtocol;
 class NextVisionMAVLinkProtocol;
+class EpsilonLinkProtocol;
 class MissionCommandTree;
 class MultiVehicleManager;
 class QGCMapEngineManager;
@@ -74,6 +77,10 @@ class QGCToolbox : public QObject
     {
         return _nextVisionLinkManager;
     }
+    EpsilonLinkManager *epsilonLinkManager()
+    {
+        return _epsilonLinkManager;
+    }
     MAVLinkProtocol *mavlinkProtocol()
     {
         return _mavlinkProtocol;
@@ -81,6 +88,10 @@ class QGCToolbox : public QObject
     NextVisionMAVLinkProtocol *nextVisionMavlinkProtocol()
     {
         return _nextVisionMavlinkProtocol;
+    }
+    EpsilonLinkProtocol *epsilonLinkProtocol()
+    {
+        return _epsilonLinkProtocol;
     }
     MissionCommandTree *missionCommandTree()
     {
@@ -173,8 +184,10 @@ class QGCToolbox : public QObject
     JoystickManager *_joystickManager = nullptr;
     LinkManager *_linkManager = nullptr;
     NextVisionLinkManager *_nextVisionLinkManager = nullptr;
+    EpsilonLinkManager *_epsilonLinkManager = nullptr;
     MAVLinkProtocol *_mavlinkProtocol = nullptr;
     NextVisionMAVLinkProtocol *_nextVisionMavlinkProtocol = nullptr;
+    EpsilonLinkProtocol *_epsilonLinkProtocol = nullptr;
     MissionCommandTree *_missionCommandTree = nullptr;
     MultiVehicleManager *_multiVehicleManager = nullptr;
     QGCMapEngineManager *_mapEngineManager = nullptr;

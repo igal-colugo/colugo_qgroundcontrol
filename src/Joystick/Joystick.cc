@@ -94,6 +94,18 @@ const char *Joystick::_buttonActionRetract = QT_TR_NOOP("Retract");
 const char *Joystick::_buttonActionHoldCord = QT_TR_NOOP("Hold Coordinate");
 /* ------------------------------------------------------------------------------------------------------*/
 
+/* Epsilon Added configuration keys for Camera Joystick
+ * ------------------------------------------------------------------------------------------------------*/
+
+const char *Joystick::_buttonActionRate = QT_TR_NOOP("Rate");
+const char *Joystick::_buttonActionRateAid = QT_TR_NOOP("Rate Aid");
+const char *Joystick::_buttonActionTrackingStationary = QT_TR_NOOP("Tracking Stationary");
+const char *Joystick::_buttonActionTrackingVehicle = QT_TR_NOOP("Tracking Vehicle");
+const char *Joystick::_buttonActionTrackingScene = QT_TR_NOOP("Tracking Scene");
+const char *Joystick::_buttonActionTrackingStatic = QT_TR_NOOP("Tracking Static");
+const char *Joystick::_buttonActionGeoLock = QT_TR_NOOP("Geo Lock");
+/* ------------------------------------------------------------------------------------------------------*/
+
 const float Joystick::_defaultAxisFrequencyHz = 25.0f;
 const float Joystick::_defaultButtonFrequencyHz = 5.0f;
 const float Joystick::_minAxisFrequencyHz = 0.25f;
@@ -585,16 +597,20 @@ float Joystick::_adjustRange(int value, Calibration_t calibration, bool withDead
  ------------------------------------------------------------------------------------------------------*/
 void Joystick::run()
 {
-    float roll_yaw = 0, pitch = 0;
+    float roll_yaw = 0;
+    float pitch = 0;
     Calibration_t roll_caib;
     Calibration_t pitch_caib;
-    float roll_yaw_DZ = 0, pitch_DZ = 0;
+    float roll_yaw_DZ = 0;
+    float pitch_DZ = 0;
 
     //-- Joystick thread
     _open();
+
     //-- Reset timers
     _axisTime.start();
     _camTimeDivider = 0;
+    _camTimeDividerMax = 10;
 
     for (int buttonIndex = 0; buttonIndex < _totalButtonCount; buttonIndex++)
     {
@@ -603,6 +619,9 @@ void Joystick::run()
             _buttonActionArray[buttonIndex]->buttonTime.start();
         }
     }
+
+    // m_stopwatchElapsed.start();
+    // qint64 elapsed_time_previous = 0;
 
     while (!_exitThread)
     {
@@ -617,7 +636,7 @@ void Joystick::run()
         {
             if (_enabled)
             {
-                if (_camTimeDivider++ >= 3)
+                if (_camTimeDivider++ >= _camTimeDividerMax)
                 {
                     //-- Update axis
                     for (int axisIndex = 0; axisIndex < _axisCount; axisIndex++)
@@ -743,12 +762,19 @@ void Joystick::run()
 
                     emit manualControlCam(roll_yaw, pitch, _rgButtonValues);
                     emit manualControlCamQml(roll_yaw, pitch);
+
+                    // qint64 elapsed_time = m_stopwatchElapsed.elapsed();
+
+                    // qint64 diff_time = abs(elapsed_time - elapsed_time_previous);
+                    // qDebug("diff_time: %d", (int) diff_time);
+                    // elapsed_time_previous = elapsed_time;
                 }
             }
         }
 
         QGC::SLEEP::msleep(20);
     }
+
     _close();
 }
 /* NextVision Added Code For Camera Joystick
@@ -1333,6 +1359,14 @@ void Joystick::_buildCamActionList()
     _assignableCamButtonActions.append(new AssignableButtonAction(this, _buttonActionPilot));
     _assignableCamButtonActions.append(new AssignableButtonAction(this, _buttonActionRetract));
     _assignableCamButtonActions.append(new AssignableButtonAction(this, _buttonActionHoldCord));
+
+    _assignableCamButtonActions.append(new AssignableButtonAction(this, _buttonActionRate));
+    _assignableCamButtonActions.append(new AssignableButtonAction(this, _buttonActionRateAid));
+    _assignableCamButtonActions.append(new AssignableButtonAction(this, _buttonActionTrackingStationary));
+    _assignableCamButtonActions.append(new AssignableButtonAction(this, _buttonActionTrackingVehicle));
+    _assignableCamButtonActions.append(new AssignableButtonAction(this, _buttonActionTrackingScene));
+    _assignableCamButtonActions.append(new AssignableButtonAction(this, _buttonActionGeoLock));
+
     for (int i = 0; i < _assignableCamButtonActions.count(); i++)
     {
         AssignableButtonAction *p = qobject_cast<AssignableButtonAction *>(_assignableCamButtonActions[i]);

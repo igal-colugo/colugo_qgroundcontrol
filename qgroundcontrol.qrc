@@ -287,6 +287,8 @@
         <file alias="NextVisionLinkSettings.qml">src/ui/preferences/NextVisionLinkSettings.qml</file>
         <file alias="QGroundControl/FlightMap/NextVisionPhotoVideoControl.qml">src/FlightMap/Widgets/NextVisionPhotoVideoControl.qml</file>
         <file alias="QGroundControl/FlightMap/OboxControl.qml">src/FlightMap/Widgets/OboxControl.qml</file>
+        <file alias="EpsilonLinkSettings.qml">src/ui/preferences/EpsilonLinkSettings.qml</file>
+        <file alias="QGroundControl/FlightMap/EpsilonPhotoVideoControl.qml">src/FlightMap/Widgets/EpsilonPhotoVideoControl.qml</file>
     </qresource>
     <qresource prefix="/FirstRunPromptDialogs">
         <file alias="UnitsFirstRunPrompt.qml">src/FirstRunPromptDialogs/UnitsFirstRunPrompt.qml</file>
@@ -380,5 +382,24 @@
     <qresource prefix="/asioqml">
         <file alias="InitOboxPanel.qml">src/Asio/InitOboxPanel.qml</file>
         <file alias="OboxSettingsPanel.qml">src/Asio/OboxSettingsPanel.qml</file>
+    </qresource>
+    <qresource prefix="/epsqml">
+        <file alias="EpsilonCamFModePanel.qml">src/Epsilon/Qml/EpsilonCamFModePanel.qml</file>
+        <file alias="EpsilonCamJoystickConfigButtons.qml">src/Epsilon/Qml/EpsilonCamJoystickConfigButtons.qml</file>
+        <file alias="EpsilonCamJoystickConfigCalibration.qml">src/Epsilon/Qml/EpsilonCamJoystickConfigCalibration.qml</file>
+        <file alias="EpsilonCamJoystickConfigGeneral.qml">src/Epsilon/Qml/EpsilonCamJoystickConfigGeneral.qml</file>
+        <file alias="EpsilonCamMiscPanel.qml">src/Epsilon/Qml/EpsilonCamMiscPanel.qml</file>
+        <file alias="EpsilonCamModePanel.qml">src/Epsilon/Qml/EpsilonCamModePanel.qml</file>
+        <file alias="EpsilonCamMultiTrackControlPanel.qml">src/Epsilon/Qml/EpsilonCamMultiTrackControlPanel.qml</file>
+        <file alias="EpsilonCamObjDetPanel.qml">src/Epsilon/Qml/EpsilonCamObjDetPanel.qml</file>
+        <file alias="EpsilonCamPosPanel.qml">src/Epsilon/Qml/EpsilonCamPosPanel.qml</file>
+        <file alias="EpsilonCamQuickPanel.qml">src/Epsilon/Qml/EpsilonCamQuickPanel.qml</file>
+        <file alias="EpsilonCamRecPanel.qml">src/Epsilon/Qml/EpsilonCamRecPanel.qml</file>
+        <file alias="EpsilonCamStreamControlPanel.qml">src/Epsilon/Qml/EpsilonCamStreamControlPanel.qml</file>
+        <file alias="EpsilonCamTrackControlPanel.qml">src/Epsilon/Qml/EpsilonCamTrackControlPanel.qml</file>
+        <file alias="EpsilonCamVMDControlPanel.qml">src/Epsilon/Qml/EpsilonCamVMDControlPanel.qml</file>
+        <file alias="EpsilonCamIRGainLevelPanel.qml">src/Epsilon/Qml/EpsilonCamIRGainLevelPanel.qml</file>
+        <file alias="EpsilonCamIRPanel.qml">src/Epsilon/Qml/EpsilonCamIRPanel.qml</file>
+        <file alias="EpsilonCamJoystickConfig.qml">src/Epsilon/Qml/EpsilonCamJoystickConfig.qml</file>
     </qresource>
 </RCC>

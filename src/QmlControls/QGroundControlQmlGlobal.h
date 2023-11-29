@@ -62,6 +62,7 @@ class QGroundControlQmlGlobal : public QGCTool
     Q_PROPERTY(QString appName READ appName CONSTANT)
     Q_PROPERTY(LinkManager *linkManager READ linkManager CONSTANT)
     Q_PROPERTY(NextVisionLinkManager *nextVisionLinkManager READ nextVisionLinkManager CONSTANT)
+    Q_PROPERTY(EpsilonLinkManager *epsilonLinkManager READ epsilonLinkManager CONSTANT)
     Q_PROPERTY(MultiVehicleManager *multiVehicleManager READ multiVehicleManager CONSTANT)
     Q_PROPERTY(QGCMapEngineManager *mapEngineManager READ mapEngineManager CONSTANT)
     Q_PROPERTY(QGCPositionManager *qgcPositionManger READ qgcPositionManger CONSTANT)
@@ -178,6 +179,10 @@ class QGroundControlQmlGlobal : public QGCTool
     NextVisionLinkManager *nextVisionLinkManager()
     {
         return _nextVisionLinkManager;
+    }
+    EpsilonLinkManager *epsilonLinkManager()
+    {
+        return _epsilonLinkManager;
     }
     MultiVehicleManager *multiVehicleManager()
     {
@@ -401,6 +406,7 @@ class QGroundControlQmlGlobal : public QGCTool
     double _flightMapInitialZoom = 17.0;
     LinkManager *_linkManager = nullptr;
     NextVisionLinkManager *_nextVisionLinkManager = nullptr;
+    EpsilonLinkManager *_epsilonLinkManager = nullptr;
     MultiVehicleManager *_multiVehicleManager = nullptr;
     QGCMapEngineManager *_mapEngineManager = nullptr;
     QGCPositionManager *_qgcPositionManager = nullptr;
