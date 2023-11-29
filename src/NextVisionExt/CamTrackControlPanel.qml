@@ -1,182 +1,383 @@
-import QtQuick          2.3
+import QtQuick 2.3
 import QtQuick.Controls 1.2
-import QtQuick.Dialogs  1.2
-import QtQuick.Layouts  1.2
+import QtQuick.Dialogs 1.2
+import QtQuick.Layouts 1.2
 
-import QGroundControl               1.0
-import QGroundControl.Palette       1.0
-import QGroundControl.Controls      1.0
-import QGroundControl.ScreenTools   1.0
-import QGroundControl.Controllers   1.0
-import QGroundControl.FactSystem    1.0
-import QGroundControl.FactControls  1.0
+import QGroundControl 1.0
+import QGroundControl.Palette 1.0
+import QGroundControl.Controls 1.0
+import QGroundControl.ScreenTools 1.0
+import QGroundControl.Controllers 1.0
+import QGroundControl.FactSystem 1.0
+import QGroundControl.FactControls 1.0
 
-Rectangle {
-    height:             _heightTotal
-    color:              Qt.rgba(0.0,0.0,0.0,0.25)
-    visible:            true
+Item {
+    anchors.fill: parent
+    visible: true
 
-    property int _heightTotal: mainlabel.height
-                               +actTracker.height+firstRow.height
-                               +primTracker.height+secondRow.height
-                               +trackerROI.height+thirdRow.height+(_margins*8)
+    GridLayout {
 
-    QGCLabel {
-        id:                 mainlabel
-        text:               qsTr("TRACK")
-        anchors.margins:    ScreenTools.isMobile ? _margins * 1.6 : _margins
-        font.family:        ScreenTools.demiboldFontFamily
-        font.pointSize:     ScreenTools.largeFontPointSize
-        anchors.horizontalCenter:  parent.horizontalCenter
-        anchors.top:        parent.top
-        height:             ScreenTools.defaultFontPixelHeight
-        color:              "white"
-    }
+        id: grid
 
-    QGCLabel {
-        id:                 actTracker
-        text:               qsTr("Active Tracker")
-        anchors.margins:    _margins
-        font.family:        ScreenTools.demiboldFontFamily
-        font.pointSize:     ScreenTools.isMobile? point_size : ScreenTools.mediumFontPointSize
-        anchors.horizontalCenter:  parent.horizontalCenter
-        anchors.top:        mainlabel.bottom
-        height:             ScreenTools.smallFontPointSize
-        color:              "white"
-    }
+        columns: 5
+        rows: 7
+        anchors.fill: parent
+        anchors.margins: 3
+        columnSpacing: 5
+        rowSpacing: 5
 
-    RowLayout {
-        id:                         firstRow
-        anchors.horizontalCenter:   parent.horizontalCenter
-        anchors.top:                actTracker.bottom
-        anchors.margins:            _margins
-        spacing:                    5
-        visible:                    true
-
-            QGCRadioButton {
-                font.pointSize: ScreenTools.smallFontPointSize
-                text:           qsTr("0")
-                checked:        true
-                onClicked:      joystickManager.cameraManagement.setSysActiveTrackerCommand(0);
-            }
-            QGCRadioButton {
-                font.pointSize: ScreenTools.smallFontPointSize
-                text:           qsTr("1")
-                onClicked:      joystickManager.cameraManagement.setSysActiveTrackerCommand(1);
-            }
-
-            QGCRadioButton {
-                font.pointSize: ScreenTools.smallFontPointSize
-                text:           qsTr("2")
-                onClicked:      joystickManager.cameraManagement.setSysActiveTrackerCommand(2);
-            }
-            QGCRadioButton {
-                font.pointSize: ScreenTools.smallFontPointSize
-                text:           qsTr("3")
-                onClicked:      joystickManager.cameraManagement.setSysActiveTrackerCommand(3);
-            }
-            QGCRadioButton {
-                font.pointSize: ScreenTools.smallFontPointSize
-                text:           qsTr("4")
-                onClicked:      joystickManager.cameraManagement.setSysActiveTrackerCommand(4);
-            }
-    }
-
-    QGCLabel {
-        id:                 primTracker
-        text:               qsTr("Primary Tracker")
-        anchors.margins:    _margins
-        font.family:        ScreenTools.demiboldFontFamily
-        font.pointSize:     ScreenTools.isMobile? point_size : ScreenTools.mediumFontPointSize
-        anchors.horizontalCenter:  parent.horizontalCenter
-        anchors.top:        firstRow.bottom
-        height:             ScreenTools.smallFontPointSize
-        color:              "white"
-    }
-
-    RowLayout {
-        id:                         secondRow
-        anchors.horizontalCenter:   parent.horizontalCenter
-        anchors.top:                primTracker.bottom
-        anchors.margins:            _margins
-        spacing:                    5
-        visible:                    true
-
-        QGCRadioButton {
-            font.pointSize: ScreenTools.smallFontPointSize
-            text:           qsTr("0")
-            checked:        true
-            onClicked:      joystickManager.cameraManagement.setSysPrimaryTrackerCommand(0);
+        onWidthChanged: {
+            console.log("Track mode:", grid.width, grid.height)
         }
-        QGCRadioButton {
-            font.pointSize: ScreenTools.smallFontPointSize
-            text:           qsTr("1")
-            onClicked:      joystickManager.cameraManagement.setSysPrimaryTrackerCommand(1);
-        }
-        QGCRadioButton {
-            font.pointSize: ScreenTools.smallFontPointSize
-            text:           qsTr("2")
-            onClicked:      joystickManager.cameraManagement.setSysPrimaryTrackerCommand(2);
-        }
-        QGCRadioButton {
-            font.pointSize: ScreenTools.smallFontPointSize
-            text:           qsTr("3")
-            onClicked:      joystickManager.cameraManagement.setSysPrimaryTrackerCommand(3);
-        }
-        QGCRadioButton {
-            font.pointSize: ScreenTools.smallFontPointSize
-            text:           qsTr("4")
-            onClicked:      joystickManager.cameraManagement.setSysPrimaryTrackerCommand(4);
-        }
-    }
 
-    QGCLabel {
-        id:                 trackerROI
-        text:               qsTr("Tracker ROI")
-        anchors.margins:    _margins
-        font.family:        ScreenTools.demiboldFontFamily
-        font.pointSize:     ScreenTools.isMobile? point_size : ScreenTools.mediumFontPointSize
-        anchors.horizontalCenter:  parent.horizontalCenter
-        anchors.top:        secondRow.bottom
-        height:             ScreenTools.smallFontPointSize
-        color:              "white"
-    }
+        QGCLabel {
 
-    RowLayout {
-        id:                         thirdRow
-        anchors.horizontalCenter:   parent.horizontalCenter
-        anchors.top:                trackerROI.bottom
-        anchors.margins:            _margins
-        spacing:                    5
-        visible:                    true
+            id: mainlabel
+
+            height: ScreenTools.defaultFontPixelHeight
+
+            text: qsTr("TRACK")
+            font.family: ScreenTools.demiboldFontFamily
+            font.pointSize: ScreenTools.largeFontPointSize
+            color: "White"
+
+            horizontalAlignment: Text.AlignHCenter
+            verticalAlignment: Text.AlignVCenter
+
+            Layout.alignment: Qt.AlignLeft | Qt.AlignTop
+            Layout.columnSpan: 5
+            Layout.fillHeight: false
+            Layout.fillWidth: true
+        }
+
+        QGCLabel {
+
+            id: actTracker
+
+            height: ScreenTools.defaultFontPixelHeight
+
+            text: qsTr("ACTIVE")
+            font.family: ScreenTools.demiboldFontFamily
+            font.pointSize: ScreenTools.largeFontPointSize
+            color: "White"
+
+            horizontalAlignment: Text.AlignHCenter
+            verticalAlignment: Text.AlignVCenter
+
+            Layout.alignment: Qt.AlignLeft | Qt.AlignTop
+            Layout.columnSpan: 5
+            Layout.fillHeight: false
+            Layout.fillWidth: true
+        }
 
         QGCRadioButton {
-            font.pointSize: ScreenTools.smallFontPointSize
-            text:           qsTr("0")
-            checked:        true
-            onClicked:      joystickManager.cameraManagement.setSysTrackerROICommand(0);
+
+            text: qsTr("0")
+            checked: true
+
+            Layout.rowSpan: 1
+            Layout.columnSpan: 1
+
+            Layout.preferredHeight: -1
+            Layout.preferredWidth: -1
+            Layout.fillWidth: true
+            Layout.fillHeight: true
+            Layout.alignment: Qt.AlignLeft
+
+            onClicked: joystickManager.cameraManagement.setSysActiveTrackerCommand(
+                           0)
         }
+
         QGCRadioButton {
-            font.pointSize: ScreenTools.smallFontPointSize
-            text:           qsTr("1")
-            onClicked:      joystickManager.cameraManagement.setSysTrackerROICommand(1);
+
+            text: qsTr("1")
+            checked: false
+
+            Layout.rowSpan: 1
+            Layout.columnSpan: 1
+
+            Layout.preferredHeight: -1
+            Layout.preferredWidth: -1
+            Layout.fillWidth: true
+            Layout.fillHeight: true
+            Layout.alignment: Qt.AlignLeft
+
+            onClicked: joystickManager.cameraManagement.setSysActiveTrackerCommand(
+                           1)
         }
+
         QGCRadioButton {
-            font.pointSize: ScreenTools.smallFontPointSize
-            text:           qsTr("2")
-            onClicked:      joystickManager.cameraManagement.setSysTrackerROICommand(2);
+
+            text: qsTr("2")
+            checked: false
+
+            Layout.rowSpan: 1
+            Layout.columnSpan: 1
+
+            Layout.preferredHeight: -1
+            Layout.preferredWidth: -1
+            Layout.fillWidth: true
+            Layout.fillHeight: true
+            Layout.alignment: Qt.AlignLeft
+
+            onClicked: joystickManager.cameraManagement.setSysActiveTrackerCommand(
+                           2)
         }
+
         QGCRadioButton {
-            font.pointSize: ScreenTools.smallFontPointSize
-            text:           qsTr("3")
-            onClicked:      joystickManager.cameraManagement.setSysTrackerROICommand(3);
+
+            text: qsTr("3")
+            checked: false
+
+            Layout.rowSpan: 1
+            Layout.columnSpan: 1
+
+            Layout.preferredHeight: -1
+            Layout.preferredWidth: -1
+            Layout.fillWidth: true
+            Layout.fillHeight: true
+            Layout.alignment: Qt.AlignLeft
+
+            onClicked: joystickManager.cameraManagement.setSysActiveTrackerCommand(
+                           3)
         }
+
         QGCRadioButton {
-            font.pointSize: ScreenTools.smallFontPointSize
-            text:           qsTr("4")
-            onClicked:      joystickManager.cameraManagement.setSysTrackerROICommand(4);
+
+            text: qsTr("4")
+            checked: false
+
+            Layout.rowSpan: 1
+            Layout.columnSpan: 1
+
+            Layout.preferredHeight: -1
+            Layout.preferredWidth: -1
+            Layout.fillWidth: true
+            Layout.fillHeight: true
+            Layout.alignment: Qt.AlignLeft
+
+            onClicked: joystickManager.cameraManagement.setSysActiveTrackerCommand(
+                           4)
+        }
+
+        QGCLabel {
+
+            id: primTracker
+
+            height: ScreenTools.defaultFontPixelHeight
+
+            text: qsTr("PRIMARY")
+            font.family: ScreenTools.demiboldFontFamily
+            font.pointSize: ScreenTools.largeFontPointSize
+            color: "White"
+
+            horizontalAlignment: Text.AlignHCenter
+            verticalAlignment: Text.AlignVCenter
+
+            Layout.alignment: Qt.AlignLeft | Qt.AlignTop
+            Layout.columnSpan: 5
+            Layout.fillHeight: false
+            Layout.fillWidth: true
+        }
+
+        QGCRadioButton {
+
+            text: qsTr("0")
+            checked: true
+
+            Layout.rowSpan: 1
+            Layout.columnSpan: 1
+
+            Layout.preferredHeight: -1
+            Layout.preferredWidth: -1
+            Layout.fillWidth: true
+            Layout.fillHeight: true
+            Layout.alignment: Qt.AlignLeft
+
+            onClicked: joystickManager.cameraManagement.setSysPrimaryTrackerCommand(
+                           0)
+        }
+
+        QGCRadioButton {
+
+            text: qsTr("1")
+            checked: false
+
+            Layout.rowSpan: 1
+            Layout.columnSpan: 1
+
+            Layout.preferredHeight: -1
+            Layout.preferredWidth: -1
+            Layout.fillWidth: true
+            Layout.fillHeight: true
+            Layout.alignment: Qt.AlignLeft
+
+            onClicked: joystickManager.cameraManagement.setSysPrimaryTrackerCommand(
+                           1)
+        }
+
+        QGCRadioButton {
+
+            text: qsTr("2")
+            checked: false
+
+            Layout.rowSpan: 1
+            Layout.columnSpan: 1
+
+            Layout.preferredHeight: -1
+            Layout.preferredWidth: -1
+            Layout.fillWidth: true
+            Layout.fillHeight: true
+            Layout.alignment: Qt.AlignLeft
+
+            onClicked: joystickManager.cameraManagement.setSysPrimaryTrackerCommand(
+                           2)
+        }
+
+        QGCRadioButton {
+
+            text: qsTr("3")
+            checked: false
+
+            Layout.rowSpan: 1
+            Layout.columnSpan: 1
+
+            Layout.preferredHeight: -1
+            Layout.preferredWidth: -1
+            Layout.fillWidth: true
+            Layout.fillHeight: true
+            Layout.alignment: Qt.AlignLeft
+
+            onClicked: joystickManager.cameraManagement.setSysPrimaryTrackerCommand(
+                           3)
+        }
+
+        QGCRadioButton {
+
+            text: qsTr("4")
+            checked: false
+
+            Layout.rowSpan: 1
+            Layout.columnSpan: 1
+
+            Layout.preferredHeight: -1
+            Layout.preferredWidth: -1
+            Layout.fillWidth: true
+            Layout.fillHeight: true
+            Layout.alignment: Qt.AlignLeft
+
+            onClicked: joystickManager.cameraManagement.setSysPrimaryTrackerCommand(
+                           4)
+        }
+
+        QGCLabel {
+
+            id: trackerROI
+
+            height: ScreenTools.defaultFontPixelHeight
+
+            text: qsTr("ROI")
+            font.family: ScreenTools.demiboldFontFamily
+            font.pointSize: ScreenTools.largeFontPointSize
+            color: "White"
+
+            horizontalAlignment: Text.AlignHCenter
+            verticalAlignment: Text.AlignVCenter
+
+            Layout.alignment: Qt.AlignLeft | Qt.AlignTop
+            Layout.columnSpan: 5
+            Layout.fillHeight: false
+            Layout.fillWidth: true
+        }
+
+        QGCRadioButton {
+
+            text: qsTr("0")
+            checked: true
+
+            Layout.rowSpan: 1
+            Layout.columnSpan: 1
+
+            Layout.preferredHeight: -1
+            Layout.preferredWidth: -1
+            Layout.fillWidth: true
+            Layout.fillHeight: true
+            Layout.alignment: Qt.AlignLeft
+
+            onClicked: joystickManager.cameraManagement.setSysTrackerROICommand(
+                           0)
+        }
+
+        QGCRadioButton {
+
+            text: qsTr("1")
+            checked: false
+
+            Layout.rowSpan: 1
+            Layout.columnSpan: 1
+
+            Layout.preferredHeight: -1
+            Layout.preferredWidth: -1
+            Layout.fillWidth: true
+            Layout.fillHeight: true
+            Layout.alignment: Qt.AlignLeft
+
+            onClicked: joystickManager.cameraManagement.setSysTrackerROICommand(
+                           1)
+        }
+
+        QGCRadioButton {
+
+            text: qsTr("2")
+            checked: false
+
+            Layout.rowSpan: 1
+            Layout.columnSpan: 1
+
+            Layout.preferredHeight: -1
+            Layout.preferredWidth: -1
+            Layout.fillWidth: true
+            Layout.fillHeight: true
+            Layout.alignment: Qt.AlignLeft
+
+            onClicked: joystickManager.cameraManagement.setSysPrimaryTrackerCommand(
+                           2)
+        }
+
+        QGCRadioButton {
+
+            text: qsTr("3")
+            checked: false
+
+            Layout.rowSpan: 1
+            Layout.columnSpan: 1
+
+            Layout.preferredHeight: -1
+            Layout.preferredWidth: -1
+            Layout.fillWidth: true
+            Layout.fillHeight: true
+            Layout.alignment: Qt.AlignLeft
+
+            onClicked: joystickManager.cameraManagement.setSysTrackerROICommand(
+                           3)
+        }
+
+        QGCRadioButton {
+
+            text: qsTr("4")
+            checked: false
+
+            Layout.rowSpan: 1
+            Layout.columnSpan: 1
+
+            Layout.preferredHeight: -1
+            Layout.preferredWidth: -1
+            Layout.fillWidth: true
+            Layout.fillHeight: true
+            Layout.alignment: Qt.AlignLeft
+
+            onClicked: joystickManager.cameraManagement.setSysTrackerROICommand(
+                           4)
         }
     }
 }
-
-

@@ -56,11 +56,11 @@ void JoystickManager::setToolbox(QGCToolbox *toolbox)
     int8_t nextVisionEnabled = qgcApp()->toolbox()->settingsManager()->appSettings()->enableNextVision()->rawValue().toInt();
     int8_t epsilonEnabled = qgcApp()->toolbox()->settingsManager()->appSettings()->enableEpsilon()->rawValue().toInt();
 
-    if (nextVisionEnabled != 1)
+    if (nextVisionEnabled > 0)
     {
         _cameraManagement = new CameraManagement(nullptr, _multiVehicleManager, this);
     }
-    if (epsilonEnabled != 1)
+    if (epsilonEnabled > 0)
     {
         _epsilonCameraManagement = new EpsilonCameraManagement(nullptr, _multiVehicleManager, this);
     }

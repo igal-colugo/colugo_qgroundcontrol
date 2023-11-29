@@ -141,13 +141,13 @@ QVariantList &QGCCorePlugin::settingsPages()
         _p->pCommLinks = new QmlComponentInfo(tr("Comm Links"), QUrl::fromUserInput("qrc:/qml/LinkSettings.qml"), QUrl::fromUserInput("qrc:/res/waves.svg"));
         _p->settingsList.append(QVariant::fromValue(reinterpret_cast<QmlComponentInfo *>(_p->pCommLinks)));
         int nextVisionUsed = qgcApp()->toolbox()->settingsManager()->appSettings()->enableNextVision()->rawValue().toInt();
-        if (nextVisionUsed < 0 || nextVisionUsed > 1)
+        if (nextVisionUsed > 0)
         {
             _p->pNextVisionLinks = new QmlComponentInfo(tr("Next Vision"), QUrl::fromUserInput("qrc:/qml/NextVisionLinkSettings.qml"), QUrl::fromUserInput("qrc:/res/waves.svg"));
             _p->settingsList.append(QVariant::fromValue(reinterpret_cast<QmlComponentInfo *>(_p->pNextVisionLinks)));
         }
         int epsilonUsed = qgcApp()->toolbox()->settingsManager()->appSettings()->enableEpsilon()->rawValue().toInt();
-        if (epsilonUsed < 0 || epsilonUsed > 1)
+        if (epsilonUsed > 0)
         {
             _p->pEpsilonLinks = new QmlComponentInfo(tr("Epsilon"), QUrl::fromUserInput("qrc:/qml/EpsilonLinkSettings.qml"), QUrl::fromUserInput("qrc:/res/waves.svg"));
             _p->settingsList.append(QVariant::fromValue(reinterpret_cast<QmlComponentInfo *>(_p->pEpsilonLinks)));

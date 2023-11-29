@@ -1,184 +1,285 @@
-import QtQuick          2.3
+import QtQuick 2.3
 import QtQuick.Controls 1.2
-import QtQuick.Controls.Styles  1.4
-import QtQuick.Dialogs  1.2
-import QtQuick.Layouts  1.2
+import QtQuick.Controls.Styles 1.4
+import QtQuick.Dialogs 1.2
+import QtQuick.Layouts 1.2
 
-import QGroundControl               1.0
-import QGroundControl.Palette       1.0
-import QGroundControl.Controls      1.0
-import QGroundControl.ScreenTools   1.0
-import QGroundControl.Controllers   1.0
-import QGroundControl.FactSystem    1.0
-import QGroundControl.FactControls  1.0
+import QGroundControl 1.0
+import QGroundControl.Palette 1.0
+import QGroundControl.Controls 1.0
+import QGroundControl.ScreenTools 1.0
+import QGroundControl.Controllers 1.0
+import QGroundControl.FactSystem 1.0
+import QGroundControl.FactControls 1.0
 import QGroundControl.SettingsManager 1.0
 
-Rectangle {
-    height:             _heightTotal
-    color:              Qt.rgba(0.0,0.0,0.0,0.25)
-    visible:            true
+Item {
+    id: element
+    anchors.fill: parent
 
-    property int _heightTotal: mainlabel.height+firstRow.height+
-                               detectorTypeLabel.height+secondRow.height+
-                               thirdRow.height+lastRow.height+
-                               (_margins*14)
+    visible: true
 
     property var _odNetTypes: ["Human & Vehicle", "Fire & Smoke", "Human Overboard", "Marine Vessel"]
 
-    QGCLabel {
-        id:                 mainlabel
-        text:               qsTr("OBJ DET")
-        anchors.margins:    ScreenTools.isMobile ? _margins * 1.6 : _margins
-        font.family:        ScreenTools.demiboldFontFamily
-        font.pointSize:     ScreenTools.largeFontPointSize
-        anchors.horizontalCenter:  parent.horizontalCenter
-        anchors.top:        parent.top
-        height:             ScreenTools.defaultFontPixelHeight
-        color:              "White"
-    }
+    GridLayout {
+        id: grid
 
-    RowLayout {
-        id:                         firstRow
-        anchors.horizontalCenter:   parent.horizontalCenter
-        anchors.top:                mainlabel.bottom
-        anchors.margins:            _margins * 4
-        spacing:                    _butMargins
-        visible:                    true
+        columns: 6
+        rows: 6
+        anchors.fill: parent
+        anchors.margins: 3
+        columnSpacing: 5
+        rowSpacing: 5
+
+        onWidthChanged: {
+            console.log("Record mode:", grid.width, grid.height)
+        }
+
+        QGCLabel {
+
+            id: mainlabel
+
+            height: ScreenTools.defaultFontPixelHeight
+
+            text: qsTr("OBJ DET")
+            font.family: ScreenTools.demiboldFontFamily
+            font.pointSize: ScreenTools.largeFontPointSize
+            color: "White"
+
+            horizontalAlignment: Text.AlignHCenter
+            verticalAlignment: Text.AlignVCenter
+
+            Layout.alignment: Qt.AlignLeft | Qt.AlignTop
+            Layout.columnSpan: 6
+            Layout.fillHeight: false
+            Layout.fillWidth: true
+        }
 
         QGCButton {
-            showBorder:     true
-            font.pointSize: ScreenTools.isMobile? point_size : ScreenTools.smallFontPointSize
-            pointSize:      ScreenTools.isMobile? point_size : ScreenTools.defaultFontPointSize
-            text:           qsTr("OD Enable")
-            leftPadding:    0
-            rightPadding:   0            
+
+            id: _odEnableButton
+
+            showBorder: true
+            font.pointSize: ScreenTools.isMobile ? point_size : ScreenTools.smallFontPointSize
+            pointSize: ScreenTools.isMobile ? point_size : ScreenTools.defaultFontPointSize
+            text: qsTr("OD Enable")
+
+            Layout.rowSpan: 1
+            Layout.columnSpan: 3
+
+            Layout.preferredHeight: -1
+            Layout.preferredWidth: -1
+            Layout.fillWidth: true
+            Layout.fillHeight: false
+            Layout.alignment: Qt.AlignLeft
+
             onReleased: {
-                joystickManager.cameraManagement.setSysObjDetOnCommand();
+                joystickManager.cameraManagement.setSysObjDetOnCommand()
             }
         }
+
         QGCButton {
-            showBorder:     true
-            font.pointSize: ScreenTools.isMobile? point_size : ScreenTools.smallFontPointSize
-            pointSize:      ScreenTools.isMobile? point_size : ScreenTools.defaultFontPointSize
-            text:           qsTr("OD Disable")
-            leftPadding:    0
-            rightPadding:   0
+
+            id: _odDisableButton
+
+            showBorder: true
+            font.pointSize: ScreenTools.isMobile ? point_size : ScreenTools.smallFontPointSize
+            pointSize: ScreenTools.isMobile ? point_size : ScreenTools.defaultFontPointSize
+            text: qsTr("OD Disable")
+
+            Layout.rowSpan: 1
+            Layout.columnSpan: 3
+
+            Layout.preferredHeight: -1
+            Layout.preferredWidth: -1
+            Layout.fillWidth: true
+            Layout.fillHeight: false
+            Layout.alignment: Qt.AlignLeft
+
             onReleased: {
-                joystickManager.cameraManagement.setSysObjDetOffCommand();
+                joystickManager.cameraManagement.setSysObjDetOffCommand()
             }
         }
-    }
 
-    QGCLabel {
-        id:                 detectorTypeLabel
-        text:               qsTr("Detector Type")
-        anchors.margins:    _margins
-        font.family:        ScreenTools.demiboldFontFamily
-        font.pointSize:     ScreenTools.isMobile ? point_size : ScreenTools.mediumFontPointSize
-        anchors.horizontalCenter:  parent.horizontalCenter
-        anchors.top:        firstRow.bottom
-        color:              "white"
-        height:             ScreenTools.smallFontPointSize
-    }
+        QGCLabel {
 
-    RowLayout {
-        id:                         secondRow
-        anchors.horizontalCenter:   parent.horizontalCenter
-        anchors.top:                detectorTypeLabel.bottom
-        anchors.margins:            _margins * 2
-        spacing:                    _butMargins
-        visible:                    true
+            id: detectorTypeLabel
+
+            height: ScreenTools.defaultFontPixelHeight
+
+            text: qsTr("Detector Type")
+            font.family: ScreenTools.demiboldFontFamily
+            font.pointSize: ScreenTools.largeFontPointSize
+            color: "White"
+
+            horizontalAlignment: Text.AlignHCenter
+            verticalAlignment: Text.AlignVCenter
+
+            Layout.alignment: Qt.AlignLeft | Qt.AlignTop
+            Layout.columnSpan: 6
+            Layout.fillHeight: false
+            Layout.fillWidth: true
+        }
 
         QGCComboBox {
-            id:             netTypeCombo
+            id: netTypeCombo
             sizeToContents: true
-            centeredLabel:  true
-            font.pointSize: ScreenTools.isMobile? point_size : ScreenTools.mediumFontPointSize
-            leftPadding:    0
-            rightPadding:   0
-            model:          _odNetTypes            
+            centeredLabel: true
+            font.pointSize: ScreenTools.isMobile ? point_size : ScreenTools.smallFontPointSize
+            model: _odNetTypes
+
+            Layout.rowSpan: 1
+            Layout.columnSpan: 3
+
+            Layout.preferredHeight: -1
+            Layout.preferredWidth: -1
+            Layout.fillWidth: true
+            Layout.fillHeight: false
+            Layout.alignment: Qt.AlignLeft
         }
 
         QGCButton {
-            showBorder:     true
-            font.pointSize: ScreenTools.isMobile? point_size : ScreenTools.smallFontPointSize
-            pointSize:      ScreenTools.isMobile? point_size : ScreenTools.defaultFontPointSize
-            text:           qsTr("Set")
-            leftPadding:    0
-            rightPadding:   0
+
+            id: _setTypeButton
+
+            showBorder: true
+            font.pointSize: ScreenTools.isMobile ? point_size : ScreenTools.smallFontPointSize
+            pointSize: ScreenTools.isMobile ? point_size : ScreenTools.defaultFontPointSize
+            text: qsTr("Set")
+
+            Layout.rowSpan: 1
+            Layout.columnSpan: 3
+
+            Layout.preferredHeight: -1
+            Layout.preferredWidth: -1
+            Layout.fillWidth: true
+            Layout.fillHeight: false
+            Layout.alignment: Qt.AlignLeft
+
             onReleased: {
-                if(netTypeCombo.currentIndex >=0 )
-                    joystickManager.cameraManagement.setSysObjDetSetNetTypeCommand(netTypeCombo.currentIndex);
+                if (netTypeCombo.currentIndex >= 0)
+                    joystickManager.cameraManagement.setSysObjDetSetNetTypeCommand(
+                                netTypeCombo.currentIndex)
             }
         }
-    }
-
-    RowLayout {
-        id:                         thirdRow
-        anchors.horizontalCenter:   parent.horizontalCenter
-        anchors.top:                secondRow.bottom
-        anchors.margins:            _margins
-        spacing:                    _butMargins
-        visible:                    true
 
         QGCLabel {
-            text:                   qsTr("Conf Thres[%]")
-            font.pointSize:         ScreenTools.isMobile ? point_size : 9
-            color:                  "White"
+
+            id: _thresholdLabel
+
+            height: ScreenTools.defaultFontPixelHeight
+
+            text: qsTr("Conf thres[%]")
+            font.family: ScreenTools.demiboldFontFamily
+            font.pointSize: ScreenTools.mediumFontPointSize
+            color: "White"
+
+            horizontalAlignment: Text.AlignLeft
+            verticalAlignment: Text.AlignVCenter
+
+            Layout.columnSpan: 2
+            Layout.fillHeight: false
+            Layout.fillWidth: true
         }
 
         QGCTextField {
-            id:                     _confThres
-            Layout.preferredWidth:  ScreenTools.isMobile ? 90 : 45
-            maximumLength:          6
-            font.pointSize:         ScreenTools.isMobile ? point_size : 9
-            text:                   qsTr("")
+
+            id: _confThres
+            maximumLength: 6
+            font.pointSize: ScreenTools.isMobile ? point_size : 9
+            text: qsTr("")
+
+            Layout.rowSpan: 1
+            Layout.columnSpan: 2
+
+            Layout.preferredHeight: -1
+            Layout.preferredWidth: -1
+            Layout.fillWidth: true
+            Layout.fillHeight: false
+            Layout.alignment: Qt.AlignLeft
         }
 
         QGCButton {
-            showBorder:                 true
-            font.pointSize: ScreenTools.isMobile? point_size : ScreenTools.smallFontPointSize
-            pointSize:      ScreenTools.isMobile? point_size : ScreenTools.defaultFontPointSize
-            text:                       qsTr("Set")
-            leftPadding:                0
-            rightPadding:               0
+
+            id: _setThresholdButton
+
+            showBorder: true
+            font.pointSize: ScreenTools.isMobile ? point_size : ScreenTools.smallFontPointSize
+            pointSize: ScreenTools.isMobile ? point_size : ScreenTools.defaultFontPointSize
+            text: qsTr("Set")
+
+            Layout.rowSpan: 1
+            Layout.columnSpan: 2
+
+            Layout.preferredHeight: -1
+            Layout.preferredWidth: -1
+            Layout.fillWidth: true
+            Layout.fillHeight: false
+            Layout.alignment: Qt.AlignLeft
+
             onReleased: {
-                joystickManager.cameraManagement.setSysObjDetSetConfThresCommand(_confThres.text);
+                joystickManager.cameraManagement.setSysObjDetSetConfThresCommand(
+                            _confThres.text)
             }
         }
-    }
-
-    RowLayout {
-        id:                         lastRow
-        anchors.top:                thirdRow.bottom
-        anchors.horizontalCenter:   parent.horizontalCenter
-        anchors.margins:            _margins
-        spacing:                    _butMargins
-        visible:                    true
 
         QGCLabel {
-            text:                   qsTr("Fire Thres   ")
-            font.pointSize:         ScreenTools.isMobile ? point_size : 9
-            color:                  "White"
+
+            id: _firethresholdLabel
+
+            height: ScreenTools.defaultFontPixelHeight
+
+            text: qsTr("Fire thres")
+            font.family: ScreenTools.demiboldFontFamily
+            font.pointSize: ScreenTools.mediumFontPointSize
+            color: "White"
+
+            horizontalAlignment: Text.AlignLeft
+            verticalAlignment: Text.AlignVCenter
+
+            Layout.columnSpan: 2
+            Layout.fillHeight: false
+            Layout.fillWidth: true
         }
 
         QGCTextField {
-            id:                     _fireThres
-            Layout.preferredWidth:  ScreenTools.isMobile ? 90 : 45
-            maximumLength:          6
-            font.pointSize:         ScreenTools.isMobile ? point_size : 9
-            text:                   qsTr("")
+
+            id: _fireThres
+            maximumLength: 6
+            font.pointSize: ScreenTools.isMobile ? point_size : 9
+            text: qsTr("")
+
+            Layout.rowSpan: 1
+            Layout.columnSpan: 2
+
+            Layout.preferredHeight: -1
+            Layout.preferredWidth: -1
+            Layout.fillWidth: true
+            Layout.fillHeight: false
+            Layout.alignment: Qt.AlignLeft
         }
 
         QGCButton {
-            showBorder:                 true
-            font.pointSize: ScreenTools.isMobile? point_size : ScreenTools.smallFontPointSize
-            pointSize:      ScreenTools.isMobile? point_size : ScreenTools.defaultFontPointSize
-            text:                       qsTr("Set")
-            leftPadding:                0
-            rightPadding:               0
+
+            id: _setFireThresholdButton
+
+            showBorder: true
+            font.pointSize: ScreenTools.isMobile ? point_size : ScreenTools.smallFontPointSize
+            pointSize: ScreenTools.isMobile ? point_size : ScreenTools.defaultFontPointSize
+            text: qsTr("Set")
+
+            Layout.rowSpan: 1
+            Layout.columnSpan: 2
+
+            Layout.preferredHeight: -1
+            Layout.preferredWidth: -1
+            Layout.fillWidth: true
+            Layout.fillHeight: false
+            Layout.alignment: Qt.AlignLeft
+
             onReleased: {
-                joystickManager.cameraManagement.setSysObjDetSetFireThresCommand(_fireThres.text);
+                joystickManager.cameraManagement.setSysObjDetSetFireThresCommand(
+                            _fireThres.text)
             }
         }
     }

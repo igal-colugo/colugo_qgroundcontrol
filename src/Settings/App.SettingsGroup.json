@@ -142,7 +142,6 @@
     "type":             "int32",
     "default":     25
 },
-
 {
     "name":             "localPositionPitch",
     "shortDesc": "Local position pitch",
@@ -378,6 +377,13 @@
     "longDesc":  "Enable Microhard Module Support",
     "type":             "bool",
     "default":     false
+},
+{
+    "name":             "enableStandardPhotoVideo",
+    "shortDesc": "Enable Standard Module Support",
+    "longDesc":  "Enable Standard Module Support",
+    "type":             "int32",
+    "default":     -1
 },
 {
     "name":             "enableNextVision",

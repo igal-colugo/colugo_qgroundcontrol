@@ -50,6 +50,7 @@ Item {
     property rect _centerViewport: Qt.rect(0, 0, width, height)
     property real _rightPanelWidth: ScreenTools.defaultFontPixelWidth * 30
 
+    property int _standardPhotoVideoEnabled: QGroundControl.settingsManager.appSettings.enableStandardPhotoVideo.value
     property int _nextVisionEnabled: QGroundControl.settingsManager.appSettings.enableNextVision.value
     property int _asioEnabled: QGroundControl.settingsManager.appSettings.enableAsio.value
     property int _epsilonEnabled: QGroundControl.settingsManager.appSettings.enableEpsilon.value
@@ -131,31 +132,6 @@ Item {
     }
 
     Loader {
-        id: _common_standard_loader
-        anchors.margins: _toolsMargin
-        anchors.right: parent.right
-        width: _rightPanelWidth
-        anchors.top: (_common_next_vision_loader.visible) ? _common_next_vision_loader.bottom : _root.verticalCenter
-
-        sourceComponent: {
-            (_nextVisionEnabled < 0) ? _standard : null
-        }
-    }
-
-    Loader {
-        id: _common_next_vision_loader
-        anchors.margins: _toolsMargin
-        anchors.right: parent.right
-        width: _rightPanelWidth
-        anchors.top: undefined
-        anchors.verticalCenter: _root.verticalCenter
-
-        sourceComponent: {
-            (_nextVisionEnabled < 0) ? _next_vision : null
-        }
-    }
-
-    Loader {
         id: _standard_loader
         anchors.margins: _toolsMargin
         anchors.right: parent.right
@@ -164,7 +140,7 @@ Item {
         anchors.verticalCenter: _root.verticalCenter
 
         sourceComponent: {
-            (_nextVisionEnabled === 1) ? _standard : null
+            (_standardPhotoVideoEnabled > 0) ? _standard : null
         }
     }
 
@@ -173,11 +149,16 @@ Item {
         anchors.margins: _toolsMargin
         anchors.right: parent.right
         width: _rightPanelWidth
-        anchors.top: undefined
-        anchors.verticalCenter: _root.verticalCenter
+        height: 400
+        anchors.top: {
+            (_standardPhotoVideoEnabled > 0) ? _standard_loader.bottom : undefined
+        }
+        anchors.verticalCenter: {
+            (_standardPhotoVideoEnabled > 0) ? undefined : _root.verticalCenter
+        }
 
         sourceComponent: {
-            (_nextVisionEnabled === 2) ? _next_vision : null
+            (_nextVisionEnabled > 0) ? _next_vision : null
         }
     }
 
@@ -187,10 +168,29 @@ Item {
         anchors.right: parent.right
         width: _rightPanelWidth
         height: 300
-        anchors.top: (_standard_loader.visible) ? _standard_loader.bottom : _root.verticalCenter
+        anchors.top: {
+            if (_standardPhotoVideoEnabled > 0 && _nextVisionEnabled > 0) {
+                _next_vision_loader.bottom
+            } else if (_standardPhotoVideoEnabled > 0
+                       && _nextVisionEnabled <= 0) {
+                _standard_loader.bottom
+            } else {
+                undefined
+            }
+        }
+        anchors.verticalCenter: {
+            if (_standardPhotoVideoEnabled > 0 && _nextVisionEnabled > 0) {
+                undefined
+            } else if (_standardPhotoVideoEnabled > 0
+                       && _nextVisionEnabled <= 0) {
+                undefined
+            } else {
+                _root.verticalCenter
+            }
+        }
 
         sourceComponent: {
-            (_epsilonEnabled === -1) ? _epsilon : null
+            (_epsilonEnabled > 0) ? _epsilon : null
         }
     }
 
@@ -201,18 +201,31 @@ Item {
         width: _rightPanelWidth
         height: 150
         anchors.top: {
-            if (_nextVisionEnabled < 0) {
-                _common_standard_loader.bottom
-            } else if (_nextVisionEnabled === 1) {
-                _standard_loader.bottom
-            } else if (_nextVisionEnabled === 2) {
+            if (_standardPhotoVideoEnabled > 0 && _nextVisionEnabled > 0
+                    && _epsilonEnabled > 0) {
+                _epsilon_loader.bottom
+            } else if (_standardPhotoVideoEnabled > 0 && _nextVisionEnabled > 0
+                       && _epsilonEnabled <= 0) {
                 _next_vision_loader.bottom
+            } else if (_standardPhotoVideoEnabled > 0 && _nextVisionEnabled <= 0
+                       && _epsilonEnabled <= 0) {
+                _standard_loader.bottom
+            } else {
+                undefined
+            }
+        }
+        anchors.verticalCenter: {
+            if (_standardPhotoVideoEnabled > 0 && _nextVisionEnabled > 0
+                    && _epsilonEnabled > 0) {
+                undefined
+            } else if (_standardPhotoVideoEnabled > 0 && _nextVisionEnabled > 0
+                       && _epsilonEnabled <= 0) {
+                undefined
+            } else if (_standardPhotoVideoEnabled > 0 && _nextVisionEnabled <= 0
+                       && _epsilonEnabled <= 0) {
+                undefined
             } else {
                 _root.verticalCenter
-            }
-
-            if (_epsilonEnabled < 0) {
-                _epsilon_loader.bottom
             }
         }
 

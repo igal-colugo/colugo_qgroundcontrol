@@ -74,7 +74,7 @@ Item {
         id: grid
 
         columns: 6
-        rows: 5
+        rows: 7
         anchors.fill: parent
         anchors.margins: 3
         columnSpacing: 5
@@ -187,7 +187,7 @@ Item {
             text: qsTr("REC ON")
 
             Layout.rowSpan: 1
-            Layout.columnSpan: 2
+            Layout.columnSpan: 6
 
             Layout.preferredHeight: -1
             Layout.preferredWidth: -1
@@ -195,7 +195,7 @@ Item {
             Layout.fillHeight: true
             Layout.alignment: Qt.AlignLeft
 
-            onClicked: {
+            onReleased: {
                 joystickManager.epsilonCameraManagement.setVideoRecordingCommand(
                             1, _file_name)
             }
@@ -211,7 +211,7 @@ Item {
             text: qsTr("REC OFF")
 
             Layout.rowSpan: 1
-            Layout.columnSpan: 2
+            Layout.columnSpan: 6
 
             Layout.preferredHeight: -1
             Layout.preferredWidth: -1
@@ -219,7 +219,7 @@ Item {
             Layout.fillHeight: true
             Layout.alignment: Qt.AlignLeft
 
-            onClicked: {
+            onReleased: {
                 joystickManager.epsilonCameraManagement.setVideoRecordingCommand(
                             2, _file_name)
             }
@@ -235,7 +235,7 @@ Item {
             text: qsTr("SNAP")
 
             Layout.rowSpan: 1
-            Layout.columnSpan: 2
+            Layout.columnSpan: 6
 
             Layout.preferredHeight: -1
             Layout.preferredWidth: -1
@@ -243,7 +243,7 @@ Item {
             Layout.fillHeight: true
             Layout.alignment: Qt.AlignLeft
 
-            onClicked: {
+            onReleased: {
                 joystickManager.epsilonCameraManagement.setDoSnapshotCommand(
                             1, 1, 1, 0, 0, _file_name)
             }
