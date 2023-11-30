@@ -60,7 +60,7 @@ Item {
             text: qsTr("DAY")
 
             Layout.rowSpan: 1
-            Layout.columnSpan: 1
+            Layout.columnSpan: 2
 
             Layout.preferredHeight: -1
             Layout.preferredWidth: -1
@@ -69,7 +69,7 @@ Item {
             Layout.alignment: Qt.AlignLeft
 
             onReleased: {
-                joystickManager.epsilonCameraManagement.setCameraOrderCommand(0);
+                joystickManager.epsilonCameraManagement.setCameraOrderCommand(0)
             }
         }
 
@@ -80,10 +80,10 @@ Item {
             showBorder: true
             font.pointSize: ScreenTools.isMobile ? point_size : ScreenTools.smallFontPointSize
             pointSize: ScreenTools.isMobile ? point_size : ScreenTools.defaultFontPointSize
-            text: qsTr("THER")
+            text: qsTr("THERMAL")
 
             Layout.rowSpan: 1
-            Layout.columnSpan: 1
+            Layout.columnSpan: 2
 
             Layout.preferredHeight: -1
             Layout.preferredWidth: -1
@@ -92,7 +92,7 @@ Item {
             Layout.alignment: Qt.AlignLeft
 
             onReleased: {
-                joystickManager.epsilonCameraManagement.setCameraOrderCommand(1);
+                joystickManager.epsilonCameraManagement.setCameraOrderCommand(1)
             }
         }
 
@@ -106,7 +106,7 @@ Item {
             text: qsTr("DAY SPOT")
 
             Layout.rowSpan: 1
-            Layout.columnSpan: 1
+            Layout.columnSpan: 2
 
             Layout.preferredHeight: -1
             Layout.preferredWidth: -1
@@ -115,7 +115,7 @@ Item {
             Layout.alignment: Qt.AlignLeft
 
             onReleased: {
-                joystickManager.epsilonCameraManagement.setCameraOrderCommand(2);
+                joystickManager.epsilonCameraManagement.setCameraOrderCommand(2)
             }
         }
 
@@ -126,9 +126,9 @@ Item {
             showBorder: true
             font.pointSize: ScreenTools.isMobile ? point_size : ScreenTools.smallFontPointSize
             pointSize: ScreenTools.isMobile ? point_size : ScreenTools.defaultFontPointSize
-            text: qsTr("THER SEC")
+            text: qsTr("THERMAL SEC")
             Layout.rowSpan: 1
-            Layout.columnSpan: 1
+            Layout.columnSpan: 2
 
             Layout.preferredHeight: -1
             Layout.preferredWidth: -1
@@ -137,7 +137,7 @@ Item {
             Layout.alignment: Qt.AlignLeft
 
             onReleased: {
-                joystickManager.epsilonCameraManagement.setCameraOrderCommand(3);
+                joystickManager.epsilonCameraManagement.setCameraOrderCommand(3)
             }
         }
     }

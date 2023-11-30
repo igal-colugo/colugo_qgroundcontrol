@@ -1,130 +1,191 @@
-import QtQuick          2.3
+import QtQuick 2.3
 import QtQuick.Controls 1.2
-import QtQuick.Dialogs  1.2
-import QtQuick.Layouts  1.2
+import QtQuick.Dialogs 1.2
+import QtQuick.Layouts 1.2
 
-import QGroundControl               1.0
-import QGroundControl.Palette       1.0
-import QGroundControl.Controls      1.0
-import QGroundControl.ScreenTools   1.0
-import QGroundControl.Controllers   1.0
-import QGroundControl.FactSystem    1.0
-import QGroundControl.FactControls  1.0
+import QGroundControl 1.0
+import QGroundControl.Palette 1.0
+import QGroundControl.Controls 1.0
+import QGroundControl.ScreenTools 1.0
+import QGroundControl.Controllers 1.0
+import QGroundControl.FactSystem 1.0
+import QGroundControl.FactControls 1.0
 
-Rectangle {
-    height:             _heightTotal
-    color:              Qt.rgba(0.0,0.0,0.0,0.25)
-    visible:            true
+Item {
+    anchors.fill: parent
+    visible: true
 
-    property int _heightTotal: mainlabel.height+firstRow.height+secondRow.height+thirdRow.height+(_margins*10)
+    GridLayout {
 
-    QGCLabel {
-        id:                 mainlabel
-        text:               qsTr("F.MODE")
-        anchors.margins:    ScreenTools.isMobile ? _margins * 1.6 : _margins
-        font.family:        ScreenTools.demiboldFontFamily
-        font.pointSize:     ScreenTools.largeFontPointSize
-        anchors.horizontalCenter:  parent.horizontalCenter
-        anchors.top:        parent.top
-        height:             ScreenTools.defaultFontPixelHeight
-        color:              "white"
+        id: grid
+
+        columns: 6
+        rows: 7
+        anchors.fill: parent
+        anchors.margins: 3
+        columnSpacing: 5
+        rowSpacing: 5
+
+        onWidthChanged: {
+            console.log("F mode:", grid.width, grid.height)
+        }
+
+        QGCLabel {
+
+            id: mainlabel
+
+            height: ScreenTools.defaultFontPixelHeight
+
+            text: qsTr("F.MODE")
+            font.family: ScreenTools.demiboldFontFamily
+            font.pointSize: ScreenTools.largeFontPointSize
+            color: "White"
+
+            horizontalAlignment: Text.AlignHCenter
+            verticalAlignment: Text.AlignVCenter
+
+            Layout.alignment: Qt.AlignLeft | Qt.AlignTop
+            Layout.columnSpan: 6
+            Layout.fillHeight: false
+            Layout.fillWidth: true
+        }
+
+        QGCButton {
+
+            id: _syonModeButton
+
+            showBorder: true
+            font.pointSize: ScreenTools.isMobile ? point_size : ScreenTools.smallFontPointSize
+            pointSize: ScreenTools.isMobile ? point_size : ScreenTools.defaultFontPointSize
+            text: qsTr("SY On")
+
+            Layout.rowSpan: 1
+            Layout.columnSpan: 6
+
+            Layout.preferredHeight: -1
+            Layout.preferredWidth: -1
+            Layout.fillWidth: true
+            Layout.fillHeight: true
+            Layout.alignment: Qt.AlignLeft
+
+            onReleased: {
+                joystickManager.cameraManagement.setSysSingleYawOnCommand()
+            }
+        }
+
+        QGCButton {
+
+            id: _syoffModeButton
+
+            showBorder: true
+            font.pointSize: ScreenTools.isMobile ? point_size : ScreenTools.smallFontPointSize
+            pointSize: ScreenTools.isMobile ? point_size : ScreenTools.defaultFontPointSize
+            text: qsTr("SY Off")
+
+            Layout.rowSpan: 1
+            Layout.columnSpan: 6
+
+            Layout.preferredHeight: -1
+            Layout.preferredWidth: -1
+            Layout.fillWidth: true
+            Layout.fillHeight: true
+            Layout.alignment: Qt.AlignLeft
+
+            onReleased: {
+                joystickManager.cameraManagement.setSysSingleYawOffCommand()
+            }
+        }
+
+        QGCButton {
+
+            id: _followonModeButton
+
+            showBorder: true
+            font.pointSize: ScreenTools.isMobile ? point_size : ScreenTools.smallFontPointSize
+            pointSize: ScreenTools.isMobile ? point_size : ScreenTools.defaultFontPointSize
+            text: qsTr("Follow On")
+
+            Layout.rowSpan: 1
+            Layout.columnSpan: 6
+
+            Layout.preferredHeight: -1
+            Layout.preferredWidth: -1
+            Layout.fillWidth: true
+            Layout.fillHeight: true
+            Layout.alignment: Qt.AlignLeft
+
+            onReleased: {
+                joystickManager.cameraManagement.setSysFollowOnCommand()
+            }
+        }
+
+        QGCButton {
+
+            id: _followoffModeButton
+
+            showBorder: true
+            font.pointSize: ScreenTools.isMobile ? point_size : ScreenTools.smallFontPointSize
+            pointSize: ScreenTools.isMobile ? point_size : ScreenTools.defaultFontPointSize
+            text: qsTr("Follow Off")
+
+            Layout.rowSpan: 1
+            Layout.columnSpan: 6
+
+            Layout.preferredHeight: -1
+            Layout.preferredWidth: -1
+            Layout.fillWidth: true
+            Layout.fillHeight: true
+            Layout.alignment: Qt.AlignLeft
+
+            onReleased: {
+                joystickManager.cameraManagement.setSysFollowOffCommand()
+            }
+        }
+
+        QGCButton {
+
+            id: _flyaonModeButton
+
+            showBorder: true
+            font.pointSize: ScreenTools.isMobile ? point_size : ScreenTools.smallFontPointSize
+            pointSize: ScreenTools.isMobile ? point_size : ScreenTools.defaultFontPointSize
+            text: qsTr("Fly.A On")
+
+            Layout.rowSpan: 1
+            Layout.columnSpan: 6
+
+            Layout.preferredHeight: -1
+            Layout.preferredWidth: -1
+            Layout.fillWidth: true
+            Layout.fillHeight: true
+            Layout.alignment: Qt.AlignLeft
+
+            onReleased: {
+                joystickManager.cameraManagement.setSysFlyAboveOnCommand()
+            }
+        }
+
+        QGCButton {
+
+            id: _flyaoffModeButton
+
+            showBorder: true
+            font.pointSize: ScreenTools.isMobile ? point_size : ScreenTools.smallFontPointSize
+            pointSize: ScreenTools.isMobile ? point_size : ScreenTools.defaultFontPointSize
+            text: qsTr("Fly.A Off")
+
+            Layout.rowSpan: 1
+            Layout.columnSpan: 6
+
+            Layout.preferredHeight: -1
+            Layout.preferredWidth: -1
+            Layout.fillWidth: true
+            Layout.fillHeight: true
+            Layout.alignment: Qt.AlignLeft
+
+            onReleased: {
+                joystickManager.cameraManagement.setSysFlyAboveOffCommand()
+            }
+        }
     }
-
-    RowLayout {
-        id:                         firstRow
-        anchors.horizontalCenter:   parent.horizontalCenter
-        anchors.top:                mainlabel.bottom
-        anchors.margins:            _margins * 4
-        spacing:                    _butMargins
-        visible:                    true
-
-        QGCButton {
-            showBorder:     true
-            font.pointSize: ScreenTools.isMobile? point_size : ScreenTools.smallFontPointSize
-            pointSize:      ScreenTools.isMobile? point_size : ScreenTools.defaultFontPointSize
-            text:           qsTr("SY On")
-            leftPadding:    0
-            rightPadding:   0
-            onReleased: {
-                joystickManager.cameraManagement.setSysSingleYawOnCommand();
-            }
-        }
-        QGCButton {
-            showBorder:     true
-            font.pointSize: ScreenTools.isMobile? point_size : ScreenTools.smallFontPointSize
-            pointSize:      ScreenTools.isMobile? point_size : ScreenTools.defaultFontPointSize
-            text:           qsTr("SY Off")
-            leftPadding:    0
-            rightPadding:   0
-            onReleased: {
-                joystickManager.cameraManagement.setSysSingleYawOffCommand();
-            }
-        }
-    }
-
-    RowLayout {
-        id:                         secondRow
-        anchors.horizontalCenter:   parent.horizontalCenter
-        anchors.top:                firstRow.bottom
-        anchors.margins:            _margins
-        spacing:                    _butMargins
-        visible:                    true
-
-        QGCButton {
-            showBorder:     true
-            font.pointSize: ScreenTools.isMobile? point_size : ScreenTools.smallFontPointSize
-            pointSize:      ScreenTools.isMobile? point_size : ScreenTools.defaultFontPointSize
-            text:           qsTr("Follow On")
-            leftPadding:    0
-            rightPadding:   0
-            onReleased: {
-                joystickManager.cameraManagement.setSysFollowOnCommand();
-            }
-        }
-        QGCButton {
-            showBorder:     true
-            font.pointSize: ScreenTools.isMobile? point_size : ScreenTools.smallFontPointSize
-            pointSize:      ScreenTools.isMobile? point_size : ScreenTools.defaultFontPointSize
-            text:           qsTr("Follow Off")
-            leftPadding:    0
-            rightPadding:   0
-            onReleased: {
-                joystickManager.cameraManagement.setSysFollowOffCommand();
-            }
-        }
-    }
-
-    RowLayout {
-        id:                         thirdRow
-        anchors.horizontalCenter:   parent.horizontalCenter
-        anchors.top:                secondRow.bottom
-        anchors.margins:            _margins
-        spacing:                    _butMargins
-        visible:                    true
-
-        QGCButton {
-            showBorder:     true
-            font.pointSize: ScreenTools.isMobile? point_size : ScreenTools.smallFontPointSize
-            pointSize:      ScreenTools.isMobile? point_size : ScreenTools.defaultFontPointSize
-            text:           qsTr("Fly.A On")
-            leftPadding:    0
-            rightPadding:   0
-            onReleased: {
-                joystickManager.cameraManagement.setSysFlyAboveOnCommand();
-            }
-        }
-        QGCButton {
-            showBorder:     true
-            font.pointSize: ScreenTools.isMobile? point_size : ScreenTools.smallFontPointSize
-            pointSize:      ScreenTools.isMobile? point_size : ScreenTools.defaultFontPointSize
-            text:           qsTr("Fly.A Off")
-            leftPadding:    0
-            rightPadding:   0
-            onReleased: {
-                joystickManager.cameraManagement.setSysFlyAboveOffCommand();
-            }
-        }
-    }    
 }
-
-

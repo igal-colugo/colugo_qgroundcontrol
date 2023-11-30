@@ -67,12 +67,12 @@ Item {
             text: qsTr("DAY")
 
             Layout.rowSpan: 1
-            Layout.columnSpan: 1
+            Layout.columnSpan: 2
 
             Layout.preferredHeight: -1
             Layout.preferredWidth: -1
             Layout.fillWidth: true
-            Layout.fillHeight: false
+            Layout.fillHeight: true
             Layout.alignment: Qt.AlignLeft
 
             onReleased: {
@@ -89,15 +89,15 @@ Item {
             showBorder: true
             font.pointSize: ScreenTools.isMobile ? point_size : ScreenTools.smallFontPointSize
             pointSize: ScreenTools.isMobile ? point_size : ScreenTools.defaultFontPointSize
-            text: qsTr("THER")
+            text: qsTr("THERMAL")
 
             Layout.rowSpan: 1
-            Layout.columnSpan: 1
+            Layout.columnSpan: 2
 
             Layout.preferredHeight: -1
             Layout.preferredWidth: -1
             Layout.fillWidth: true
-            Layout.fillHeight: false
+            Layout.fillHeight: true
             Layout.alignment: Qt.AlignLeft
 
             onReleased: {

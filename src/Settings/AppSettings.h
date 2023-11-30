@@ -62,6 +62,7 @@ class AppSettings : public SettingsGroup
     DEFINE_SETTINGFACT(enableTaisync)
     DEFINE_SETTINGFACT(enableTaisyncVideo)
     DEFINE_SETTINGFACT(enableMicrohard)
+    DEFINE_SETTINGFACT(enableStandardPhotoVideo)
     DEFINE_SETTINGFACT(enableNextVision)
     DEFINE_SETTINGFACT(enableEpsilon)
     DEFINE_SETTINGFACT(enableAsio)
@@ -72,6 +73,10 @@ class AppSettings : public SettingsGroup
     DEFINE_SETTINGFACT(firstRunPromptIdsShown)
     DEFINE_SETTINGFACT(forwardMavlink)
     DEFINE_SETTINGFACT(forwardMavlinkHostName)
+    DEFINE_SETTINGFACT(localPositionRoll)
+    DEFINE_SETTINGFACT(localPositionPitch)
+    DEFINE_SETTINGFACT(globalPositionElevation)
+    DEFINE_SETTINGFACT(globalPositionAzimuth)
 
     // Although this is a global setting it only affects ArduPilot vehicle since PX4 automatically starts the stream from the vehicle side
     DEFINE_SETTINGFACT(apmStartMavlinkStreams)
