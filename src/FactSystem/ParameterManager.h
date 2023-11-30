@@ -92,7 +92,7 @@ class ParameterManager : public QObject
     /// a missing parameter error to user if parameter does not exist.
     ///     @param componentId: Component id or FactSystem::defaultComponentId
     ///     @param name: Parameter name
-    Fact *getParameter(int componentId, const QString &paramName);
+    Q_INVOKABLE Fact *getParameter(int componentId, const QString &paramName);
 
     Q_INVOKABLE void sendParamSetToVehicle(int componentId, const QString &paramName, int typeOfValue, const QVariant &value);
 
