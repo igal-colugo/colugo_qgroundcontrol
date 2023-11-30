@@ -201,11 +201,15 @@ Item {
         width: _rightPanelWidth
         height: 150
         anchors.top: {
-            if (_standardPhotoVideoEnabled > 0 && _nextVisionEnabled > 0
-                    && _epsilonEnabled > 0) {
+            if ((_standardPhotoVideoEnabled > 0 && _nextVisionEnabled > 0
+                 && _epsilonEnabled > 0) || (_standardPhotoVideoEnabled > 0
+                                             && _nextVisionEnabled <= 0
+                                             && _epsilonEnabled > 0)) {
                 _epsilon_loader.bottom
-            } else if (_standardPhotoVideoEnabled > 0 && _nextVisionEnabled > 0
-                       && _epsilonEnabled <= 0) {
+            } else if ((_standardPhotoVideoEnabled > 0 && _nextVisionEnabled > 0
+                        && _epsilonEnabled <= 0)
+                       || (_standardPhotoVideoEnabled <= 0
+                           && _nextVisionEnabled > 0 && _epsilonEnabled > 0)) {
                 _next_vision_loader.bottom
             } else if (_standardPhotoVideoEnabled > 0 && _nextVisionEnabled <= 0
                        && _epsilonEnabled <= 0) {
@@ -215,11 +219,15 @@ Item {
             }
         }
         anchors.verticalCenter: {
-            if (_standardPhotoVideoEnabled > 0 && _nextVisionEnabled > 0
-                    && _epsilonEnabled > 0) {
+            if ((_standardPhotoVideoEnabled > 0 && _nextVisionEnabled > 0
+                 && _epsilonEnabled > 0) || (_standardPhotoVideoEnabled > 0
+                                             && _nextVisionEnabled <= 0
+                                             && _epsilonEnabled > 0)) {
                 undefined
-            } else if (_standardPhotoVideoEnabled > 0 && _nextVisionEnabled > 0
-                       && _epsilonEnabled <= 0) {
+            } else if ((_standardPhotoVideoEnabled > 0 && _nextVisionEnabled > 0
+                        && _epsilonEnabled <= 0)
+                       || (_standardPhotoVideoEnabled <= 0
+                           && _nextVisionEnabled > 0 && _epsilonEnabled > 0)) {
                 undefined
             } else if (_standardPhotoVideoEnabled > 0 && _nextVisionEnabled <= 0
                        && _epsilonEnabled <= 0) {
