@@ -253,7 +253,6 @@ void MAVLinkProtocol::receiveBytes(LinkInterface *link, QByteArray b)
 
             // And update the last sequence number for this system/component pair
             lastIndex[_message.sysid][_message.compid] = _message.seq;
-            ;
             // Calculate new loss ratio
             uint64_t totalSent = totalReceiveCounter[mavlinkChannel] + totalLossCounter[mavlinkChannel];
             float receiveLossPercent = static_cast<float>(static_cast<double>(totalLossCounter[mavlinkChannel]) / static_cast<double>(totalSent));

@@ -1609,6 +1609,7 @@ class Vehicle : public FactGroup
     uint _messagesReceived = 0;
     uint _messagesSent = 0;
     uint _messagesLost = 0;
+
     uint8_t _messageSeq = 0;
     uint8_t _compID = 0;
     bool _heardFrom = false;
