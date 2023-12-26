@@ -1055,6 +1055,7 @@
         <value code="10">Takeoff</value>
         <value code="11">Land</value>
         <value code="12">Follow Me</value>
+        <value code="13">C CamGuide</value>
       </values>
     </parameter>
     <parameter name="COM_FLTMODE2" default="-1" type="INT32">

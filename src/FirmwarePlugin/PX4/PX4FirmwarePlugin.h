@@ -105,6 +105,7 @@ protected:
     QString _followMeFlightMode;
     QString _simpleFlightMode;
     QString _orbitFlightMode;
+    QString _ccamguideFlightMode;
 
 private slots:
     void _mavCommandResult(int vehicleId, int component, int command, int result, bool noReponseFromVehicle);
