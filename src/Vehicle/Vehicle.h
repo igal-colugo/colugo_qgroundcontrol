@@ -299,6 +299,7 @@ class Vehicle : public FactGroup
     Q_PROPERTY(Fact *distanceToGCS READ distanceToGCS CONSTANT)
     Q_PROPERTY(Fact *hobbs READ hobbs CONSTANT)
     Q_PROPERTY(Fact *throttlePct READ throttlePct CONSTANT)
+    Q_PROPERTY(Fact *rpmCurrawong READ rpmCurrawong CONSTANT)
 
     Q_PROPERTY(FactGroup *gps READ gpsFactGroup CONSTANT)
     Q_PROPERTY(FactGroup *gps2 READ gps2FactGroup CONSTANT)
@@ -456,6 +457,8 @@ class Vehicle : public FactGroup
 #if !defined(NO_ARDUPILOT_DIALECT)
     Q_INVOKABLE void flashBootloader();
 #endif
+
+    Q_INVOKABLE void setEngine(int mode, bool showError);
 
     bool isInitialConnectComplete() const;
     bool guidedModeSupported() const;
@@ -922,6 +925,18 @@ class Vehicle : public FactGroup
     Fact *throttlePct()
     {
         return &_throttlePctFact;
+    }
+    Fact *throttleCurrawong()
+    {
+        return &_throttleCurrawongFact;
+    }
+    Fact *rpmCurrawong()
+    {
+        return &_rpmCurrawongFact;
+    }
+    Fact *fuelUsedCurrawong()
+    {
+        return &_fuelUsedCurrawongFact;
     }
 
     FactGroup *gpsFactGroup()
@@ -1455,6 +1470,7 @@ class Vehicle : public FactGroup
     void _handleOrbitExecutionStatus(const mavlink_message_t &message);
     void _handleGimbalOrientation(const mavlink_message_t &message);
     void _handleObstacleDistance(const mavlink_message_t &message);
+    void _handleCE367ECUStatus(const mavlink_message_t &message);
     void _handleEvent(uint8_t comp_id, std::unique_ptr<events::parser::ParsedEvent> event);
     // ArduPilot dialect messages
 #if !defined(NO_ARDUPILOT_DIALECT)
@@ -1764,6 +1780,9 @@ class Vehicle : public FactGroup
     Fact _distanceToGCSFact;
     Fact _hobbsFact;
     Fact _throttlePctFact;
+    Fact _throttleCurrawongFact;
+    Fact _fuelUsedCurrawongFact;
+    Fact _rpmCurrawongFact;
 
     VehicleGPSFactGroup _gpsFactGroup;
     VehicleGPS2FactGroup _gps2FactGroup;
@@ -1817,6 +1836,9 @@ class Vehicle : public FactGroup
     static const char *_distanceToGCSFactName;
     static const char *_hobbsFactName;
     static const char *_throttlePctFactName;
+    static const char *_throttleCurrawongFactName;
+    static const char *_fuelUsedCurrawongFactName;
+    static const char *_rpmCurrawongFactName;
 
     static const char *_gpsFactGroupName;
     static const char *_gps2FactGroupName;

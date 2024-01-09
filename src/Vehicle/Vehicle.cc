@@ -97,6 +97,9 @@ const char *Vehicle::_headingToHomeFactName = "headingToHome";
 const char *Vehicle::_distanceToGCSFactName = "distanceToGCS";
 const char *Vehicle::_hobbsFactName = "hobbs";
 const char *Vehicle::_throttlePctFactName = "throttlePct";
+const char *Vehicle::_throttleCurrawongFactName = "throttleCurrawong";
+const char *Vehicle::_fuelUsedCurrawongFactName = "fuelUsedCurrawong";
+const char *Vehicle::_rpmCurrawongFactName = "rpmCurrawong";
 
 const char *Vehicle::_gpsFactGroupName = "gps";
 const char *Vehicle::_gps2FactGroupName = "gps2";
@@ -133,9 +136,11 @@ Vehicle::Vehicle(LinkInterface *link, int vehicleId, int defaultComponentId, MAV
       _flightTimeFact(0, _flightTimeFactName, FactMetaData::valueTypeElapsedTimeInSeconds), _distanceToHomeFact(0, _distanceToHomeFactName, FactMetaData::valueTypeDouble),
       _missionItemIndexFact(0, _missionItemIndexFactName, FactMetaData::valueTypeUint16), _headingToNextWPFact(0, _headingToNextWPFactName, FactMetaData::valueTypeDouble),
       _headingToHomeFact(0, _headingToHomeFactName, FactMetaData::valueTypeDouble), _distanceToGCSFact(0, _distanceToGCSFactName, FactMetaData::valueTypeDouble),
-      _hobbsFact(0, _hobbsFactName, FactMetaData::valueTypeString), _throttlePctFact(0, _throttlePctFactName, FactMetaData::valueTypeUint16), _gpsFactGroup(this), _gps2FactGroup(this),
-      _windFactGroup(this), _vibrationFactGroup(this), _temperatureFactGroup(this), _clockFactGroup(this), _setpointFactGroup(this), _distanceSensorFactGroup(this),
-      _localPositionFactGroup(this), _localPositionSetpointFactGroup(this), _escStatusFactGroup(this), _estimatorStatusFactGroup(this), _hygrometerFactGroup(this), _terrainFactGroup(this),
+      _hobbsFact(0, _hobbsFactName, FactMetaData::valueTypeString), _throttlePctFact(0, _throttlePctFactName, FactMetaData::valueTypeUint16),
+      _throttleCurrawongFact(0, _throttleCurrawongFactName, FactMetaData::valueTypeFloat), _fuelUsedCurrawongFact(0, _fuelUsedCurrawongFactName, FactMetaData::valueTypeUint32),
+      _rpmCurrawongFact(0, _rpmCurrawongFactName, FactMetaData::valueTypeUint16), _gpsFactGroup(this), _gps2FactGroup(this), _windFactGroup(this), _vibrationFactGroup(this),
+      _temperatureFactGroup(this), _clockFactGroup(this), _setpointFactGroup(this), _distanceSensorFactGroup(this), _localPositionFactGroup(this), _localPositionSetpointFactGroup(this),
+      _escStatusFactGroup(this), _estimatorStatusFactGroup(this), _hygrometerFactGroup(this), _terrainFactGroup(this),
       _terrainProtocolHandler(new TerrainProtocolHandler(this, &_terrainFactGroup, this))
 {
     _linkManager = _toolbox->linkManager();
@@ -255,8 +260,10 @@ Vehicle::Vehicle(MAV_AUTOPILOT firmwareType, MAV_TYPE vehicleType, FirmwarePlugi
       _distanceToHomeFact(0, _distanceToHomeFactName, FactMetaData::valueTypeDouble), _missionItemIndexFact(0, _missionItemIndexFactName, FactMetaData::valueTypeUint16),
       _headingToNextWPFact(0, _headingToNextWPFactName, FactMetaData::valueTypeDouble), _headingToHomeFact(0, _headingToHomeFactName, FactMetaData::valueTypeDouble),
       _distanceToGCSFact(0, _distanceToGCSFactName, FactMetaData::valueTypeDouble), _hobbsFact(0, _hobbsFactName, FactMetaData::valueTypeString),
-      _throttlePctFact(0, _throttlePctFactName, FactMetaData::valueTypeUint16), _gpsFactGroup(this), _gps2FactGroup(this), _windFactGroup(this), _vibrationFactGroup(this),
-      _clockFactGroup(this), _distanceSensorFactGroup(this), _localPositionFactGroup(this), _localPositionSetpointFactGroup(this)
+      _throttlePctFact(0, _throttlePctFactName, FactMetaData::valueTypeUint16), _throttleCurrawongFact(0, _throttleCurrawongFactName, FactMetaData::valueTypeFloat),
+      _fuelUsedCurrawongFact(0, _throttleCurrawongFactName, FactMetaData::valueTypeUint32), _rpmCurrawongFact(0, _rpmCurrawongFactName, FactMetaData::valueTypeUint16), _gpsFactGroup(this),
+      _gps2FactGroup(this), _windFactGroup(this), _vibrationFactGroup(this), _clockFactGroup(this), _distanceSensorFactGroup(this), _localPositionFactGroup(this),
+      _localPositionSetpointFactGroup(this)
 {
     _linkManager = _toolbox->linkManager();
 
@@ -371,6 +378,9 @@ void Vehicle::_commonInit()
     _addFact(&_headingToHomeFact, _headingToHomeFactName);
     _addFact(&_distanceToGCSFact, _distanceToGCSFactName);
     _addFact(&_throttlePctFact, _throttlePctFactName);
+    _addFact(&_throttleCurrawongFact, _throttleCurrawongFactName);
+    _addFact(&_fuelUsedCurrawongFact, _fuelUsedCurrawongFactName);
+    _addFact(&_rpmCurrawongFact, _rpmCurrawongFactName);
 
     _hobbsFact.setRawValue(QVariant(QString("0000:00:00")));
     _addFact(&_hobbsFact, _hobbsFactName);
@@ -763,7 +773,11 @@ void Vehicle::_mavlinkMessageReceived(LinkInterface *link, mavlink_message_t mes
     }
     break;
 
-    // Following are ArduPilot dialect messages
+    case MAVLINK_MSG_ID_CE367_STATUS:
+        _handleCE367ECUStatus(message);
+        break;
+
+        // Following are ArduPilot dialect messages
 #if !defined(NO_ARDUPILOT_DIALECT)
     case MAVLINK_MSG_ID_CAMERA_FEEDBACK:
         _handleCameraFeedback(message);
@@ -2212,6 +2226,11 @@ void Vehicle::setArmed(bool armed, bool showError)
 {
     // We specifically use COMMAND_LONG:MAV_CMD_COMPONENT_ARM_DISARM since it is supported by more flight stacks.
     sendMavCommand(_defaultComponentId, MAV_CMD_COMPONENT_ARM_DISARM, showError, armed ? 1.0f : 0.0f);
+}
+
+void Vehicle::setEngine(int mode, bool showError)
+{
+    sendMavCommand(_defaultComponentId, MAV_CMD_CE367_SET_STARTER, showError, mode);
 }
 
 void Vehicle::forceArm(void)
@@ -4265,6 +4284,15 @@ void Vehicle::_handleObstacleDistance(const mavlink_message_t &message)
     mavlink_obstacle_distance_t o;
     mavlink_msg_obstacle_distance_decode(&message, &o);
     _objectAvoidance->update(&o);
+}
+
+void Vehicle::_handleCE367ECUStatus(const mavlink_message_t &message)
+{
+    mavlink_ce367_status_t o;
+    mavlink_msg_ce367_status_decode(&message, &o);
+    _throttleCurrawongFact.setRawValue(static_cast<float_t>(o.ecu_throttle));
+    _fuelUsedCurrawongFact.setRawValue(static_cast<uint32_t>(o.ecu_fuel_used));
+    _rpmCurrawongFact.setRawValue(static_cast<uint16_t>(o.ecu_rpm));
 }
 
 void Vehicle::updateFlightDistance(double distance)
