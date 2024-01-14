@@ -17,9 +17,10 @@ Item {
     id: widgetQuick
 
     anchors.fill: parent
-
-    //color: Qt.rgba(0.0, 0.0, 0.0, 0.25)
     visible: true
+
+    property int rowHeight: (parent.height - (grid.rows * grid.rowSpacing)) / (grid.rows)
+    property int columnWidth: (parent.width - (grid.columns * grid.columnSpacing)) / (grid.columns)
 
     GridLayout {
         id: grid
@@ -28,8 +29,8 @@ Item {
         rows: 7
         anchors.fill: parent
         anchors.margins: 3
-        columnSpacing: 5
-        rowSpacing: 5
+        columnSpacing: 2
+        rowSpacing: 2
 
         onWidthChanged: {
             console.log("Camera mode:", grid.width, grid.height)
@@ -41,9 +42,8 @@ Item {
 
             height: ScreenTools.defaultFontPixelHeight
 
-            text: qsTr("QUICK")
+            text: qsTr("EPS QUICK")
             font.family: ScreenTools.demiboldFontFamily
-            font.pointSize: ScreenTools.largeFontPointSize
             color: "White"
 
             horizontalAlignment: Text.AlignHCenter
@@ -60,16 +60,14 @@ Item {
             id: _rateModeButton
 
             showBorder: true
-            font.pointSize: ScreenTools.isMobile ? point_size : ScreenTools.smallFontPointSize
-            pointSize: ScreenTools.isMobile ? point_size : ScreenTools.defaultFontPointSize
             text: qsTr("RATE")
 
             Layout.rowSpan: 1
             Layout.columnSpan: 2
 
-            Layout.preferredHeight: -1
-            Layout.preferredWidth: -1
-            Layout.fillWidth: true
+            Layout.preferredHeight: rowHeight
+            Layout.preferredWidth: columnWidth * Layout.columnSpan
+            Layout.fillWidth: false
             Layout.fillHeight: true
             Layout.alignment: Qt.AlignLeft
 
@@ -83,16 +81,14 @@ Item {
             id: _pilotModeButton
 
             showBorder: true
-            font.pointSize: ScreenTools.isMobile ? point_size : ScreenTools.smallFontPointSize
-            pointSize: ScreenTools.isMobile ? point_size : ScreenTools.defaultFontPointSize
             text: qsTr("PLT")
 
             Layout.rowSpan: 1
             Layout.columnSpan: 2
 
-            Layout.preferredHeight: -1
-            Layout.preferredWidth: -1
-            Layout.fillWidth: true
+            Layout.preferredHeight: rowHeight
+            Layout.preferredWidth: columnWidth * Layout.columnSpan
+            Layout.fillWidth: false
             Layout.fillHeight: true
             Layout.alignment: Qt.AlignLeft
 
@@ -106,16 +102,14 @@ Item {
             id: _stowModeButton
 
             showBorder: true
-            font.pointSize: ScreenTools.isMobile ? point_size : ScreenTools.smallFontPointSize
-            pointSize: ScreenTools.isMobile ? point_size : ScreenTools.defaultFontPointSize
             text: qsTr("STW")
 
             Layout.rowSpan: 1
             Layout.columnSpan: 2
 
-            Layout.preferredHeight: -1
-            Layout.preferredWidth: -1
-            Layout.fillWidth: true
+            Layout.preferredHeight: rowHeight
+            Layout.preferredWidth: columnWidth * Layout.columnSpan
+            Layout.fillWidth: false
             Layout.fillHeight: true
             Layout.alignment: Qt.AlignLeft
 
@@ -129,16 +123,14 @@ Item {
             id: _dayModeButton
 
             showBorder: true
-            font.pointSize: ScreenTools.isMobile ? point_size : ScreenTools.smallFontPointSize
-            pointSize: ScreenTools.isMobile ? point_size : ScreenTools.defaultFontPointSize
             text: qsTr("DAY")
 
             Layout.rowSpan: 1
             Layout.columnSpan: 3
 
-            Layout.preferredHeight: -1
-            Layout.preferredWidth: -1
-            Layout.fillWidth: true
+            Layout.preferredHeight: rowHeight
+            Layout.preferredWidth: columnWidth * Layout.columnSpan
+            Layout.fillWidth: false
             Layout.fillHeight: true
             Layout.alignment: Qt.AlignLeft
 
@@ -152,16 +144,14 @@ Item {
             id: _thermalModeButton
 
             showBorder: true
-            font.pointSize: ScreenTools.isMobile ? point_size : ScreenTools.smallFontPointSize
-            pointSize: ScreenTools.isMobile ? point_size : ScreenTools.defaultFontPointSize
             text: qsTr("THERMAL")
 
             Layout.rowSpan: 1
             Layout.columnSpan: 3
 
-            Layout.preferredHeight: -1
-            Layout.preferredWidth: -1
-            Layout.fillWidth: true
+            Layout.preferredHeight: rowHeight
+            Layout.preferredWidth: columnWidth * Layout.columnSpan
+            Layout.fillWidth: false
             Layout.fillHeight: true
             Layout.alignment: Qt.AlignLeft
 
@@ -175,16 +165,14 @@ Item {
             id: _opticalZoomInModeButton
 
             showBorder: true
-            font.pointSize: ScreenTools.isMobile ? point_size : ScreenTools.smallFontPointSize
-            pointSize: ScreenTools.isMobile ? point_size : ScreenTools.defaultFontPointSize
             text: qsTr("OZOOMI")
 
             Layout.rowSpan: 1
             Layout.columnSpan: 3
 
-            Layout.preferredHeight: -1
-            Layout.preferredWidth: -1
-            Layout.fillWidth: true
+            Layout.preferredHeight: rowHeight
+            Layout.preferredWidth: columnWidth * Layout.columnSpan
+            Layout.fillWidth: false
             Layout.fillHeight: true
             Layout.alignment: Qt.AlignLeft
 
@@ -201,16 +189,14 @@ Item {
             id: _opticalZoomOutModeButton
 
             showBorder: true
-            font.pointSize: ScreenTools.isMobile ? point_size : ScreenTools.smallFontPointSize
-            pointSize: ScreenTools.isMobile ? point_size : ScreenTools.defaultFontPointSize
             text: qsTr("OZOOMO")
 
             Layout.rowSpan: 1
             Layout.columnSpan: 3
 
-            Layout.preferredHeight: -1
-            Layout.preferredWidth: -1
-            Layout.fillWidth: true
+            Layout.preferredHeight: rowHeight
+            Layout.preferredWidth: columnWidth * Layout.columnSpan
+            Layout.fillWidth: false
             Layout.fillHeight: true
             Layout.alignment: Qt.AlignLeft
 
@@ -227,16 +213,14 @@ Item {
             id: _digitalZoomInModeButton
 
             showBorder: true
-            font.pointSize: ScreenTools.isMobile ? point_size : ScreenTools.smallFontPointSize
-            pointSize: ScreenTools.isMobile ? point_size : ScreenTools.defaultFontPointSize
             text: qsTr("DZOOMI")
 
             Layout.rowSpan: 1
             Layout.columnSpan: 3
 
-            Layout.preferredHeight: -1
-            Layout.preferredWidth: -1
-            Layout.fillWidth: true
+            Layout.preferredHeight: rowHeight
+            Layout.preferredWidth: columnWidth * Layout.columnSpan
+            Layout.fillWidth: false
             Layout.fillHeight: true
             Layout.alignment: Qt.AlignLeft
 
@@ -250,16 +234,14 @@ Item {
             id: _digitalZoomOutModeButton
 
             showBorder: true
-            font.pointSize: ScreenTools.isMobile ? point_size : ScreenTools.smallFontPointSize
-            pointSize: ScreenTools.isMobile ? point_size : ScreenTools.defaultFontPointSize
             text: qsTr("DZOOMO")
 
             Layout.rowSpan: 1
             Layout.columnSpan: 3
 
-            Layout.preferredHeight: -1
-            Layout.preferredWidth: -1
-            Layout.fillWidth: true
+            Layout.preferredHeight: rowHeight
+            Layout.preferredWidth: columnWidth * Layout.columnSpan
+            Layout.fillWidth: false
             Layout.fillHeight: true
             Layout.alignment: Qt.AlignLeft
 
@@ -273,16 +255,14 @@ Item {
             id: _autoFocusModeButton
 
             showBorder: true
-            font.pointSize: ScreenTools.isMobile ? point_size : ScreenTools.smallFontPointSize
-            pointSize: ScreenTools.isMobile ? point_size : ScreenTools.defaultFontPointSize
             text: qsTr("AUTO")
 
             Layout.rowSpan: 1
             Layout.columnSpan: 2
 
-            Layout.preferredHeight: -1
-            Layout.preferredWidth: -1
-            Layout.fillWidth: true
+            Layout.preferredHeight: rowHeight
+            Layout.preferredWidth: columnWidth * Layout.columnSpan
+            Layout.fillWidth: false
             Layout.fillHeight: true
             Layout.alignment: Qt.AlignLeft
 
@@ -296,16 +276,14 @@ Item {
             id: _manualFocusModeButton
 
             showBorder: true
-            font.pointSize: ScreenTools.isMobile ? point_size : ScreenTools.smallFontPointSize
-            pointSize: ScreenTools.isMobile ? point_size : ScreenTools.defaultFontPointSize
             text: qsTr("MAN")
 
             Layout.rowSpan: 1
             Layout.columnSpan: 2
 
-            Layout.preferredHeight: -1
-            Layout.preferredWidth: -1
-            Layout.fillWidth: true
+            Layout.preferredHeight: rowHeight
+            Layout.preferredWidth: columnWidth * Layout.columnSpan
+            Layout.fillWidth: false
             Layout.fillHeight: true
             Layout.alignment: Qt.AlignLeft
 
@@ -319,16 +297,14 @@ Item {
             id: _oneShotFocusModeButton
 
             showBorder: true
-            font.pointSize: ScreenTools.isMobile ? point_size : ScreenTools.smallFontPointSize
-            pointSize: ScreenTools.isMobile ? point_size : ScreenTools.defaultFontPointSize
             text: qsTr("SHOT")
 
             Layout.rowSpan: 1
             Layout.columnSpan: 2
 
-            Layout.preferredHeight: -1
-            Layout.preferredWidth: -1
-            Layout.fillWidth: true
+            Layout.preferredHeight: rowHeight
+            Layout.preferredWidth: columnWidth * Layout.columnSpan
+            Layout.fillWidth: false
             Layout.fillHeight: true
             Layout.alignment: Qt.AlignLeft
 
@@ -344,16 +320,19 @@ Item {
             height: ScreenTools.defaultFontPixelHeight
 
             text: qsTr("INFO")
-            font.family: ScreenTools.demiboldFontFamily
-            font.pointSize: ScreenTools.largeFontPointSize
             color: "White"
 
             horizontalAlignment: Text.AlignHCenter
             verticalAlignment: Text.AlignVCenter
 
+            Layout.rowSpan: 1
             Layout.columnSpan: 2
-            Layout.fillHeight: false
-            Layout.fillWidth: true
+
+            Layout.preferredHeight: rowHeight
+            Layout.preferredWidth: columnWidth * Layout.columnSpan
+            Layout.fillWidth: false
+            Layout.fillHeight: true
+            Layout.alignment: Qt.AlignLeft
         }
 
         QGCTextField {
@@ -363,9 +342,9 @@ Item {
             Layout.rowSpan: 1
             Layout.columnSpan: 2
 
-            Layout.preferredHeight: -1
-            Layout.preferredWidth: -1
-            Layout.fillWidth: true
+            Layout.preferredHeight: rowHeight
+            Layout.preferredWidth: columnWidth * Layout.columnSpan
+            Layout.fillWidth: false
             Layout.fillHeight: true
             Layout.alignment: Qt.AlignLeft
 
@@ -379,16 +358,14 @@ Item {
             id: _setCameraScreenInformationButton
 
             showBorder: true
-            font.pointSize: ScreenTools.isMobile ? point_size : ScreenTools.smallFontPointSize
-            pointSize: ScreenTools.isMobile ? point_size : ScreenTools.defaultFontPointSize
             text: qsTr("SET")
 
             Layout.rowSpan: 1
             Layout.columnSpan: 2
 
-            Layout.preferredHeight: -1
-            Layout.preferredWidth: -1
-            Layout.fillWidth: true
+            Layout.preferredHeight: rowHeight
+            Layout.preferredWidth: columnWidth * Layout.columnSpan
+            Layout.fillWidth: false
             Layout.fillHeight: true
             Layout.alignment: Qt.AlignLeft
 

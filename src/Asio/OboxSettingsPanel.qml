@@ -16,9 +16,11 @@ import QGroundControl.SettingsManager 1.0
 //import "../QmlControls"
 Item {
 
+    id: widgetAsioSettings
     anchors.fill: parent
     visible: true
 
+    property int rowHeight: (parent.height - (grid.rows * grid.rowSpacing)) / (grid.rows)
     property var _activeVehicle: QGroundControl.multiVehicleManager.activeVehicle
     // The following properties relate to a simple camera
     property var _flyViewSettings: QGroundControl.settingsManager.flyViewSettings
@@ -31,8 +33,8 @@ Item {
         rows: 2
         anchors.fill: parent
         anchors.margins: 3
-        columnSpacing: 5
-        rowSpacing: 5
+        columnSpacing: 2
+        rowSpacing: 2
 
         onWidthChanged: {
             console.log("Obox settings:", _grid.width, _grid.height)
@@ -43,14 +45,14 @@ Item {
             id: _mainlabel
 
             text: qsTr("OBOX CONF")
-            transformOrigin: Item.Center
             font.family: ScreenTools.demiboldFontFamily
-            font.pointSize: ScreenTools.largeFontPointSize
+            transformOrigin: Item.Center
             color: "White"
 
             horizontalAlignment: Text.AlignHCenter
             verticalAlignment: Text.AlignVCenter
 
+            //Layout.preferredHeight: rowHeight
             Layout.alignment: Qt.AlignLeft | Qt.AlignTop
             Layout.columnSpan: 2
             Layout.fillHeight: false
@@ -62,14 +64,12 @@ Item {
             id: _dayOboxButton
 
             showBorder: true
-            font.pointSize: ScreenTools.isMobile ? point_size : ScreenTools.smallFontPointSize
-            pointSize: ScreenTools.isMobile ? point_size : ScreenTools.defaultFontPointSize
             text: qsTr("DAY")
 
             Layout.rowSpan: 1
             Layout.columnSpan: 2
 
-            Layout.preferredHeight: -1
+            Layout.preferredHeight: rowHeight
             Layout.preferredWidth: -1
             Layout.fillWidth: true
             Layout.fillHeight: true
@@ -87,14 +87,12 @@ Item {
             id: _thermalOboxButton
 
             showBorder: true
-            font.pointSize: ScreenTools.isMobile ? point_size : ScreenTools.smallFontPointSize
-            pointSize: ScreenTools.isMobile ? point_size : ScreenTools.defaultFontPointSize
             text: qsTr("THERMAL")
 
             Layout.rowSpan: 1
             Layout.columnSpan: 2
 
-            Layout.preferredHeight: -1
+            Layout.preferredHeight: rowHeight
             Layout.preferredWidth: -1
             Layout.fillWidth: true
             Layout.fillHeight: true

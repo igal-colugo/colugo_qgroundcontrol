@@ -55,6 +55,11 @@ Item {
     property int _asioEnabled: QGroundControl.settingsManager.appSettings.enableAsio.value
     property int _epsilonEnabled: QGroundControl.settingsManager.appSettings.enableEpsilon.value
 
+    property int _loaderStandardHeight: 110
+    property int _loaderNextVisionHeight: 180
+    property int _loaderEpsilonHeight: 180
+    property int _loaderAsioHeight: 100
+
     QGCToolInsets {
         id: _totalToolInsets
         leftEdgeTopInset: toolStrip.leftInset
@@ -136,6 +141,7 @@ Item {
         anchors.margins: _toolsMargin
         anchors.right: parent.right
         width: _rightPanelWidth
+        height: _loaderStandardHeight
         anchors.top: undefined
         anchors.verticalCenter: _root.verticalCenter
 
@@ -149,7 +155,7 @@ Item {
         anchors.margins: _toolsMargin
         anchors.right: parent.right
         width: _rightPanelWidth
-        height: 400
+        height: _loaderNextVisionHeight
         anchors.top: {
             (_standardPhotoVideoEnabled > 0) ? _standard_loader.bottom : undefined
         }
@@ -167,7 +173,7 @@ Item {
         anchors.margins: _toolsMargin
         anchors.right: parent.right
         width: _rightPanelWidth
-        height: 300
+        height: _loaderEpsilonHeight
         anchors.top: {
             if (_standardPhotoVideoEnabled > 0 && _nextVisionEnabled > 0) {
                 _next_vision_loader.bottom
@@ -199,7 +205,7 @@ Item {
         anchors.margins: _toolsMargin
         anchors.right: parent.right
         width: _rightPanelWidth
-        height: 150
+        height: _loaderAsioHeight
         anchors.top: {
             if ((_standardPhotoVideoEnabled > 0 && _nextVisionEnabled > 0
                  && _epsilonEnabled > 0) || (_standardPhotoVideoEnabled > 0

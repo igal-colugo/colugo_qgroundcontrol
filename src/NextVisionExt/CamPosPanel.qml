@@ -16,7 +16,6 @@ import QGroundControl.SettingsManager 1.0
 Item {
     id: element
     anchors.fill: parent
-
     visible: true
 
     property var _positionsStr: ["Local Position", "Un-stabilized Position"]
@@ -26,36 +25,37 @@ Item {
     property Fact _globalPositionElevation: QGroundControl.settingsManager.appSettings.globalPositionElevation
     property Fact _globalPositionAzimuth: QGroundControl.settingsManager.appSettings.globalPositionAzimuth
 
+    property int rowHeight: (parent.height - (grid.rows * grid.rowSpacing)) / (grid.rows)
+    property int columnWidth: (parent.width - (grid.columns * grid.columnSpacing)) / (grid.columns)
+
     GridLayout {
         id: grid
 
-        columns: 6
-        rows: 7
+        columns: 8
+        rows: 6
         anchors.fill: parent
         anchors.margins: 3
-        columnSpacing: 5
-        rowSpacing: 5
+        columnSpacing: 2
+        rowSpacing: 2
 
         onWidthChanged: {
-            console.log("Record mode:", grid.width, grid.height)
+            console.log("Position mode:", grid.width, grid.height)
         }
 
         QGCLabel {
 
             id: mainlabel
 
-            height: ScreenTools.defaultFontPixelHeight
-
             text: qsTr("POSITION")
             font.family: ScreenTools.demiboldFontFamily
-            font.pointSize: ScreenTools.largeFontPointSize
             color: "White"
 
             horizontalAlignment: Text.AlignHCenter
             verticalAlignment: Text.AlignVCenter
 
+            //Layout.preferredHeight: rowHeight
             Layout.alignment: Qt.AlignLeft | Qt.AlignTop
-            Layout.columnSpan: 6
+            Layout.columnSpan: 8
             Layout.fillHeight: false
             Layout.fillWidth: true
         }
@@ -64,13 +64,12 @@ Item {
             id: localUnstabPosCombo
             sizeToContents: true
             centeredLabel: true
-            font.pointSize: ScreenTools.isMobile ? point_size : ScreenTools.mediumFontPointSize
             model: _positionsStr
 
             Layout.rowSpan: 1
-            Layout.columnSpan: 6
+            Layout.columnSpan: 8
 
-            Layout.preferredHeight: -1
+            Layout.preferredHeight: rowHeight
             Layout.preferredWidth: -1
             Layout.fillWidth: true
             Layout.fillHeight: false
@@ -81,34 +80,34 @@ Item {
 
             id: _rollLabel
 
-            height: ScreenTools.defaultFontPixelHeight
-
-            text: qsTr("Roll")
-            font.family: ScreenTools.demiboldFontFamily
-            font.pointSize: ScreenTools.largeFontPointSize
+            text: qsTr("RLL")
             color: "White"
 
             horizontalAlignment: Text.AlignLeft
             verticalAlignment: Text.AlignVCenter
 
-            Layout.columnSpan: 3
+            //Layout settings
+            Layout.rowSpan: 1
+            Layout.columnSpan: 1
+
+            Layout.preferredHeight: rowHeight
+            Layout.preferredWidth: columnWidth * 1
             Layout.fillHeight: false
-            Layout.fillWidth: true
+            Layout.fillWidth: false
         }
 
         FactTextField {
 
             id: _localPosRoll
             maximumLength: 6
-            font.pointSize: ScreenTools.isMobile ? point_size : 9
             fact: _localPositionRoll
 
             Layout.rowSpan: 1
             Layout.columnSpan: 3
 
-            Layout.preferredHeight: -1
-            Layout.preferredWidth: -1
-            Layout.fillWidth: true
+            Layout.preferredHeight: rowHeight
+            Layout.preferredWidth: columnWidth * 3
+            Layout.fillWidth: false
             Layout.fillHeight: false
             Layout.alignment: Qt.AlignLeft
         }
@@ -117,34 +116,33 @@ Item {
 
             id: _pitchLabel
 
-            height: ScreenTools.defaultFontPixelHeight
-
-            text: qsTr("Pitch")
-            font.family: ScreenTools.demiboldFontFamily
-            font.pointSize: ScreenTools.largeFontPointSize
+            text: qsTr("PTCH")
             color: "White"
 
             horizontalAlignment: Text.AlignLeft
             verticalAlignment: Text.AlignVCenter
 
-            Layout.columnSpan: 3
+            Layout.rowSpan: 1
+            Layout.columnSpan: 1
+
+            Layout.preferredHeight: rowHeight
+            Layout.preferredWidth: columnWidth * 1
             Layout.fillHeight: false
-            Layout.fillWidth: true
+            Layout.fillWidth: false
         }
 
         FactTextField {
 
             id: _localPosPitch
             maximumLength: 6
-            font.pointSize: ScreenTools.isMobile ? point_size : 9
             fact: _localPositionPitch
 
             Layout.rowSpan: 1
             Layout.columnSpan: 3
 
-            Layout.preferredHeight: -1
-            Layout.preferredWidth: -1
-            Layout.fillWidth: true
+            Layout.preferredHeight: rowHeight
+            Layout.preferredWidth: columnWidth * 3
+            Layout.fillWidth: false
             Layout.fillHeight: false
             Layout.alignment: Qt.AlignLeft
         }
@@ -154,14 +152,12 @@ Item {
             id: localPosBtn
 
             showBorder: true
-            font.pointSize: ScreenTools.isMobile ? point_size : ScreenTools.smallFontPointSize
-            pointSize: ScreenTools.isMobile ? point_size : ScreenTools.defaultFontPointSize
-            text: qsTr("Set")
+            text: qsTr("SET")
 
             Layout.rowSpan: 1
-            Layout.columnSpan: 6
+            Layout.columnSpan: 8
 
-            Layout.preferredHeight: -1
+            Layout.preferredHeight: rowHeight
             Layout.preferredWidth: -1
             Layout.fillWidth: true
             Layout.fillHeight: false
@@ -179,55 +175,35 @@ Item {
 
         QGCLabel {
 
-            id: globalposlabel
-
-            height: ScreenTools.defaultFontPixelHeight
-
-            text: qsTr("GLOBAL")
-            font.family: ScreenTools.demiboldFontFamily
-            font.pointSize: ScreenTools.largeFontPointSize
-            color: "White"
-
-            horizontalAlignment: Text.AlignHCenter
-            verticalAlignment: Text.AlignVCenter
-
-            Layout.columnSpan: 6
-            Layout.fillHeight: false
-            Layout.fillWidth: true
-        }
-
-        QGCLabel {
-
             id: _elevatorLabel
 
-            height: ScreenTools.defaultFontPixelHeight
-
-            text: qsTr("Elevation")
-            font.family: ScreenTools.demiboldFontFamily
-            font.pointSize: ScreenTools.largeFontPointSize
+            text: qsTr("EL")
             color: "White"
 
             horizontalAlignment: Text.AlignLeft
             verticalAlignment: Text.AlignVCenter
 
-            Layout.columnSpan: 3
+            Layout.rowSpan: 1
+            Layout.columnSpan: 1
+
+            Layout.preferredHeight: rowHeight
+            Layout.preferredWidth: columnWidth * 1
             Layout.fillHeight: false
-            Layout.fillWidth: true
+            Layout.fillWidth: false
         }
 
         FactTextField {
 
             id: _globalPosElev
             maximumLength: 6
-            font.pointSize: ScreenTools.isMobile ? point_size : 9
             fact: _globalPositionElevation
 
             Layout.rowSpan: 1
             Layout.columnSpan: 3
 
-            Layout.preferredHeight: -1
-            Layout.preferredWidth: -1
-            Layout.fillWidth: true
+            Layout.preferredHeight: rowHeight
+            Layout.preferredWidth: columnWidth * 3
+            Layout.fillWidth: false
             Layout.fillHeight: false
             Layout.alignment: Qt.AlignLeft
         }
@@ -236,34 +212,33 @@ Item {
 
             id: _azimuthLabel
 
-            height: ScreenTools.defaultFontPixelHeight
-
-            text: qsTr("Azimuth")
-            font.family: ScreenTools.demiboldFontFamily
-            font.pointSize: ScreenTools.largeFontPointSize
+            text: qsTr("AZ")
             color: "White"
 
             horizontalAlignment: Text.AlignLeft
             verticalAlignment: Text.AlignVCenter
 
-            Layout.columnSpan: 3
+            Layout.rowSpan: 1
+            Layout.columnSpan: 1
+
+            Layout.preferredHeight: rowHeight
+            Layout.preferredWidth: columnWidth * 1
             Layout.fillHeight: false
-            Layout.fillWidth: true
+            Layout.fillWidth: false
         }
 
         FactTextField {
 
             id: _globalPosAz
             maximumLength: 6
-            font.pointSize: ScreenTools.isMobile ? point_size : 9
             fact: _globalPositionAzimuth
 
             Layout.rowSpan: 1
             Layout.columnSpan: 3
 
-            Layout.preferredHeight: -1
-            Layout.preferredWidth: -1
-            Layout.fillWidth: true
+            Layout.preferredHeight: rowHeight
+            Layout.preferredWidth: columnWidth * 3
+            Layout.fillWidth: false
             Layout.fillHeight: false
             Layout.alignment: Qt.AlignLeft
         }
@@ -273,14 +248,12 @@ Item {
             id: globalPosBtn
 
             showBorder: true
-            font.pointSize: ScreenTools.isMobile ? point_size : ScreenTools.smallFontPointSize
-            pointSize: ScreenTools.isMobile ? point_size : ScreenTools.defaultFontPointSize
-            text: qsTr("Set Global Position")
+            text: qsTr("SET")
 
             Layout.rowSpan: 1
-            Layout.columnSpan: 6
+            Layout.columnSpan: 8
 
-            Layout.preferredHeight: -1
+            Layout.preferredHeight: rowHeight
             Layout.preferredWidth: -1
             Layout.fillWidth: true
             Layout.fillHeight: false

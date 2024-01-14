@@ -25,8 +25,8 @@ import QGroundControl.FactSystem 1.0
 import QGroundControl.FactControls 1.0
 
 Rectangle {
-    id:_main_rectangle
-   anchors.fill: parent
+    id: _main_rectangle
+    anchors.fill: parent
     color: "#80000000"
     radius: _margins
     anchors.margins: 3
@@ -70,14 +70,13 @@ Rectangle {
 
         id: _rightButtonImage
 
-        anchors.margins: _margins
+        anchors.margins: 1
         anchors.top: parent.top
         anchors.right: parent.right
         source: "/res/buttonRight.svg"
-        height: ScreenTools.isMobile ? ScreenTools.defaultFontPixelHeight
-                                       * 2.0 : ScreenTools.defaultFontPixelHeight
-        width: height * 1.2
-        sourceSize.height: height * 1.2
+        height: 15 //parent.height / 5
+        width: height * 2.0
+        sourceSize.height: height
         color: "white"
         fillMode: Image.PreserveAspectFit
         visible: true
@@ -92,14 +91,13 @@ Rectangle {
 
         id: _leftButtonImage
 
-        anchors.margins: _margins
+        anchors.margins: 1
         anchors.top: parent.top
         anchors.left: parent.left
         source: "/res/buttonLeft.svg"
-        height: ScreenTools.isMobile ? ScreenTools.defaultFontPixelHeight
-                                       * 2.0 : ScreenTools.defaultFontPixelHeight
-        width: height * 1.2
-        sourceSize.height: height * 1.2
+        height: 15 //parent.height / 5
+        width: height * 2.0
+        sourceSize.height: height
         color: "white"
         fillMode: Image.PreserveAspectFit
         visible: true

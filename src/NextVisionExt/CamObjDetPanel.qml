@@ -16,9 +16,10 @@ import QGroundControl.SettingsManager 1.0
 Item {
     id: element
     anchors.fill: parent
-
     visible: true
 
+    property int rowHeight: (parent.height - (grid.rows * grid.rowSpacing)) / (grid.rows)
+    property int columnWidth: (parent.width - (grid.columns * grid.columnSpacing)) / (grid.columns)
     property var _odNetTypes: ["Human & Vehicle", "Fire & Smoke", "Human Overboard", "Marine Vessel"]
 
     GridLayout {
@@ -28,8 +29,8 @@ Item {
         rows: 6
         anchors.fill: parent
         anchors.margins: 3
-        columnSpacing: 5
-        rowSpacing: 5
+        columnSpacing: 2
+        rowSpacing: 2
 
         onWidthChanged: {
             console.log("Record mode:", grid.width, grid.height)
@@ -39,16 +40,14 @@ Item {
 
             id: mainlabel
 
-            height: ScreenTools.defaultFontPixelHeight
-
             text: qsTr("OBJ DET")
             font.family: ScreenTools.demiboldFontFamily
-            font.pointSize: ScreenTools.largeFontPointSize
             color: "White"
 
             horizontalAlignment: Text.AlignHCenter
             verticalAlignment: Text.AlignVCenter
 
+            //Layout.preferredHeight: rowHeight
             Layout.alignment: Qt.AlignLeft | Qt.AlignTop
             Layout.columnSpan: 6
             Layout.fillHeight: false
@@ -60,16 +59,14 @@ Item {
             id: _odEnableButton
 
             showBorder: true
-            font.pointSize: ScreenTools.isMobile ? point_size : ScreenTools.smallFontPointSize
-            pointSize: ScreenTools.isMobile ? point_size : ScreenTools.defaultFontPointSize
-            text: qsTr("OD Enable")
+            text: qsTr("OD ON")
 
             Layout.rowSpan: 1
             Layout.columnSpan: 3
 
-            Layout.preferredHeight: -1
-            Layout.preferredWidth: -1
-            Layout.fillWidth: true
+            Layout.preferredHeight: rowHeight
+            Layout.preferredWidth: columnWidth * Layout.columnSpan
+            Layout.fillWidth: false
             Layout.fillHeight: false
             Layout.alignment: Qt.AlignLeft
 
@@ -83,16 +80,14 @@ Item {
             id: _odDisableButton
 
             showBorder: true
-            font.pointSize: ScreenTools.isMobile ? point_size : ScreenTools.smallFontPointSize
-            pointSize: ScreenTools.isMobile ? point_size : ScreenTools.defaultFontPointSize
-            text: qsTr("OD Disable")
+            text: qsTr("OD OFF")
 
             Layout.rowSpan: 1
             Layout.columnSpan: 3
 
-            Layout.preferredHeight: -1
-            Layout.preferredWidth: -1
-            Layout.fillWidth: true
+            Layout.preferredHeight: rowHeight
+            Layout.preferredWidth: columnWidth * Layout.columnSpan
+            Layout.fillWidth: false
             Layout.fillHeight: false
             Layout.alignment: Qt.AlignLeft
 
@@ -105,16 +100,13 @@ Item {
 
             id: detectorTypeLabel
 
-            height: ScreenTools.defaultFontPixelHeight
-
-            text: qsTr("Detector Type")
-            font.family: ScreenTools.demiboldFontFamily
-            font.pointSize: ScreenTools.largeFontPointSize
+            text: qsTr("DETECT TYPE")
             color: "White"
 
             horizontalAlignment: Text.AlignHCenter
             verticalAlignment: Text.AlignVCenter
 
+            Layout.preferredHeight: rowHeight
             Layout.alignment: Qt.AlignLeft | Qt.AlignTop
             Layout.columnSpan: 6
             Layout.fillHeight: false
@@ -125,15 +117,14 @@ Item {
             id: netTypeCombo
             sizeToContents: true
             centeredLabel: true
-            font.pointSize: ScreenTools.isMobile ? point_size : ScreenTools.smallFontPointSize
             model: _odNetTypes
 
             Layout.rowSpan: 1
-            Layout.columnSpan: 3
+            Layout.columnSpan: 4
 
-            Layout.preferredHeight: -1
-            Layout.preferredWidth: -1
-            Layout.fillWidth: true
+            Layout.preferredHeight: rowHeight
+            Layout.preferredWidth: columnWidth * Layout.columnSpan
+            Layout.fillWidth: false
             Layout.fillHeight: false
             Layout.alignment: Qt.AlignLeft
         }
@@ -143,16 +134,14 @@ Item {
             id: _setTypeButton
 
             showBorder: true
-            font.pointSize: ScreenTools.isMobile ? point_size : ScreenTools.smallFontPointSize
-            pointSize: ScreenTools.isMobile ? point_size : ScreenTools.defaultFontPointSize
-            text: qsTr("Set")
+            text: qsTr("SET")
 
             Layout.rowSpan: 1
-            Layout.columnSpan: 3
+            Layout.columnSpan: 2
 
-            Layout.preferredHeight: -1
-            Layout.preferredWidth: -1
-            Layout.fillWidth: true
+            Layout.preferredHeight: rowHeight
+            Layout.preferredWidth: columnWidth * Layout.columnSpan
+            Layout.fillWidth: false
             Layout.fillHeight: false
             Layout.alignment: Qt.AlignLeft
 
@@ -167,34 +156,33 @@ Item {
 
             id: _thresholdLabel
 
-            height: ScreenTools.defaultFontPixelHeight
-
-            text: qsTr("Conf thres[%]")
-            font.family: ScreenTools.demiboldFontFamily
-            font.pointSize: ScreenTools.mediumFontPointSize
+            text: qsTr("CONF THR[%]")
             color: "White"
 
             horizontalAlignment: Text.AlignLeft
             verticalAlignment: Text.AlignVCenter
 
-            Layout.columnSpan: 2
+            Layout.rowSpan: 1
+            Layout.columnSpan: 3
+
+            Layout.preferredHeight: rowHeight
+            Layout.preferredWidth: columnWidth * Layout.columnSpan
+            Layout.fillWidth: false
             Layout.fillHeight: false
-            Layout.fillWidth: true
         }
 
         QGCTextField {
 
             id: _confThres
             maximumLength: 6
-            font.pointSize: ScreenTools.isMobile ? point_size : 9
             text: qsTr("")
 
             Layout.rowSpan: 1
             Layout.columnSpan: 2
 
-            Layout.preferredHeight: -1
-            Layout.preferredWidth: -1
-            Layout.fillWidth: true
+            Layout.preferredHeight: rowHeight
+            Layout.preferredWidth: columnWidth * Layout.columnSpan
+            Layout.fillWidth: false
             Layout.fillHeight: false
             Layout.alignment: Qt.AlignLeft
         }
@@ -204,16 +192,14 @@ Item {
             id: _setThresholdButton
 
             showBorder: true
-            font.pointSize: ScreenTools.isMobile ? point_size : ScreenTools.smallFontPointSize
-            pointSize: ScreenTools.isMobile ? point_size : ScreenTools.defaultFontPointSize
-            text: qsTr("Set")
+            text: qsTr("SET")
 
             Layout.rowSpan: 1
-            Layout.columnSpan: 2
+            Layout.columnSpan: 1
 
-            Layout.preferredHeight: -1
-            Layout.preferredWidth: -1
-            Layout.fillWidth: true
+            Layout.preferredHeight: rowHeight
+            Layout.preferredWidth: columnWidth * Layout.columnSpan
+            Layout.fillWidth: false
             Layout.fillHeight: false
             Layout.alignment: Qt.AlignLeft
 
@@ -227,34 +213,33 @@ Item {
 
             id: _firethresholdLabel
 
-            height: ScreenTools.defaultFontPixelHeight
-
-            text: qsTr("Fire thres")
-            font.family: ScreenTools.demiboldFontFamily
-            font.pointSize: ScreenTools.mediumFontPointSize
+            text: qsTr("FIRE THR")
             color: "White"
 
             horizontalAlignment: Text.AlignLeft
             verticalAlignment: Text.AlignVCenter
 
-            Layout.columnSpan: 2
+            Layout.rowSpan: 1
+            Layout.columnSpan: 3
+
+            Layout.preferredHeight: rowHeight
+            Layout.preferredWidth: columnWidth * Layout.columnSpan
+            Layout.fillWidth: false
             Layout.fillHeight: false
-            Layout.fillWidth: true
         }
 
         QGCTextField {
 
             id: _fireThres
             maximumLength: 6
-            font.pointSize: ScreenTools.isMobile ? point_size : 9
             text: qsTr("")
 
             Layout.rowSpan: 1
             Layout.columnSpan: 2
 
-            Layout.preferredHeight: -1
-            Layout.preferredWidth: -1
-            Layout.fillWidth: true
+            Layout.preferredHeight: rowHeight
+            Layout.preferredWidth: columnWidth * Layout.columnSpan
+            Layout.fillWidth: false
             Layout.fillHeight: false
             Layout.alignment: Qt.AlignLeft
         }
@@ -264,16 +249,14 @@ Item {
             id: _setFireThresholdButton
 
             showBorder: true
-            font.pointSize: ScreenTools.isMobile ? point_size : ScreenTools.smallFontPointSize
-            pointSize: ScreenTools.isMobile ? point_size : ScreenTools.defaultFontPointSize
-            text: qsTr("Set")
+            text: qsTr("SET")
 
             Layout.rowSpan: 1
-            Layout.columnSpan: 2
+            Layout.columnSpan: 1
 
-            Layout.preferredHeight: -1
-            Layout.preferredWidth: -1
-            Layout.fillWidth: true
+            Layout.preferredHeight: rowHeight
+            Layout.preferredWidth: columnWidth * Layout.columnSpan
+            Layout.fillWidth: false
             Layout.fillHeight: false
             Layout.alignment: Qt.AlignLeft
 

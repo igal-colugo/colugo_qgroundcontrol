@@ -57,8 +57,8 @@ Item {
     readonly property string vtolTransitionTitle: qsTr("VTOL Transition")
     readonly property string roiTitle: qsTr("ROI")
     readonly property string actionListTitle: qsTr("Action")
-    readonly property string startEngineTitle: qsTr("Start engine")
-    readonly property string stopEngineTitle: qsTr("Stop engine")
+    readonly property string startEngineTitle: qsTr("Engine on")
+    readonly property string stopEngineTitle: qsTr("Engine off")
 
     readonly property string armMessage: qsTr("Arm the vehicle.")
     readonly property string forceArmMessage: qsTr("WARNING: This will force arming of the vehicle bypassing any safety checks.")

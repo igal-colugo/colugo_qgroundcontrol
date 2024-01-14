@@ -15,8 +15,12 @@ import QGroundControl.SettingsManager 1.0
 
 //import "../../QmlControls"
 Item {
+    id: widgetMode
     anchors.fill: parent
     visible: true
+
+    property int rowHeight: (parent.height - (grid.rows * grid.rowSpacing)) / (grid.rows)
+    property int columnWidth: (parent.width - (grid.columns * grid.columnSpacing)) / (grid.columns)
 
     GridLayout {
 
@@ -26,8 +30,8 @@ Item {
         rows: 5
         anchors.fill: parent
         anchors.margins: 3
-        columnSpacing: 5
-        rowSpacing: 5
+        columnSpacing: 2
+        rowSpacing: 2
 
         onWidthChanged: {
             console.log("Camera mode:", grid.width, grid.height)
@@ -41,7 +45,6 @@ Item {
 
             text: qsTr("MODE")
             font.family: ScreenTools.demiboldFontFamily
-            font.pointSize: ScreenTools.largeFontPointSize
             color: "White"
 
             horizontalAlignment: Text.AlignHCenter
@@ -58,16 +61,14 @@ Item {
             id: _rateModeButton
 
             showBorder: true
-            font.pointSize: ScreenTools.isMobile ? point_size : ScreenTools.smallFontPointSize
-            pointSize: ScreenTools.isMobile ? point_size : ScreenTools.defaultFontPointSize
             text: qsTr("RATE")
 
             Layout.rowSpan: 1
             Layout.columnSpan: 3
 
-            Layout.preferredHeight: -1
-            Layout.preferredWidth: -1
-            Layout.fillWidth: true
+            Layout.preferredHeight: rowHeight
+            Layout.preferredWidth: columnWidth * Layout.columnSpan
+            Layout.fillWidth: false
             Layout.fillHeight: true
             Layout.alignment: Qt.AlignLeft
 
@@ -81,16 +82,14 @@ Item {
             id: _rateAidModeButton
 
             showBorder: true
-            font.pointSize: ScreenTools.isMobile ? point_size : ScreenTools.smallFontPointSize
-            pointSize: ScreenTools.isMobile ? point_size : ScreenTools.defaultFontPointSize
             text: qsTr("RATE AID")
 
             Layout.rowSpan: 1
             Layout.columnSpan: 3
 
-            Layout.preferredHeight: -1
-            Layout.preferredWidth: -1
-            Layout.fillWidth: true
+            Layout.preferredHeight: rowHeight
+            Layout.preferredWidth: columnWidth * Layout.columnSpan
+            Layout.fillWidth: false
             Layout.fillHeight: true
             Layout.alignment: Qt.AlignLeft
 
@@ -104,16 +103,14 @@ Item {
             id: _stowModeButton
 
             showBorder: true
-            font.pointSize: ScreenTools.isMobile ? point_size : ScreenTools.smallFontPointSize
-            pointSize: ScreenTools.isMobile ? point_size : ScreenTools.defaultFontPointSize
             text: qsTr("STOW")
 
             Layout.rowSpan: 1
             Layout.columnSpan: 2
 
-            Layout.preferredHeight: -1
-            Layout.preferredWidth: -1
-            Layout.fillWidth: true
+            Layout.preferredHeight: rowHeight
+            Layout.preferredWidth: columnWidth * Layout.columnSpan
+            Layout.fillWidth: false
             Layout.fillHeight: true
             Layout.alignment: Qt.AlignLeft
 
@@ -127,16 +124,14 @@ Item {
             id: _pilotModeButton
 
             showBorder: true
-            font.pointSize: ScreenTools.isMobile ? point_size : ScreenTools.smallFontPointSize
-            pointSize: ScreenTools.isMobile ? point_size : ScreenTools.defaultFontPointSize
             text: qsTr("PILOT")
 
             Layout.rowSpan: 1
             Layout.columnSpan: 2
 
-            Layout.preferredHeight: -1
-            Layout.preferredWidth: -1
-            Layout.fillWidth: true
+            Layout.preferredHeight: rowHeight
+            Layout.preferredWidth: columnWidth * Layout.columnSpan
+            Layout.fillWidth: false
             Layout.fillHeight: true
             Layout.alignment: Qt.AlignLeft
 
@@ -151,16 +146,14 @@ Item {
             id: _geoLockModeButton
 
             showBorder: true
-            font.pointSize: ScreenTools.isMobile ? point_size : ScreenTools.smallFontPointSize
-            pointSize: ScreenTools.isMobile ? point_size : ScreenTools.defaultFontPointSize
             text: qsTr("GEO LCK")
 
             Layout.rowSpan: 1
             Layout.columnSpan: 2
 
-            Layout.preferredHeight: -1
-            Layout.preferredWidth: -1
-            Layout.fillWidth: true
+            Layout.preferredHeight: rowHeight
+            Layout.preferredWidth: columnWidth * Layout.columnSpan
+            Layout.fillWidth: false
             Layout.fillHeight: true
             Layout.alignment: Qt.AlignLeft
 
@@ -174,16 +167,14 @@ Item {
             id: _trackStationaryModeButton
 
             showBorder: true
-            font.pointSize: ScreenTools.isMobile ? point_size : ScreenTools.smallFontPointSize
-            pointSize: ScreenTools.isMobile ? point_size : ScreenTools.defaultFontPointSize
             text: qsTr("TRCK STAT")
 
             Layout.rowSpan: 1
             Layout.columnSpan: 3
 
-            Layout.preferredHeight: -1
-            Layout.preferredWidth: -1
-            Layout.fillWidth: true
+            Layout.preferredHeight: rowHeight
+            Layout.preferredWidth: columnWidth * Layout.columnSpan
+            Layout.fillWidth: false
             Layout.fillHeight: true
             Layout.alignment: Qt.AlignLeft
 
@@ -197,16 +188,14 @@ Item {
             id: _trackVehicleModeButton
 
             showBorder: true
-            font.pointSize: ScreenTools.isMobile ? point_size : ScreenTools.smallFontPointSize
-            pointSize: ScreenTools.isMobile ? point_size : ScreenTools.defaultFontPointSize
             text: qsTr("TRCK VHCL")
 
             Layout.rowSpan: 1
             Layout.columnSpan: 3
 
-            Layout.preferredHeight: -1
-            Layout.preferredWidth: -1
-            Layout.fillWidth: true
+            Layout.preferredHeight: rowHeight
+            Layout.preferredWidth: columnWidth * Layout.columnSpan
+            Layout.fillWidth: false
             Layout.fillHeight: true
             Layout.alignment: Qt.AlignLeft
 
@@ -227,9 +216,9 @@ Item {
             Layout.rowSpan: 1
             Layout.columnSpan: 3
 
-            Layout.preferredHeight: -1
-            Layout.preferredWidth: -1
-            Layout.fillWidth: true
+            Layout.preferredHeight: rowHeight
+            Layout.preferredWidth: columnWidth * Layout.columnSpan
+            Layout.fillWidth: false
             Layout.fillHeight: true
             Layout.alignment: Qt.AlignLeft
 
@@ -243,16 +232,14 @@ Item {
             id: _trackStaticModeButton
 
             showBorder: true
-            font.pointSize: ScreenTools.isMobile ? point_size : ScreenTools.smallFontPointSize
-            pointSize: ScreenTools.isMobile ? point_size : ScreenTools.defaultFontPointSize
             text: qsTr("TRCK STAC")
 
             Layout.rowSpan: 1
             Layout.columnSpan: 3
 
-            Layout.preferredHeight: -1
-            Layout.preferredWidth: -1
-            Layout.fillWidth: true
+            Layout.preferredHeight: rowHeight
+            Layout.preferredWidth: columnWidth * Layout.columnSpan
+            Layout.fillWidth: false
             Layout.fillHeight: true
             Layout.alignment: Qt.AlignLeft
 

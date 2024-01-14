@@ -14,8 +14,11 @@ import QGroundControl.FactControls 1.0
 import QGroundControl.SettingsManager 1.0
 
 Item {
+    id: widgetVMDControl
     anchors.fill: parent
     visible: true
+
+    property int rowHeight: (parent.height - (grid.rows * grid.rowSpacing)) / (grid.rows)
 
     GridLayout {
 
@@ -25,8 +28,8 @@ Item {
         rows: 3
         anchors.fill: parent
         anchors.margins: 3
-        columnSpacing: 5
-        rowSpacing: 5
+        columnSpacing: 2
+        rowSpacing: 2
 
         onWidthChanged: {
             console.log("VMD mode:", grid.width, grid.height)
@@ -36,16 +39,14 @@ Item {
 
             id: mainlabel
 
-            height: ScreenTools.defaultFontPixelHeight
-
             text: qsTr("VMD CTRL")
             font.family: ScreenTools.demiboldFontFamily
-            font.pointSize: ScreenTools.largeFontPointSize
             color: "White"
 
             horizontalAlignment: Text.AlignHCenter
             verticalAlignment: Text.AlignVCenter
 
+            //Layout.preferredHeight: rowHeight
             Layout.alignment: Qt.AlignLeft | Qt.AlignTop
             Layout.columnSpan: 6
             Layout.fillHeight: false
@@ -57,14 +58,12 @@ Item {
             id: _vmdOnButton
 
             showBorder: true
-            font.pointSize: ScreenTools.isMobile ? point_size : ScreenTools.smallFontPointSize
-            pointSize: ScreenTools.isMobile ? point_size : ScreenTools.defaultFontPointSize
             text: qsTr("VMD ON")
 
             Layout.rowSpan: 1
             Layout.columnSpan: 6
 
-            Layout.preferredHeight: -1
+            Layout.preferredHeight: rowHeight
             Layout.preferredWidth: -1
             Layout.fillWidth: true
             Layout.fillHeight: true
@@ -80,14 +79,12 @@ Item {
             id: _vmdOffButton
 
             showBorder: true
-            font.pointSize: ScreenTools.isMobile ? point_size : ScreenTools.smallFontPointSize
-            pointSize: ScreenTools.isMobile ? point_size : ScreenTools.defaultFontPointSize
             text: qsTr("VMD OFF")
 
             Layout.rowSpan: 1
             Layout.columnSpan: 6
 
-            Layout.preferredHeight: -1
+            Layout.preferredHeight: rowHeight
             Layout.preferredWidth: -1
             Layout.fillWidth: true
             Layout.fillHeight: true

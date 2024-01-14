@@ -12,9 +12,12 @@ import QGroundControl.FactSystem 1.0
 import QGroundControl.FactControls 1.0
 
 Item {
+    id: widgetIR
     anchors.fill: parent
     visible: true
 
+    property int rowHeight: (parent.height - (grid.rows * grid.rowSpacing)) / (grid.rows)
+    property int columnWidth: (parent.width - (grid.columns * grid.columnSpacing)) / (grid.columns)
     property var _irNrLevels: ["Low", "Medium", "High"]
 
     GridLayout {
@@ -22,11 +25,11 @@ Item {
         id: grid
 
         columns: 6
-        rows: 10
+        rows: 7
         anchors.fill: parent
         anchors.margins: 3
-        columnSpacing: 5
-        rowSpacing: 5
+        columnSpacing: 2
+        rowSpacing: 2
 
         onWidthChanged: {
             console.log("IR mode:", grid.width, grid.height)
@@ -36,16 +39,14 @@ Item {
 
             id: mainlabel
 
-            height: ScreenTools.defaultFontPixelHeight
-
             text: qsTr("IR")
             font.family: ScreenTools.demiboldFontFamily
-            font.pointSize: ScreenTools.largeFontPointSize
             color: "White"
 
             horizontalAlignment: Text.AlignHCenter
             verticalAlignment: Text.AlignVCenter
 
+            //Layout.preferredHeight: rowHeight
             Layout.alignment: Qt.AlignLeft | Qt.AlignTop
             Layout.columnSpan: 6
             Layout.fillHeight: false
@@ -57,16 +58,14 @@ Item {
             id: _dayModeButton
 
             showBorder: true
-            font.pointSize: ScreenTools.isMobile ? point_size : ScreenTools.smallFontPointSize
-            pointSize: ScreenTools.isMobile ? point_size : ScreenTools.defaultFontPointSize
             text: qsTr("DAY")
 
             Layout.rowSpan: 1
-            Layout.columnSpan: 6
+            Layout.columnSpan: 3
 
-            Layout.preferredHeight: -1
-            Layout.preferredWidth: -1
-            Layout.fillWidth: true
+            Layout.preferredHeight: rowHeight
+            Layout.preferredWidth: columnWidth * Layout.columnSpan
+            Layout.fillWidth: false
             Layout.fillHeight: true
             Layout.alignment: Qt.AlignLeft
 
@@ -80,16 +79,14 @@ Item {
             id: _thermalModeButton
 
             showBorder: true
-            font.pointSize: ScreenTools.isMobile ? point_size : ScreenTools.smallFontPointSize
-            pointSize: ScreenTools.isMobile ? point_size : ScreenTools.defaultFontPointSize
             text: qsTr("THERMAL")
 
             Layout.rowSpan: 1
-            Layout.columnSpan: 6
+            Layout.columnSpan: 3
 
-            Layout.preferredHeight: -1
-            Layout.preferredWidth: -1
-            Layout.fillWidth: true
+            Layout.preferredHeight: rowHeight
+            Layout.preferredWidth: columnWidth * Layout.columnSpan
+            Layout.fillWidth: false
             Layout.fillHeight: true
             Layout.alignment: Qt.AlignLeft
 
@@ -103,16 +100,14 @@ Item {
             id: _whitehotModeButton
 
             showBorder: true
-            font.pointSize: ScreenTools.isMobile ? point_size : ScreenTools.smallFontPointSize
-            pointSize: ScreenTools.isMobile ? point_size : ScreenTools.defaultFontPointSize
-            text: qsTr("WhiteHot")
+            text: qsTr("WHT HOT")
 
             Layout.rowSpan: 1
-            Layout.columnSpan: 6
+            Layout.columnSpan: 3
 
-            Layout.preferredHeight: -1
-            Layout.preferredWidth: -1
-            Layout.fillWidth: true
+            Layout.preferredHeight: rowHeight
+            Layout.preferredWidth: columnWidth * Layout.columnSpan
+            Layout.fillWidth: false
             Layout.fillHeight: true
             Layout.alignment: Qt.AlignLeft
 
@@ -126,16 +121,14 @@ Item {
             id: _blackhotModeButton
 
             showBorder: true
-            font.pointSize: ScreenTools.isMobile ? point_size : ScreenTools.smallFontPointSize
-            pointSize: ScreenTools.isMobile ? point_size : ScreenTools.defaultFontPointSize
-            text: qsTr("BlackHot")
+            text: qsTr("BLK HOT")
 
             Layout.rowSpan: 1
-            Layout.columnSpan: 6
+            Layout.columnSpan: 3
 
-            Layout.preferredHeight: -1
-            Layout.preferredWidth: -1
-            Layout.fillWidth: true
+            Layout.preferredHeight: rowHeight
+            Layout.preferredWidth: columnWidth * Layout.columnSpan
+            Layout.fillWidth: false
             Layout.fillHeight: true
             Layout.alignment: Qt.AlignLeft
 
@@ -149,16 +142,14 @@ Item {
             id: _colorModeButton
 
             showBorder: true
-            font.pointSize: ScreenTools.isMobile ? point_size : ScreenTools.smallFontPointSize
-            pointSize: ScreenTools.isMobile ? point_size : ScreenTools.defaultFontPointSize
-            text: qsTr("Color.P")
+            text: qsTr("CLR P")
 
             Layout.rowSpan: 1
-            Layout.columnSpan: 6
+            Layout.columnSpan: 3
 
-            Layout.preferredHeight: -1
-            Layout.preferredWidth: -1
-            Layout.fillWidth: true
+            Layout.preferredHeight: rowHeight
+            Layout.preferredWidth: columnWidth * Layout.columnSpan
+            Layout.fillWidth: false
             Layout.fillHeight: true
             Layout.alignment: Qt.AlignLeft
 
@@ -172,16 +163,14 @@ Item {
             id: _nucModeButton
 
             showBorder: true
-            font.pointSize: ScreenTools.isMobile ? point_size : ScreenTools.smallFontPointSize
-            pointSize: ScreenTools.isMobile ? point_size : ScreenTools.defaultFontPointSize
             text: qsTr("NUC")
 
             Layout.rowSpan: 1
-            Layout.columnSpan: 6
+            Layout.columnSpan: 3
 
-            Layout.preferredHeight: -1
-            Layout.preferredWidth: -1
-            Layout.fillWidth: true
+            Layout.preferredHeight: rowHeight
+            Layout.preferredWidth: columnWidth * Layout.columnSpan
+            Layout.fillWidth: false
             Layout.fillHeight: true
             Layout.alignment: Qt.AlignLeft
 
@@ -195,16 +184,14 @@ Item {
             id: _bwpModeButton
 
             showBorder: true
-            font.pointSize: ScreenTools.isMobile ? point_size : ScreenTools.smallFontPointSize
-            pointSize: ScreenTools.isMobile ? point_size : ScreenTools.defaultFontPointSize
             text: qsTr("B/W.P")
 
             Layout.rowSpan: 1
             Layout.columnSpan: 6
 
-            Layout.preferredHeight: -1
-            Layout.preferredWidth: -1
-            Layout.fillWidth: true
+            Layout.preferredHeight: rowHeight
+            Layout.preferredWidth: columnWidth * Layout.columnSpan
+            Layout.fillWidth: false
             Layout.fillHeight: true
             Layout.alignment: Qt.AlignLeft
 
@@ -217,16 +204,13 @@ Item {
 
             id: _irNrLabel
 
-            height: ScreenTools.defaultFontPixelHeight
-
-            text: qsTr("IR Noise Reduction")
-            font.family: ScreenTools.demiboldFontFamily
-            font.pointSize: ScreenTools.largeFontPointSize
+            text: qsTr("NOISE REDUCTION")
             color: "White"
 
             horizontalAlignment: Text.AlignHCenter
             verticalAlignment: Text.AlignVCenter
 
+            Layout.preferredHeight: rowHeight
             Layout.alignment: Qt.AlignLeft | Qt.AlignTop
             Layout.columnSpan: 6
             Layout.fillHeight: false
@@ -237,15 +221,14 @@ Item {
             id: _irNrLevelsCombo
             sizeToContents: true
             centeredLabel: true
-            font.pointSize: ScreenTools.isMobile ? point_size : ScreenTools.mediumFontPointSize
             model: _irNrLevels
 
             Layout.rowSpan: 1
             Layout.columnSpan: 3
 
-            Layout.preferredHeight: -1
-            Layout.preferredWidth: -1
-            Layout.fillWidth: true
+            Layout.preferredHeight: rowHeight
+            Layout.preferredWidth: columnWidth * Layout.columnSpan
+            Layout.fillWidth: false
             Layout.fillHeight: true
             Layout.alignment: Qt.AlignLeft
         }
@@ -255,16 +238,14 @@ Item {
             id: _rtrctModeButton
 
             showBorder: true
-            font.pointSize: ScreenTools.isMobile ? point_size : ScreenTools.smallFontPointSize
-            pointSize: ScreenTools.isMobile ? point_size : ScreenTools.defaultFontPointSize
-            text: qsTr("Set")
+            text: qsTr("SET")
 
             Layout.rowSpan: 1
             Layout.columnSpan: 3
 
-            Layout.preferredHeight: -1
-            Layout.preferredWidth: -1
-            Layout.fillWidth: true
+            Layout.preferredHeight: rowHeight
+            Layout.preferredWidth: columnWidth * Layout.columnSpan
+            Layout.fillWidth: false
             Layout.fillHeight: true
             Layout.alignment: Qt.AlignLeft
 

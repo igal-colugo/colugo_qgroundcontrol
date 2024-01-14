@@ -12,8 +12,11 @@ import QGroundControl.FactSystem 1.0
 import QGroundControl.FactControls 1.0
 
 Item {
+    id: widgetIRGainLevel
     anchors.fill: parent
     visible: true
+
+    property int rowHeight: (parent.height - (grid.rows * grid.rowSpacing)) / (grid.rows)
 
     GridLayout {
 
@@ -23,8 +26,8 @@ Item {
         rows: 6
         anchors.fill: parent
         anchors.margins: 3
-        columnSpacing: 5
-        rowSpacing: 5
+        columnSpacing: 2
+        rowSpacing: 2
 
         onWidthChanged: {
             console.log("IR gain mode:", grid.width, grid.height)
@@ -34,16 +37,14 @@ Item {
 
             id: mainlabel
 
-            height: ScreenTools.defaultFontPixelHeight
-
-            text: qsTr("IR Gain/Level")
+            text: qsTr("IR GAIN LVL")
             font.family: ScreenTools.demiboldFontFamily
-            font.pointSize: ScreenTools.largeFontPointSize
             color: "White"
 
             horizontalAlignment: Text.AlignHCenter
             verticalAlignment: Text.AlignVCenter
 
+            //Layout.preferredHeight: rowHeight
             Layout.alignment: Qt.AlignLeft | Qt.AlignTop
             Layout.columnSpan: 6
             Layout.fillHeight: false
@@ -55,14 +56,12 @@ Item {
             id: _gainincModeButton
 
             showBorder: true
-            font.pointSize: ScreenTools.isMobile ? point_size : ScreenTools.smallFontPointSize
-            pointSize: ScreenTools.isMobile ? point_size : ScreenTools.defaultFontPointSize
-            text: qsTr("Gain Inc")
+            text: qsTr("G INCREASE")
 
             Layout.rowSpan: 1
             Layout.columnSpan: 6
 
-            Layout.preferredHeight: -1
+            Layout.preferredHeight: rowHeight
             Layout.preferredWidth: -1
             Layout.fillWidth: true
             Layout.fillHeight: true
@@ -78,15 +77,12 @@ Item {
             id: _gaindecModeButton
 
             showBorder: true
-            font.pointSize: ScreenTools.isMobile ? point_size : ScreenTools.smallFontPointSize
-            pointSize: ScreenTools.isMobile ? point_size : ScreenTools.defaultFontPointSize
-            text: qsTr("Gain Dec")
+            text: qsTr("G DECREASE")
 
             Layout.rowSpan: 1
             Layout.columnSpan: 6
 
-            Layout.preferredHeight: -1
-            Layout.preferredWidth: -1
+            Layout.preferredHeight: rowHeight
             Layout.fillWidth: true
             Layout.fillHeight: true
             Layout.alignment: Qt.AlignLeft
@@ -101,14 +97,12 @@ Item {
             id: _levelincModeButton
 
             showBorder: true
-            font.pointSize: ScreenTools.isMobile ? point_size : ScreenTools.smallFontPointSize
-            pointSize: ScreenTools.isMobile ? point_size : ScreenTools.defaultFontPointSize
-            text: qsTr("Level Inc")
+            text: qsTr("L INCREASE")
 
             Layout.rowSpan: 1
             Layout.columnSpan: 6
 
-            Layout.preferredHeight: -1
+            Layout.preferredHeight: rowHeight
             Layout.preferredWidth: -1
             Layout.fillWidth: true
             Layout.fillHeight: true
@@ -124,14 +118,12 @@ Item {
             id: _leveldecModeButton
 
             showBorder: true
-            font.pointSize: ScreenTools.isMobile ? point_size : ScreenTools.smallFontPointSize
-            pointSize: ScreenTools.isMobile ? point_size : ScreenTools.defaultFontPointSize
-            text: qsTr("Level Dec")
+            text: qsTr("L DECREASE")
 
             Layout.rowSpan: 1
             Layout.columnSpan: 6
 
-            Layout.preferredHeight: -1
+            Layout.preferredHeight: rowHeight
             Layout.preferredWidth: -1
             Layout.fillWidth: true
             Layout.fillHeight: true
@@ -147,14 +139,12 @@ Item {
             id: _resetgainlevelModeButton
 
             showBorder: true
-            font.pointSize: ScreenTools.isMobile ? point_size : ScreenTools.smallFontPointSize
-            pointSize: ScreenTools.isMobile ? point_size : ScreenTools.defaultFontPointSize
-            text: qsTr("Reset Gain/Level")
+            text: qsTr("RESET")
 
             Layout.rowSpan: 1
             Layout.columnSpan: 6
 
-            Layout.preferredHeight: -1
+            Layout.preferredHeight: rowHeight
             Layout.preferredWidth: -1
             Layout.fillWidth: true
             Layout.fillHeight: true

@@ -12,8 +12,11 @@ import QGroundControl.FactSystem 1.0
 import QGroundControl.FactControls 1.0
 
 Item {
+    id: widgetTrack
     anchors.fill: parent
     visible: true
+
+    property int rowHeight: (parent.height - (grid.rows * grid.rowSpacing)) / (grid.rows)
 
     GridLayout {
 
@@ -23,8 +26,8 @@ Item {
         rows: 7
         anchors.fill: parent
         anchors.margins: 3
-        columnSpacing: 5
-        rowSpacing: 5
+        columnSpacing: 2
+        rowSpacing: 2
 
         onWidthChanged: {
             console.log("Track mode:", grid.width, grid.height)
@@ -34,16 +37,14 @@ Item {
 
             id: mainlabel
 
-            height: ScreenTools.defaultFontPixelHeight
-
             text: qsTr("TRACK")
             font.family: ScreenTools.demiboldFontFamily
-            font.pointSize: ScreenTools.largeFontPointSize
             color: "White"
 
             horizontalAlignment: Text.AlignHCenter
             verticalAlignment: Text.AlignVCenter
 
+            //Layout.preferredHeight: rowHeight
             Layout.alignment: Qt.AlignLeft | Qt.AlignTop
             Layout.columnSpan: 5
             Layout.fillHeight: false
@@ -54,16 +55,13 @@ Item {
 
             id: actTracker
 
-            height: ScreenTools.defaultFontPixelHeight
-
             text: qsTr("ACTIVE")
-            font.family: ScreenTools.demiboldFontFamily
-            font.pointSize: ScreenTools.largeFontPointSize
             color: "White"
 
             horizontalAlignment: Text.AlignHCenter
             verticalAlignment: Text.AlignVCenter
 
+            Layout.preferredHeight: rowHeight
             Layout.alignment: Qt.AlignLeft | Qt.AlignTop
             Layout.columnSpan: 5
             Layout.fillHeight: false
@@ -78,7 +76,7 @@ Item {
             Layout.rowSpan: 1
             Layout.columnSpan: 1
 
-            Layout.preferredHeight: -1
+            Layout.preferredHeight: rowHeight
             Layout.preferredWidth: -1
             Layout.fillWidth: true
             Layout.fillHeight: true
@@ -96,7 +94,7 @@ Item {
             Layout.rowSpan: 1
             Layout.columnSpan: 1
 
-            Layout.preferredHeight: -1
+            Layout.preferredHeight: rowHeight
             Layout.preferredWidth: -1
             Layout.fillWidth: true
             Layout.fillHeight: true
@@ -114,7 +112,7 @@ Item {
             Layout.rowSpan: 1
             Layout.columnSpan: 1
 
-            Layout.preferredHeight: -1
+            Layout.preferredHeight: rowHeight
             Layout.preferredWidth: -1
             Layout.fillWidth: true
             Layout.fillHeight: true
@@ -132,7 +130,7 @@ Item {
             Layout.rowSpan: 1
             Layout.columnSpan: 1
 
-            Layout.preferredHeight: -1
+            Layout.preferredHeight: rowHeight
             Layout.preferredWidth: -1
             Layout.fillWidth: true
             Layout.fillHeight: true
@@ -150,7 +148,7 @@ Item {
             Layout.rowSpan: 1
             Layout.columnSpan: 1
 
-            Layout.preferredHeight: -1
+            Layout.preferredHeight: rowHeight
             Layout.preferredWidth: -1
             Layout.fillWidth: true
             Layout.fillHeight: true
@@ -164,16 +162,13 @@ Item {
 
             id: primTracker
 
-            height: ScreenTools.defaultFontPixelHeight
-
             text: qsTr("PRIMARY")
-            font.family: ScreenTools.demiboldFontFamily
-            font.pointSize: ScreenTools.largeFontPointSize
             color: "White"
 
             horizontalAlignment: Text.AlignHCenter
             verticalAlignment: Text.AlignVCenter
 
+            Layout.preferredHeight: rowHeight
             Layout.alignment: Qt.AlignLeft | Qt.AlignTop
             Layout.columnSpan: 5
             Layout.fillHeight: false
@@ -188,7 +183,7 @@ Item {
             Layout.rowSpan: 1
             Layout.columnSpan: 1
 
-            Layout.preferredHeight: -1
+            Layout.preferredHeight: rowHeight
             Layout.preferredWidth: -1
             Layout.fillWidth: true
             Layout.fillHeight: true
@@ -206,7 +201,7 @@ Item {
             Layout.rowSpan: 1
             Layout.columnSpan: 1
 
-            Layout.preferredHeight: -1
+            Layout.preferredHeight: rowHeight
             Layout.preferredWidth: -1
             Layout.fillWidth: true
             Layout.fillHeight: true
@@ -224,7 +219,7 @@ Item {
             Layout.rowSpan: 1
             Layout.columnSpan: 1
 
-            Layout.preferredHeight: -1
+            Layout.preferredHeight: rowHeight
             Layout.preferredWidth: -1
             Layout.fillWidth: true
             Layout.fillHeight: true
@@ -242,7 +237,7 @@ Item {
             Layout.rowSpan: 1
             Layout.columnSpan: 1
 
-            Layout.preferredHeight: -1
+            Layout.preferredHeight: rowHeight
             Layout.preferredWidth: -1
             Layout.fillWidth: true
             Layout.fillHeight: true
@@ -260,7 +255,7 @@ Item {
             Layout.rowSpan: 1
             Layout.columnSpan: 1
 
-            Layout.preferredHeight: -1
+            Layout.preferredHeight: rowHeight
             Layout.preferredWidth: -1
             Layout.fillWidth: true
             Layout.fillHeight: true
@@ -274,16 +269,13 @@ Item {
 
             id: trackerROI
 
-            height: ScreenTools.defaultFontPixelHeight
-
             text: qsTr("ROI")
-            font.family: ScreenTools.demiboldFontFamily
-            font.pointSize: ScreenTools.largeFontPointSize
             color: "White"
 
             horizontalAlignment: Text.AlignHCenter
             verticalAlignment: Text.AlignVCenter
 
+            Layout.preferredHeight: rowHeight
             Layout.alignment: Qt.AlignLeft | Qt.AlignTop
             Layout.columnSpan: 5
             Layout.fillHeight: false
@@ -298,7 +290,7 @@ Item {
             Layout.rowSpan: 1
             Layout.columnSpan: 1
 
-            Layout.preferredHeight: -1
+            Layout.preferredHeight: rowHeight
             Layout.preferredWidth: -1
             Layout.fillWidth: true
             Layout.fillHeight: true
@@ -316,7 +308,7 @@ Item {
             Layout.rowSpan: 1
             Layout.columnSpan: 1
 
-            Layout.preferredHeight: -1
+            Layout.preferredHeight: rowHeight
             Layout.preferredWidth: -1
             Layout.fillWidth: true
             Layout.fillHeight: true
@@ -334,7 +326,7 @@ Item {
             Layout.rowSpan: 1
             Layout.columnSpan: 1
 
-            Layout.preferredHeight: -1
+            Layout.preferredHeight: rowHeight
             Layout.preferredWidth: -1
             Layout.fillWidth: true
             Layout.fillHeight: true
@@ -352,7 +344,7 @@ Item {
             Layout.rowSpan: 1
             Layout.columnSpan: 1
 
-            Layout.preferredHeight: -1
+            Layout.preferredHeight: rowHeight
             Layout.preferredWidth: -1
             Layout.fillWidth: true
             Layout.fillHeight: true
@@ -370,7 +362,7 @@ Item {
             Layout.rowSpan: 1
             Layout.columnSpan: 1
 
-            Layout.preferredHeight: -1
+            Layout.preferredHeight: rowHeight
             Layout.preferredWidth: -1
             Layout.fillWidth: true
             Layout.fillHeight: true
