@@ -46,6 +46,7 @@
 #include "VehicleTemperatureFactGroup.h"
 #include "VehicleVibrationFactGroup.h"
 #include "VehicleWindFactGroup.h"
+#include "NextVision/NextVisionLinkInterface.h"
 
 class Actuators;
 class EventHandler;
@@ -1395,6 +1396,8 @@ class Vehicle : public FactGroup
 
   private slots:
     void _mavlinkMessageReceived(LinkInterface *link, mavlink_message_t message);
+    void _nextVisonMavlinkMessageReceived(NextVisionLinkInterface *link, mavlink_message_t message);
+
     void _sendMessageMultipleNext();
     void _parametersReady(bool parametersReady);
     void _remoteControlRSSIChanged(uint8_t rssi);
@@ -1496,6 +1499,7 @@ class Vehicle : public FactGroup
     QObject *_firmwarePluginInstanceData = nullptr;
     AutoPilotPlugin *_autopilotPlugin = nullptr;
     MAVLinkProtocol *_mavlink = nullptr;
+    NextVisionMAVLinkProtocol *_nextVision_mavlink = nullptr;
     bool _soloFirmware = false;
     QGCToolbox *_toolbox = nullptr;
     SettingsManager *_settingsManager = nullptr;

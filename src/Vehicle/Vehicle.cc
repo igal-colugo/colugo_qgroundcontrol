@@ -144,9 +144,13 @@ Vehicle::Vehicle(LinkInterface *link, int vehicleId, int defaultComponentId, MAV
     connect(qgcApp()->toolbox()->multiVehicleManager(), &MultiVehicleManager::activeVehicleAvailableChanged, this, &Vehicle::_loadSettings);
 
     _mavlink = _toolbox->mavlinkProtocol();
+    _nextVision_mavlink = _toolbox->nextVisionMavlinkProtocol();
+
+
     qCDebug(VehicleLog) << "Link started with Mavlink " << (_mavlink->getCurrentVersion() >= 200 ? "V2" : "V1");
 
     connect(_mavlink, &MAVLinkProtocol::messageReceived, this, &Vehicle::_mavlinkMessageReceived);
+    connect(_nextVision_mavlink, &NextVisionMAVLinkProtocol::messageReceived, this, &Vehicle::_nextVisonMavlinkMessageReceived);
     connect(_mavlink, &MAVLinkProtocol::mavlinkMessageStatus, this, &Vehicle::_mavlinkMessageStatus);
 
     connect(this, &Vehicle::flightModeChanged, this, &Vehicle::_handleFlightModeChanged);
@@ -777,6 +781,227 @@ void Vehicle::_mavlinkMessageReceived(LinkInterface *link, mavlink_message_t mes
 
     _uas->receiveMessage(message);
 }
+
+void Vehicle::_nextVisonMavlinkMessageReceived(NextVisionLinkInterface *link, mavlink_message_t message)
+{
+    /*
+    // If the link is already running at Mavlink V2 set our max proto version to it.
+    unsigned mavlinkVersion = _mavlink->getCurrentVersion();
+    if (_maxProtoVersion != mavlinkVersion && mavlinkVersion >= 200)
+    {
+        _maxProtoVersion = mavlinkVersion;
+        qCDebug(VehicleLog) << "_mavlinkMessageReceived Link already running Mavlink v2. Setting _maxProtoVersion" << _maxProtoVersion;
+    }
+
+    if (message.sysid != _id && message.sysid != 0)
+    {
+        // We allow RADIO_STATUS messages which come from a link the vehicle is using to pass through and be handled
+        if (!(message.msgid == MAVLINK_MSG_ID_RADIO_STATUS && _vehicleLinkManager->containsLink(link)))
+        {
+            return;
+        }
+    }
+
+    // We give the link manager first whack since it it reponsible for adding new links
+    _vehicleLinkManager->mavlinkMessageReceived(link, message);
+
+    //-- Check link status
+    _messagesReceived++;
+    emit messagesReceivedChanged();
+    if (!_heardFrom)
+    {
+        if (message.msgid == MAVLINK_MSG_ID_HEARTBEAT)
+        {
+            _heardFrom = true;
+            _compID = message.compid;
+            _messageSeq = message.seq + 1;
+        }
+    }
+    else
+    {
+        if (_compID == message.compid)
+        {
+            uint16_t seq_received = static_cast<uint16_t>(message.seq);
+            uint16_t packet_lost_count = 0;
+            //-- Account for overflow during packet loss
+            if (seq_received < _messageSeq)
+            {
+                packet_lost_count = (seq_received + 255) - _messageSeq;
+            }
+            else
+            {
+                packet_lost_count = seq_received - _messageSeq;
+            }
+            _messageSeq = message.seq + 1;
+            _messagesLost += packet_lost_count;
+            if (packet_lost_count)
+                emit messagesLostChanged();
+        }
+    }
+
+    // Give the plugin a change to adjust the message contents
+    if (!_firmwarePlugin->adjustIncomingMavlinkMessage(this, &message))
+    {
+        return;
+    }
+
+    // Give the Core Plugin access to all mavlink traffic
+    if (!_toolbox->corePlugin()->mavlinkMessage(this, link, message))
+    {
+        return;
+    }
+
+    if (!_terrainProtocolHandler->mavlinkMessageReceived(message))
+    {
+        return;
+    }
+    _ftpManager->_mavlinkMessageReceived(message);
+    _parameterManager->mavlinkMessageReceived(message);
+    _imageProtocolManager->mavlinkMessageReceived(message);
+
+    _waitForMavlinkMessageMessageReceived(message);
+
+    // Battery fact groups are created dynamically as new batteries are discovered
+    VehicleBatteryFactGroup::handleMessageForFactGroupCreation(this, message);
+
+    // Let the fact groups take a whack at the mavlink traffic
+    for (FactGroup *factGroup : factGroups())
+    {
+        factGroup->handleMessage(this, message);
+    }
+
+    switch (message.msgid)
+    {
+    case MAVLINK_MSG_ID_HOME_POSITION:
+        _handleHomePosition(message);
+        break;
+    case MAVLINK_MSG_ID_HEARTBEAT:
+        _handleHeartbeat(message);
+        break;
+    case MAVLINK_MSG_ID_RADIO_STATUS:
+        _handleRadioStatus(message);
+        break;
+    case MAVLINK_MSG_ID_RC_CHANNELS:
+        _handleRCChannels(message);
+        break;
+    case MAVLINK_MSG_ID_BATTERY_STATUS:
+        _handleBatteryStatus(message);
+        break;
+    case MAVLINK_MSG_ID_SYS_STATUS:
+        _handleSysStatus(message);
+        break;
+    case MAVLINK_MSG_ID_RAW_IMU:
+        emit mavlinkRawImu(message);
+        break;
+    case MAVLINK_MSG_ID_SCALED_IMU:
+        emit mavlinkScaledImu1(message);
+        break;
+    case MAVLINK_MSG_ID_SCALED_IMU2:
+        emit mavlinkScaledImu2(message);
+        break;
+    case MAVLINK_MSG_ID_SCALED_IMU3:
+        emit mavlinkScaledImu3(message);
+        break;
+    case MAVLINK_MSG_ID_EXTENDED_SYS_STATE:
+        _handleExtendedSysState(message);
+        break;
+    case MAVLINK_MSG_ID_COMMAND_ACK:
+        _handleCommandAck(message);
+        break;
+    case MAVLINK_MSG_ID_LOGGING_DATA:
+        _handleMavlinkLoggingData(message);
+        break;
+    case MAVLINK_MSG_ID_LOGGING_DATA_ACKED:
+        _handleMavlinkLoggingDataAcked(message);
+        break;
+    case MAVLINK_MSG_ID_GPS_RAW_INT:
+        _handleGpsRawInt(message);
+        break;
+    case MAVLINK_MSG_ID_GLOBAL_POSITION_INT:
+        _handleGlobalPositionInt(message);
+        break;
+    case MAVLINK_MSG_ID_ALTITUDE:
+        _handleAltitude(message);
+        break;
+    case MAVLINK_MSG_ID_VFR_HUD:
+        _handleVfrHud(message);
+        break;
+    case MAVLINK_MSG_ID_RANGEFINDER:
+        _handleRangefinder(message);
+        break;
+    case MAVLINK_MSG_ID_NAV_CONTROLLER_OUTPUT:
+        _handleNavControllerOutput(message);
+        break;
+    case MAVLINK_MSG_ID_CAMERA_IMAGE_CAPTURED:
+        _handleCameraImageCaptured(message);
+        break;
+    case MAVLINK_MSG_ID_ADSB_VEHICLE:
+        _handleADSBVehicle(message);
+        break;
+    case MAVLINK_MSG_ID_HIGH_LATENCY:
+        _handleHighLatency(message);
+        break;
+    case MAVLINK_MSG_ID_HIGH_LATENCY2:
+        _handleHighLatency2(message);
+        break;
+    case MAVLINK_MSG_ID_ATTITUDE:
+        _handleAttitude(message);
+        break;
+    case MAVLINK_MSG_ID_ATTITUDE_QUATERNION:
+        _handleAttitudeQuaternion(message);
+        break;
+    case MAVLINK_MSG_ID_STATUSTEXT:
+        _handleStatusText(message);
+        break;
+    case MAVLINK_MSG_ID_ORBIT_EXECUTION_STATUS:
+        _handleOrbitExecutionStatus(message);
+        break;
+    case MAVLINK_MSG_ID_PING:
+        _handlePing(link, message);
+        break;
+    case MAVLINK_MSG_ID_MOUNT_ORIENTATION:
+        _handleGimbalOrientation(message);
+        break;
+    case MAVLINK_MSG_ID_OBSTACLE_DISTANCE:
+        _handleObstacleDistance(message);
+        break;
+
+    case MAVLINK_MSG_ID_EVENT:
+    case MAVLINK_MSG_ID_CURRENT_EVENT_SEQUENCE:
+    case MAVLINK_MSG_ID_RESPONSE_EVENT_ERROR:
+        _eventHandler(message.compid).handleEvents(message);
+        break;
+
+    case MAVLINK_MSG_ID_SERIAL_CONTROL: {
+        mavlink_serial_control_t ser;
+        mavlink_msg_serial_control_decode(&message, &ser);
+        if (static_cast<size_t>(ser.count) > sizeof(ser.data))
+        {
+            qWarning() << "Invalid count for SERIAL_CONTROL, discarding." << ser.count;
+        }
+        else
+        {
+            emit mavlinkSerialControl(ser.device, ser.flags, ser.timeout, ser.baudrate, QByteArray(reinterpret_cast<const char *>(ser.data), ser.count));
+        }
+    }
+    break;
+
+// Following are ArduPilot dialect messages
+#if !defined(NO_ARDUPILOT_DIALECT)
+    case MAVLINK_MSG_ID_CAMERA_FEEDBACK:
+        _handleCameraFeedback(message);
+        break;
+#endif
+    }
+
+    // This must be emitted after the vehicle processes the message. This way the vehicle state is up to date when anyone else
+    // does processing.
+    emit mavlinkMessageReceived(message);
+
+    _uas->receiveMessage(message);
+*/
+}
+
 
 #if !defined(NO_ARDUPILOT_DIALECT)
 void Vehicle::_handleCameraFeedback(const mavlink_message_t &message)
