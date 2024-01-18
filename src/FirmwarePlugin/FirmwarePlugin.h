@@ -165,6 +165,9 @@ public:
     /// Command vehicle to move to specified location (altitude is included and relative)
     virtual void guidedModeGotoLocation(Vehicle* vehicle, const QGeoCoordinate& gotoCoord);
 
+    virtual void ColugoProprietaryCommand(Vehicle* vehicle, MAV_CMD command, MAV_FRAME frame, bool showError, float param1, float param2, float param3, float param4, double param5, double param6,
+                                          float param7);
+
     /// Command vehicle to change altitude
     ///     @param altitudeChange If > 0, go up by amount specified, if < 0, go down by amount specified
     ///     @param pauseVehicle true: pause vehicle prior to altitude change

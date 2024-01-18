@@ -268,6 +268,24 @@ void FirmwarePlugin::guidedModeGotoLocation(Vehicle* vehicle, const QGeoCoordina
     qgcApp()->showAppMessage(guided_mode_not_supported_by_vehicle);
 }
 
+void FirmwarePlugin::ColugoProprietaryCommand(Vehicle* vehicle, MAV_CMD command, MAV_FRAME frame, bool showError, float param1, float param2, float param3, float param4, double param5, double param6,
+                                       float param7)
+{
+    // Not supported by generic vehicle
+    Q_UNUSED(vehicle);
+    Q_UNUSED(command);
+    Q_UNUSED(frame);
+    Q_UNUSED(showError);
+    Q_UNUSED(param1);
+    Q_UNUSED(param2);
+    Q_UNUSED(param3);
+    Q_UNUSED(param4);
+    Q_UNUSED(param5);
+    Q_UNUSED(param6);
+    Q_UNUSED(param7);
+    qgcApp()->showAppMessage(QObject::tr("Colugo Command not supported by Vehicle."));
+}
+
 void FirmwarePlugin::guidedModeChangeAltitude(Vehicle*, double, bool pauseVehicle)
 {
     // Not supported by generic vehicle

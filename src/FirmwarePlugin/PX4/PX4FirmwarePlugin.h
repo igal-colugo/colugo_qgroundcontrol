@@ -50,6 +50,8 @@ public:
     double              maximumEquivalentAirspeed(Vehicle* vehicle) override;
     double              minimumEquivalentAirspeed(Vehicle* vehicle) override;
     void                guidedModeGotoLocation          (Vehicle* vehicle, const QGeoCoordinate& gotoCoord) override;
+    void                ColugoProprietaryCommand        (Vehicle* vehicle, MAV_CMD command, MAV_FRAME frame, bool showError, float param1, float param2, float param3, float param4, double param5, double param6,
+                                  float param7) override;
     void                guidedModeChangeAltitude        (Vehicle* vehicle, double altitudeRel, bool pauseVehicle) override;
     void                guidedModeChangeGroundSpeed      (Vehicle* vehicle, double groundspeed) override;
     void                guidedModeChangeEquivalentAirspeed(Vehicle* vehicle, double airspeed_equiv) override;

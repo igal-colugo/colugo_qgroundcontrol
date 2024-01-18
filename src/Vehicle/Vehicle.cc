@@ -869,10 +869,10 @@ void Vehicle::_nextVisonMavlinkMessageReceived(NextVisionLinkInterface *link, ma
     {
         factGroup->handleMessage(this, message);
     }
-
+*/
     switch (message.msgid)
     {
-    case MAVLINK_MSG_ID_HOME_POSITION:
+  /*  case MAVLINK_MSG_ID_HOME_POSITION:
         _handleHomePosition(message);
         break;
     case MAVLINK_MSG_ID_HEARTBEAT:
@@ -913,14 +913,15 @@ void Vehicle::_nextVisonMavlinkMessageReceived(NextVisionLinkInterface *link, ma
         break;
     case MAVLINK_MSG_ID_LOGGING_DATA_ACKED:
         _handleMavlinkLoggingDataAcked(message);
-        break;
+        break;*/
     case MAVLINK_MSG_ID_GPS_RAW_INT:
         _handleGpsRawInt(message);
         break;
     case MAVLINK_MSG_ID_GLOBAL_POSITION_INT:
-        _handleGlobalPositionInt(message);
+      //  _handleGlobalPositionInt(message);
+      //  _handleNVGlobalPositionInt(message);
         break;
-    case MAVLINK_MSG_ID_ALTITUDE:
+/*    case MAVLINK_MSG_ID_ALTITUDE:
         _handleAltitude(message);
         break;
     case MAVLINK_MSG_ID_VFR_HUD:
@@ -957,7 +958,7 @@ void Vehicle::_nextVisonMavlinkMessageReceived(NextVisionLinkInterface *link, ma
         _handleOrbitExecutionStatus(message);
         break;
     case MAVLINK_MSG_ID_PING:
-        _handlePing(link, message);
+     //   _handlePing(link, message);
         break;
     case MAVLINK_MSG_ID_MOUNT_ORIENTATION:
         _handleGimbalOrientation(message);
@@ -985,7 +986,7 @@ void Vehicle::_nextVisonMavlinkMessageReceived(NextVisionLinkInterface *link, ma
         }
     }
     break;
-
+*/
 // Following are ArduPilot dialect messages
 #if !defined(NO_ARDUPILOT_DIALECT)
     case MAVLINK_MSG_ID_CAMERA_FEEDBACK:
@@ -993,7 +994,7 @@ void Vehicle::_nextVisonMavlinkMessageReceived(NextVisionLinkInterface *link, ma
         break;
 #endif
     }
-
+/*
     // This must be emitted after the vehicle processes the message. This way the vehicle state is up to date when anyone else
     // does processing.
     emit mavlinkMessageReceived(message);
@@ -1373,6 +1374,12 @@ void Vehicle::_handleGpsRawInt(mavlink_message_t &message)
     }
 }
 
+
+void Vehicle::_handleNVGlobalPositionInt(mavlink_message_t &message){
+    QGeoCoordinate location(33, -122);
+    CCamGuideModeGotoLocation(location);
+   // guidedModeGotoLocation(location);
+}
 void Vehicle::_handleGlobalPositionInt(mavlink_message_t &message)
 {
     mavlink_global_position_int_t globalPositionInt;
@@ -2991,7 +2998,40 @@ void Vehicle::guidedModeGotoLocation(const QGeoCoordinate &gotoCoord)
                                      .arg(FactMetaData::appSettingsHorizontalDistanceUnitsString()));
         return;
     }
-    _firmwarePlugin->guidedModeGotoLocation(this, gotoCoord);
+    //original _firmwarePlugin->guidedModeGotoLocation(this, gotoCoord);
+    //for debug.... igal
+    _firmwarePlugin->ColugoProprietaryCommand(this,
+                                              MAV_CMD_DO_REPOSITION,
+                                              MAV_FRAME_GLOBAL,
+                                              true,   // show error is fails
+                                              -1.0f,
+                                           0,//   MAV_DO_REPOSITION_FLAGS_CHANGE_MODE,
+                                              0.0f,
+                                              NAN,
+                                              gotoCoord.latitude(),
+                                              gotoCoord.longitude(),
+                                              altitudeAMSL()->rawValue().toFloat());
+}
+
+
+void Vehicle::CCamGuideModeGotoLocation(const QGeoCoordinate &gotoCoord)
+{
+    if (!coordinate().isValid())
+    {
+        return;
+    }
+    //double maxDistance = _settingsManager->flyViewSettings()->maxGoToLocationDistance()->rawValue().toDouble();
+    //if (coordinate().distanceTo(gotoCoord) > maxDistance)
+   // {
+     //   qgcApp()->showAppMessage(QString("New location is too far. Must be less than %1 %2.")
+       //                              .arg(qRound(FactMetaData::metersToAppSettingsHorizontalDistanceUnits(maxDistance).toDouble()))
+         //                            .arg(FactMetaData::appSettingsHorizontalDistanceUnitsString()));
+       // return;
+   // }
+  //  _firmwarePlugin->guidedModeGotoLocation(this, gotoCoord);
+    //TODO IGAL - FIND CAM LOCATION IN NEXTVISION send periodicaly...
+    //than in air take it and shave it to cam guide
+   // _firmwarePlugin->ColugoProprietaryCommand();
 }
 
 void Vehicle::guidedModeChangeAltitude(double altitudeChange, bool pauseVehicle)

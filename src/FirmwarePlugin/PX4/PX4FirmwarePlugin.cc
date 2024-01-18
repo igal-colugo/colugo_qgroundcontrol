@@ -479,6 +479,16 @@ void PX4FirmwarePlugin::guidedModeGotoLocation(Vehicle* vehicle, const QGeoCoord
     }
 }
 
+
+void PX4FirmwarePlugin::ColugoProprietaryCommand(Vehicle* vehicle, MAV_CMD command, MAV_FRAME frame, bool showError, float param1, float param2, float param3, float param4, double param5, double param6,
+                                                 float param7){
+    vehicle->sendMavCommandInt(vehicle->defaultComponentId(),
+                               command,
+                               frame,
+                               showError,   // show error is fails
+                               param1, param2, param3, param4, param5, param6, param7);
+}
+
 typedef struct {
     PX4FirmwarePlugin*  plugin;
     Vehicle*            vehicle;
