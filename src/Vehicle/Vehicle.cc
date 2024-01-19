@@ -753,6 +753,18 @@ void Vehicle::_mavlinkMessageReceived(LinkInterface *link, mavlink_message_t mes
         _eventHandler(message.compid).handleEvents(message);
         break;
 
+        //igal debug
+
+    case MAVLINK_MSG_ID_V2_EXTENSION:
+        if(message.len == 0x12){
+            uint8_t* m = reinterpret_cast<uint8_t*>(&message.payload64[0]);
+            float fLat;
+            std::memcpy(&fLat, &m[8], sizeof(float));
+            qCDebug(VehicleLog) << "colugo in vehicle got V2, lat:"<<fLat;
+        }
+
+        break;
+
     case MAVLINK_MSG_ID_SERIAL_CONTROL: {
         mavlink_serial_control_t ser;
         mavlink_msg_serial_control_decode(&message, &ser);
@@ -915,11 +927,25 @@ void Vehicle::_nextVisonMavlinkMessageReceived(NextVisionLinkInterface *link, ma
         _handleMavlinkLoggingDataAcked(message);
         break;*/
     case MAVLINK_MSG_ID_GPS_RAW_INT:
-        _handleGpsRawInt(message);
+     //   _handleGpsRawInt(message);
         break;
     case MAVLINK_MSG_ID_GLOBAL_POSITION_INT:
       //  _handleGlobalPositionInt(message);
       //  _handleNVGlobalPositionInt(message);
+        break;
+    case MAVLINK_MSG_ID_V2_EXTENSION:
+        if(message.len == 0x12){
+            uint8_t* m = reinterpret_cast<uint8_t*>(&message.payload64[0]);
+            float fLat, fLng;
+            std::memcpy(&fLat, &m[8], sizeof(float));
+            std::memcpy(&fLng, &m[12], sizeof(float));
+            //igal to do - add time and precautions...
+            CCamGuideModeGotoLocation(QGeoCoordinate(fLat, fLng));
+            qCDebug(VehicleLog) << "colugo got V2, flightMode:"<<flightMode();
+            qCDebug(VehicleLog) << "colugo got V2, lat:"<<fLat;
+
+        }
+
         break;
 /*    case MAVLINK_MSG_ID_ALTITUDE:
         _handleAltitude(message);
@@ -2998,40 +3024,38 @@ void Vehicle::guidedModeGotoLocation(const QGeoCoordinate &gotoCoord)
                                      .arg(FactMetaData::appSettingsHorizontalDistanceUnitsString()));
         return;
     }
-    //original _firmwarePlugin->guidedModeGotoLocation(this, gotoCoord);
-    //for debug.... igal
-    _firmwarePlugin->ColugoProprietaryCommand(this,
-                                              MAV_CMD_DO_REPOSITION,
-                                              MAV_FRAME_GLOBAL,
-                                              true,   // show error is fails
-                                              -1.0f,
-                                           0,//   MAV_DO_REPOSITION_FLAGS_CHANGE_MODE,
-                                              0.0f,
-                                              NAN,
-                                              gotoCoord.latitude(),
-                                              gotoCoord.longitude(),
-                                              altitudeAMSL()->rawValue().toFloat());
+    _firmwarePlugin->guidedModeGotoLocation(this, gotoCoord);
 }
 
 
-void Vehicle::CCamGuideModeGotoLocation(const QGeoCoordinate &gotoCoord)
+void Vehicle::CCamGuideModeGotoLocation(const QGeoCoordinate &CamGroundCrossCoord)
 {
-    if (!coordinate().isValid())
+    //mode check should be done airborne, add delay between commands - add function to camguide mode name
+    if (!coordinate().isValid() || flightMode() != "CCamGuide")
     {
         return;
     }
+
     //double maxDistance = _settingsManager->flyViewSettings()->maxGoToLocationDistance()->rawValue().toDouble();
     //if (coordinate().distanceTo(gotoCoord) > maxDistance)
-   // {
-     //   qgcApp()->showAppMessage(QString("New location is too far. Must be less than %1 %2.")
-       //                              .arg(qRound(FactMetaData::metersToAppSettingsHorizontalDistanceUnits(maxDistance).toDouble()))
-         //                            .arg(FactMetaData::appSettingsHorizontalDistanceUnitsString()));
-       // return;
-   // }
-  //  _firmwarePlugin->guidedModeGotoLocation(this, gotoCoord);
-    //TODO IGAL - FIND CAM LOCATION IN NEXTVISION send periodicaly...
-    //than in air take it and shave it to cam guide
-   // _firmwarePlugin->ColugoProprietaryCommand();
+    // {
+    //   qgcApp()->showAppMessage(QString("New location is too far. Must be less than %1 %2.")
+    //                              .arg(qRound(FactMetaData::metersToAppSettingsHorizontalDistanceUnits(maxDistance).toDouble()))
+    //                            .arg(FactMetaData::appSettingsHorizontalDistanceUnitsString()));
+    // return;
+    // }
+    _firmwarePlugin->ColugoProprietaryCommand(this,
+                                              MAV_CMD_DO_REPOSITION,
+                                              MAV_FRAME_GLOBAL,
+                                              false,   // show error is fails
+                                              -1.0f,
+                                              0,//   MAV_DO_REPOSITION_FLAGS_CHANGE_MODE,
+                                              0.0f,
+                                              NAN,
+                                              CamGroundCrossCoord.latitude(),
+                                              CamGroundCrossCoord.longitude(),
+                                              altitudeAMSL()->rawValue().toFloat());
+
 }
 
 void Vehicle::guidedModeChangeAltitude(double altitudeChange, bool pauseVehicle)
