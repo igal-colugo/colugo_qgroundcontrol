@@ -55,6 +55,8 @@
 #include "MockLink.h"
 #endif
 #include "Autotune.h"
+#include "NextVisionExt/NvExt_GndCrs_Report.h"
+#include "NextVisionExt/NvExt_Los_Report.h"
 
 #if defined(QGC_AIRMAP_ENABLED)
 #include "AirspaceVehicleManager.h"
@@ -233,6 +235,8 @@ Vehicle::Vehicle(LinkInterface *link, int vehicleId, int defaultComponentId, MAV
     // Create camera manager instance
     _cameraManager = _firmwarePlugin->createCameraManager(this);
     emit cameraManagerChanged();
+
+    _camGuideCoordlastSentTime = QDateTime::currentDateTime();
 
     // Start csv logger
     connect(&_csvLogTimer, &QTimer::timeout, this, &Vehicle::_writeCsvLine);
@@ -753,18 +757,6 @@ void Vehicle::_mavlinkMessageReceived(LinkInterface *link, mavlink_message_t mes
         _eventHandler(message.compid).handleEvents(message);
         break;
 
-        //igal debug
-
-    case MAVLINK_MSG_ID_V2_EXTENSION:
-        if(message.len == 0x12){
-            uint8_t* m = reinterpret_cast<uint8_t*>(&message.payload64[0]);
-            float fLat;
-            std::memcpy(&fLat, &m[8], sizeof(float));
-            qCDebug(VehicleLog) << "colugo in vehicle got V2, lat:"<<fLat;
-        }
-
-        break;
-
     case MAVLINK_MSG_ID_SERIAL_CONTROL: {
         mavlink_serial_control_t ser;
         mavlink_msg_serial_control_decode(&message, &ser);
@@ -796,223 +788,18 @@ void Vehicle::_mavlinkMessageReceived(LinkInterface *link, mavlink_message_t mes
 
 void Vehicle::_nextVisonMavlinkMessageReceived(NextVisionLinkInterface *link, mavlink_message_t message)
 {
-    /*
-    // If the link is already running at Mavlink V2 set our max proto version to it.
-    unsigned mavlinkVersion = _mavlink->getCurrentVersion();
-    if (_maxProtoVersion != mavlinkVersion && mavlinkVersion >= 200)
-    {
-        _maxProtoVersion = mavlinkVersion;
-        qCDebug(VehicleLog) << "_mavlinkMessageReceived Link already running Mavlink v2. Setting _maxProtoVersion" << _maxProtoVersion;
-    }
 
-    if (message.sysid != _id && message.sysid != 0)
-    {
-        // We allow RADIO_STATUS messages which come from a link the vehicle is using to pass through and be handled
-        if (!(message.msgid == MAVLINK_MSG_ID_RADIO_STATUS && _vehicleLinkManager->containsLink(link)))
-        {
-            return;
-        }
-    }
-
-    // We give the link manager first whack since it it reponsible for adding new links
-    _vehicleLinkManager->mavlinkMessageReceived(link, message);
-
-    //-- Check link status
-    _messagesReceived++;
-    emit messagesReceivedChanged();
-    if (!_heardFrom)
-    {
-        if (message.msgid == MAVLINK_MSG_ID_HEARTBEAT)
-        {
-            _heardFrom = true;
-            _compID = message.compid;
-            _messageSeq = message.seq + 1;
-        }
-    }
-    else
-    {
-        if (_compID == message.compid)
-        {
-            uint16_t seq_received = static_cast<uint16_t>(message.seq);
-            uint16_t packet_lost_count = 0;
-            //-- Account for overflow during packet loss
-            if (seq_received < _messageSeq)
-            {
-                packet_lost_count = (seq_received + 255) - _messageSeq;
-            }
-            else
-            {
-                packet_lost_count = seq_received - _messageSeq;
-            }
-            _messageSeq = message.seq + 1;
-            _messagesLost += packet_lost_count;
-            if (packet_lost_count)
-                emit messagesLostChanged();
-        }
-    }
-
-    // Give the plugin a change to adjust the message contents
-    if (!_firmwarePlugin->adjustIncomingMavlinkMessage(this, &message))
-    {
-        return;
-    }
-
-    // Give the Core Plugin access to all mavlink traffic
-    if (!_toolbox->corePlugin()->mavlinkMessage(this, link, message))
-    {
-        return;
-    }
-
-    if (!_terrainProtocolHandler->mavlinkMessageReceived(message))
-    {
-        return;
-    }
-    _ftpManager->_mavlinkMessageReceived(message);
-    _parameterManager->mavlinkMessageReceived(message);
-    _imageProtocolManager->mavlinkMessageReceived(message);
-
-    _waitForMavlinkMessageMessageReceived(message);
-
-    // Battery fact groups are created dynamically as new batteries are discovered
-    VehicleBatteryFactGroup::handleMessageForFactGroupCreation(this, message);
-
-    // Let the fact groups take a whack at the mavlink traffic
-    for (FactGroup *factGroup : factGroups())
-    {
-        factGroup->handleMessage(this, message);
-    }
-*/
     switch (message.msgid)
     {
-  /*  case MAVLINK_MSG_ID_HOME_POSITION:
-        _handleHomePosition(message);
-        break;
-    case MAVLINK_MSG_ID_HEARTBEAT:
-        _handleHeartbeat(message);
-        break;
-    case MAVLINK_MSG_ID_RADIO_STATUS:
-        _handleRadioStatus(message);
-        break;
-    case MAVLINK_MSG_ID_RC_CHANNELS:
-        _handleRCChannels(message);
-        break;
-    case MAVLINK_MSG_ID_BATTERY_STATUS:
-        _handleBatteryStatus(message);
-        break;
-    case MAVLINK_MSG_ID_SYS_STATUS:
-        _handleSysStatus(message);
-        break;
-    case MAVLINK_MSG_ID_RAW_IMU:
-        emit mavlinkRawImu(message);
-        break;
-    case MAVLINK_MSG_ID_SCALED_IMU:
-        emit mavlinkScaledImu1(message);
-        break;
-    case MAVLINK_MSG_ID_SCALED_IMU2:
-        emit mavlinkScaledImu2(message);
-        break;
-    case MAVLINK_MSG_ID_SCALED_IMU3:
-        emit mavlinkScaledImu3(message);
-        break;
-    case MAVLINK_MSG_ID_EXTENDED_SYS_STATE:
-        _handleExtendedSysState(message);
-        break;
-    case MAVLINK_MSG_ID_COMMAND_ACK:
-        _handleCommandAck(message);
-        break;
-    case MAVLINK_MSG_ID_LOGGING_DATA:
-        _handleMavlinkLoggingData(message);
-        break;
-    case MAVLINK_MSG_ID_LOGGING_DATA_ACKED:
-        _handleMavlinkLoggingDataAcked(message);
-        break;*/
-    case MAVLINK_MSG_ID_GPS_RAW_INT:
-     //   _handleGpsRawInt(message);
-        break;
-    case MAVLINK_MSG_ID_GLOBAL_POSITION_INT:
-      //  _handleGlobalPositionInt(message);
-      //  _handleNVGlobalPositionInt(message);
-        break;
     case MAVLINK_MSG_ID_V2_EXTENSION:
-        if(message.len == 0x12){
-            uint8_t* m = reinterpret_cast<uint8_t*>(&message.payload64[0]);
-            float fLat, fLng;
-            std::memcpy(&fLat, &m[8], sizeof(float));
-            std::memcpy(&fLng, &m[12], sizeof(float));
-            //igal to do - add time and precautions...
-            CCamGuideModeGotoLocation(QGeoCoordinate(fLat, fLng));
-            qCDebug(VehicleLog) << "colugo got V2, flightMode:"<<flightMode();
-            qCDebug(VehicleLog) << "colugo got V2, lat:"<<fLat;
-
+        if(message.len == MAVLINK_MSG_NVEXT_GND_CRS_REPORT_LEN){
+            _handleNvExt_GndCrs(message);
         }
-
-        break;
-/*    case MAVLINK_MSG_ID_ALTITUDE:
-        _handleAltitude(message);
-        break;
-    case MAVLINK_MSG_ID_VFR_HUD:
-        _handleVfrHud(message);
-        break;
-    case MAVLINK_MSG_ID_RANGEFINDER:
-        _handleRangefinder(message);
-        break;
-    case MAVLINK_MSG_ID_NAV_CONTROLLER_OUTPUT:
-        _handleNavControllerOutput(message);
-        break;
-    case MAVLINK_MSG_ID_CAMERA_IMAGE_CAPTURED:
-        _handleCameraImageCaptured(message);
-        break;
-    case MAVLINK_MSG_ID_ADSB_VEHICLE:
-        _handleADSBVehicle(message);
-        break;
-    case MAVLINK_MSG_ID_HIGH_LATENCY:
-        _handleHighLatency(message);
-        break;
-    case MAVLINK_MSG_ID_HIGH_LATENCY2:
-        _handleHighLatency2(message);
-        break;
-    case MAVLINK_MSG_ID_ATTITUDE:
-        _handleAttitude(message);
-        break;
-    case MAVLINK_MSG_ID_ATTITUDE_QUATERNION:
-        _handleAttitudeQuaternion(message);
-        break;
-    case MAVLINK_MSG_ID_STATUSTEXT:
-        _handleStatusText(message);
-        break;
-    case MAVLINK_MSG_ID_ORBIT_EXECUTION_STATUS:
-        _handleOrbitExecutionStatus(message);
-        break;
-    case MAVLINK_MSG_ID_PING:
-     //   _handlePing(link, message);
-        break;
-    case MAVLINK_MSG_ID_MOUNT_ORIENTATION:
-        _handleGimbalOrientation(message);
-        break;
-    case MAVLINK_MSG_ID_OBSTACLE_DISTANCE:
-        _handleObstacleDistance(message);
-        break;
-
-    case MAVLINK_MSG_ID_EVENT:
-    case MAVLINK_MSG_ID_CURRENT_EVENT_SEQUENCE:
-    case MAVLINK_MSG_ID_RESPONSE_EVENT_ERROR:
-        _eventHandler(message.compid).handleEvents(message);
-        break;
-
-    case MAVLINK_MSG_ID_SERIAL_CONTROL: {
-        mavlink_serial_control_t ser;
-        mavlink_msg_serial_control_decode(&message, &ser);
-        if (static_cast<size_t>(ser.count) > sizeof(ser.data))
-        {
-            qWarning() << "Invalid count for SERIAL_CONTROL, discarding." << ser.count;
+        else if(message.len == MAVLINK_MSG_NVEXT_LOS_REPORT_LEN){
+            //ig todo - draw nextvision payload trace on map...
         }
-        else
-        {
-            emit mavlinkSerialControl(ser.device, ser.flags, ser.timeout, ser.baudrate, QByteArray(reinterpret_cast<const char *>(ser.data), ser.count));
-        }
-    }
-    break;
-*/
+        break;
+
 // Following are ArduPilot dialect messages
 #if !defined(NO_ARDUPILOT_DIALECT)
     case MAVLINK_MSG_ID_CAMERA_FEEDBACK:
@@ -1401,10 +1188,26 @@ void Vehicle::_handleGpsRawInt(mavlink_message_t &message)
 }
 
 
-void Vehicle::_handleNVGlobalPositionInt(mavlink_message_t &message){
-    QGeoCoordinate location(33, -122);
-    CCamGuideModeGotoLocation(location);
-   // guidedModeGotoLocation(location);
+void Vehicle::_handleNvExt_GndCrs(mavlink_message_t &message){
+
+    //mode check should be done airborne, add delay between commands - add function to camguide mode name
+    if (flightMode() != cCamGuideFlightMode())
+    {
+        return;
+    }
+    QDateTime currentTime = QDateTime::currentDateTime();
+    qint64 millisecondsSinceLastSent = _camGuideCoordlastSentTime.msecsTo(currentTime);
+
+    if (millisecondsSinceLastSent >= 2000){
+        mavlink_nvext_gnd_crs_report_t nvext_gnd_crs_report;
+        mavlink_nvext_gnd_crs_report_decode(&message, &nvext_gnd_crs_report);
+        QGeoCoordinate location(nvext_gnd_crs_report.gnd_crossing_lat, nvext_gnd_crs_report.gnd_crossing_lon);
+        CCamGuideModeGotoLocation(location);
+        _camGuideCoordlastSentTime = currentTime;
+      //qCDebug(VehicleLog) << "colugo got V2, flightMode:"<<flightMode();
+        qCDebug(VehicleLog) << "colugo got GndCrs, lat:"<<nvext_gnd_crs_report.gnd_crossing_lat;
+    }
+
 }
 void Vehicle::_handleGlobalPositionInt(mavlink_message_t &message)
 {
@@ -3007,6 +2810,27 @@ void Vehicle::startMission()
 
 void Vehicle::guidedModeGotoLocation(const QGeoCoordinate &gotoCoord)
 {
+    //ig debug delete later
+    /*
+    if (flightMode() == cCamGuideFlightMode())
+    {
+        QDateTime currentTime = QDateTime::currentDateTime();
+        qint64 millisecondsSinceLastSent = _camGuideCoordlastSentTime.msecsTo(currentTime);
+
+        if (millisecondsSinceLastSent >= 2000){
+            //  mavlink_nvext_gnd_crs_report_t nvext_gnd_crs_report;
+            // mavlink_nvext_gnd_crs_report_decode(&message, &nvext_gnd_crs_report);
+            // QGeoCoordinate location(nvext_gnd_crs_report.gnd_crossing_lat, nvext_gnd_crs_report.gnd_crossing_lon);
+            CCamGuideModeGotoLocation(gotoCoord);
+            _camGuideCoordlastSentTime = currentTime;
+            //qCDebug(VehicleLog) << "colugo got V2, flightMode:"<<flightMode();
+            qCDebug(VehicleLog) << "colugo debug, lat:"<<gotoCoord.latitude();
+        }
+        return;
+    }
+*/
+    ////////////////////////
+
     if (!guidedModeSupported())
     {
         qgcApp()->showAppMessage(guided_mode_not_supported_by_vehicle);
@@ -3031,19 +2855,10 @@ void Vehicle::guidedModeGotoLocation(const QGeoCoordinate &gotoCoord)
 void Vehicle::CCamGuideModeGotoLocation(const QGeoCoordinate &CamGroundCrossCoord)
 {
     //mode check should be done airborne, add delay between commands - add function to camguide mode name
-    if (!coordinate().isValid() || flightMode() != "CCamGuide")
+    if (!coordinate().isValid())
     {
         return;
-    }
-
-    //double maxDistance = _settingsManager->flyViewSettings()->maxGoToLocationDistance()->rawValue().toDouble();
-    //if (coordinate().distanceTo(gotoCoord) > maxDistance)
-    // {
-    //   qgcApp()->showAppMessage(QString("New location is too far. Must be less than %1 %2.")
-    //                              .arg(qRound(FactMetaData::metersToAppSettingsHorizontalDistanceUnits(maxDistance).toDouble()))
-    //                            .arg(FactMetaData::appSettingsHorizontalDistanceUnitsString()));
-    // return;
-    // }
+    }   
     _firmwarePlugin->ColugoProprietaryCommand(this,
                                               MAV_CMD_DO_REPOSITION,
                                               MAV_FRAME_GLOBAL,
@@ -4113,6 +3928,11 @@ QString Vehicle::takeControlFlightMode() const
 QString Vehicle::followFlightMode() const
 {
     return _firmwarePlugin->followFlightMode();
+}
+
+QString Vehicle::cCamGuideFlightMode() const
+{
+    return _firmwarePlugin->cCamGuideFlightMode();
 }
 
 QString Vehicle::vehicleImageOpaque() const

@@ -727,6 +727,7 @@ class Vehicle : public FactGroup
     QString landFlightMode() const;
     QString takeControlFlightMode() const;
     QString followFlightMode() const;
+    QString cCamGuideFlightMode() const;//colugo cam guide name
     double defaultCruiseSpeed() const
     {
         return _defaultCruiseSpeed;
@@ -1450,7 +1451,7 @@ class Vehicle : public FactGroup
     void _handleCommandAck(mavlink_message_t &message);
     void _handleGpsRawInt(mavlink_message_t &message);
     void _handleGlobalPositionInt(mavlink_message_t &message);
-    void _handleNVGlobalPositionInt(mavlink_message_t &message);
+    void _handleNvExt_GndCrs(mavlink_message_t &message);
     void _handleAltitude(mavlink_message_t &message);
     void _handleVfrHud(mavlink_message_t &message);
     void _handleRangefinder(mavlink_message_t &message);
@@ -1800,6 +1801,9 @@ class Vehicle : public FactGroup
     ImageProtocolManager *_imageProtocolManager = nullptr;
     InitialConnectStateMachine *_initialConnectStateMachine = nullptr;
     Actuators *_actuators = nullptr;
+
+    //colugo fields
+    QDateTime _camGuideCoordlastSentTime;
 
     static const char *_rollFactName;
     static const char *_pitchFactName;

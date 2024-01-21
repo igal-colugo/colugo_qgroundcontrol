@@ -131,6 +131,10 @@ public:
     /// Returns the flight mode which the vehicle will be for follow me
     virtual QString followFlightMode(void) const { return QString(); }
 
+    /// Returns the flight mode which the vehicle will be for Colugo CamGuide (camera Guide)
+    virtual QString cCamGuideFlightMode(void) const { return QString(); }
+
+
     /// Set guided flight mode
     virtual void setGuidedMode(Vehicle* vehicle, bool guidedMode);
 
