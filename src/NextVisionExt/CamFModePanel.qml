@@ -12,19 +12,22 @@ import QGroundControl.FactSystem 1.0
 import QGroundControl.FactControls 1.0
 
 Item {
+    id: widgetFMode
     anchors.fill: parent
     visible: true
+
+    property int rowHeight: (parent.height - (grid.rows * grid.rowSpacing)) / (grid.rows)
 
     GridLayout {
 
         id: grid
 
         columns: 6
-        rows: 7
+        rows: 4
         anchors.fill: parent
         anchors.margins: 3
-        columnSpacing: 5
-        rowSpacing: 5
+        columnSpacing: 2
+        rowSpacing: 2
 
         onWidthChanged: {
             console.log("F mode:", grid.width, grid.height)
@@ -34,16 +37,14 @@ Item {
 
             id: mainlabel
 
-            height: ScreenTools.defaultFontPixelHeight
-
             text: qsTr("F.MODE")
             font.family: ScreenTools.demiboldFontFamily
-            font.pointSize: ScreenTools.largeFontPointSize
             color: "White"
 
             horizontalAlignment: Text.AlignHCenter
             verticalAlignment: Text.AlignVCenter
 
+            //Layout.preferredHeight: rowHeight
             Layout.alignment: Qt.AlignLeft | Qt.AlignTop
             Layout.columnSpan: 6
             Layout.fillHeight: false
@@ -55,14 +56,12 @@ Item {
             id: _syonModeButton
 
             showBorder: true
-            font.pointSize: ScreenTools.isMobile ? point_size : ScreenTools.smallFontPointSize
-            pointSize: ScreenTools.isMobile ? point_size : ScreenTools.defaultFontPointSize
-            text: qsTr("SY On")
+            text: qsTr("SY ON")
 
             Layout.rowSpan: 1
-            Layout.columnSpan: 6
+            Layout.columnSpan: 3
 
-            Layout.preferredHeight: -1
+            Layout.preferredHeight: rowHeight
             Layout.preferredWidth: -1
             Layout.fillWidth: true
             Layout.fillHeight: true
@@ -78,14 +77,12 @@ Item {
             id: _syoffModeButton
 
             showBorder: true
-            font.pointSize: ScreenTools.isMobile ? point_size : ScreenTools.smallFontPointSize
-            pointSize: ScreenTools.isMobile ? point_size : ScreenTools.defaultFontPointSize
-            text: qsTr("SY Off")
+            text: qsTr("SY OFF")
 
             Layout.rowSpan: 1
-            Layout.columnSpan: 6
+            Layout.columnSpan: 3
 
-            Layout.preferredHeight: -1
+            Layout.preferredHeight: rowHeight
             Layout.preferredWidth: -1
             Layout.fillWidth: true
             Layout.fillHeight: true
@@ -101,14 +98,12 @@ Item {
             id: _followonModeButton
 
             showBorder: true
-            font.pointSize: ScreenTools.isMobile ? point_size : ScreenTools.smallFontPointSize
-            pointSize: ScreenTools.isMobile ? point_size : ScreenTools.defaultFontPointSize
-            text: qsTr("Follow On")
+            text: qsTr("FLW ON")
 
             Layout.rowSpan: 1
-            Layout.columnSpan: 6
+            Layout.columnSpan: 3
 
-            Layout.preferredHeight: -1
+            Layout.preferredHeight: rowHeight
             Layout.preferredWidth: -1
             Layout.fillWidth: true
             Layout.fillHeight: true
@@ -124,14 +119,12 @@ Item {
             id: _followoffModeButton
 
             showBorder: true
-            font.pointSize: ScreenTools.isMobile ? point_size : ScreenTools.smallFontPointSize
-            pointSize: ScreenTools.isMobile ? point_size : ScreenTools.defaultFontPointSize
-            text: qsTr("Follow Off")
+            text: qsTr("FLW OFF")
 
             Layout.rowSpan: 1
-            Layout.columnSpan: 6
+            Layout.columnSpan: 3
 
-            Layout.preferredHeight: -1
+            Layout.preferredHeight: rowHeight
             Layout.preferredWidth: -1
             Layout.fillWidth: true
             Layout.fillHeight: true
@@ -147,14 +140,12 @@ Item {
             id: _flyaonModeButton
 
             showBorder: true
-            font.pointSize: ScreenTools.isMobile ? point_size : ScreenTools.smallFontPointSize
-            pointSize: ScreenTools.isMobile ? point_size : ScreenTools.defaultFontPointSize
-            text: qsTr("Fly.A On")
+            text: qsTr("FLY.A ON")
 
             Layout.rowSpan: 1
-            Layout.columnSpan: 6
+            Layout.columnSpan: 3
 
-            Layout.preferredHeight: -1
+            Layout.preferredHeight: rowHeight
             Layout.preferredWidth: -1
             Layout.fillWidth: true
             Layout.fillHeight: true
@@ -170,12 +161,10 @@ Item {
             id: _flyaoffModeButton
 
             showBorder: true
-            font.pointSize: ScreenTools.isMobile ? point_size : ScreenTools.smallFontPointSize
-            pointSize: ScreenTools.isMobile ? point_size : ScreenTools.defaultFontPointSize
-            text: qsTr("Fly.A Off")
+            text: qsTr("FLY.A OFF")
 
             Layout.rowSpan: 1
-            Layout.columnSpan: 6
+            Layout.columnSpan: 3
 
             Layout.preferredHeight: -1
             Layout.preferredWidth: -1

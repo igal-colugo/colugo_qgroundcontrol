@@ -93,14 +93,13 @@ Rectangle {
 
     QGCColoredImage {
         id: buttonRigth
-        anchors.margins: _margins
+        anchors.margins: 1
         anchors.top: parent.top
         anchors.right: parent.right
         source: "/res/buttonRight.svg"
-        height: ScreenTools.isMobile ? ScreenTools.defaultFontPixelHeight
-                                       * 2.0 : ScreenTools.defaultFontPixelHeight
-        width: height * 1.2
-        sourceSize.height: height * 1.2
+        height: 15
+        width: height * 2.0
+        sourceSize.height: height
         color: "white"
         fillMode: Image.PreserveAspectFit
         visible: true
@@ -113,14 +112,13 @@ Rectangle {
 
     QGCColoredImage {
         id: buttonLeft
-        anchors.margins: _margins
+        anchors.margins: 1
         anchors.top: parent.top
         anchors.left: parent.left
         source: "/res/buttonLeft.svg"
-        height: ScreenTools.isMobile ? ScreenTools.defaultFontPixelHeight
-                                       * 2.0 : ScreenTools.defaultFontPixelHeight
-        width: height * 1.2
-        sourceSize.height: height * 1.2
+        height: 15
+        width: height * 2.0
+        sourceSize.height: height
         color: "white"
         fillMode: Image.PreserveAspectFit
         visible: true

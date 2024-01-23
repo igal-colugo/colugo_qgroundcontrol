@@ -16,9 +16,10 @@ import QGroundControl.SettingsManager 1.0
 Item {
     id: element
     anchors.fill: parent
-
     visible: true
 
+    property int rowHeight: (parent.height - (grid.rows * grid.rowSpacing)) / (grid.rows)
+    property int columnWidth: (parent.width - (grid.columns * grid.columnSpacing)) / (grid.columns)
     property var _streamModesStr: ["Ch-0 Day/IR : Ch-1 Dis    ", "Ch-0 Day    : Ch-1 IR    ", "Ch-0 Day    : Ch-1 Fusion    ", "Ch-0 Day    : Ch-1 PIP    ", "Ch-0 Day    : Ch-1 SBS    ", "Ch-0 IR     : Ch-1 Fusion    ", "Ch-0 IR     : Ch-1 PIP    ", "Ch-0 IR     : Ch-1 SBS    ", "Ch-0 Fusion : Ch-1 Dis    ", "Ch-0 PIP    : Ch-1 Dis    ", "Ch-0 SBS    : Ch-1 Dis    "]
     property var _pipModesStr: ["Visable Large    ", "IR Large    "]
     property var _sbsModesStr: ["Visable Left    ", "IR Left    "]
@@ -70,8 +71,8 @@ Item {
         rows: 7
         anchors.fill: parent
         anchors.margins: 3
-        columnSpacing: 5
-        rowSpacing: 5
+        columnSpacing: 2
+        rowSpacing: 2
 
         onWidthChanged: {
             console.log("Stream control mode:", grid.width, grid.height)
@@ -81,16 +82,14 @@ Item {
 
             id: mainlabel
 
-            height: ScreenTools.defaultFontPixelHeight
-
             text: qsTr("STREAM CTRL")
             font.family: ScreenTools.demiboldFontFamily
-            font.pointSize: ScreenTools.largeFontPointSize
             color: "White"
 
             horizontalAlignment: Text.AlignHCenter
             verticalAlignment: Text.AlignVCenter
 
+            //Layout.preferredHeight: rowHeight
             Layout.alignment: Qt.AlignLeft | Qt.AlignTop
             Layout.columnSpan: 6
             Layout.fillHeight: false
@@ -101,16 +100,13 @@ Item {
 
             id: streamModeLabel
 
-            height: ScreenTools.defaultFontPixelHeight
-
             text: qsTr("STREAM MODE")
-            font.family: ScreenTools.demiboldFontFamily
-            font.pointSize: ScreenTools.largeFontPointSize
             color: "White"
 
             horizontalAlignment: Text.AlignHCenter
             verticalAlignment: Text.AlignVCenter
 
+            Layout.preferredHeight: rowHeight
             Layout.alignment: Qt.AlignLeft | Qt.AlignTop
             Layout.columnSpan: 6
             Layout.fillHeight: false
@@ -121,15 +117,14 @@ Item {
             id: streamModeCombo
             sizeToContents: true
             centeredLabel: true
-            font.pointSize: ScreenTools.isMobile ? point_size : ScreenTools.mediumFontPointSize
             model: _streamModesStr
 
             Layout.rowSpan: 1
-            Layout.columnSpan: 3
+            Layout.columnSpan: 5
 
-            Layout.preferredHeight: -1
-            Layout.preferredWidth: -1
-            Layout.fillWidth: true
+            Layout.preferredHeight: rowHeight
+            Layout.preferredWidth: columnWidth * Layout.columnSpan
+            Layout.fillWidth: false
             Layout.fillHeight: false
             Layout.alignment: Qt.AlignLeft
         }
@@ -139,16 +134,14 @@ Item {
             id: streamModeSetButton
 
             showBorder: true
-            font.pointSize: ScreenTools.isMobile ? point_size : ScreenTools.smallFontPointSize
-            pointSize: ScreenTools.isMobile ? point_size : ScreenTools.defaultFontPointSize
             text: qsTr("SET")
 
             Layout.rowSpan: 1
-            Layout.columnSpan: 6
+            Layout.columnSpan: 1
 
-            Layout.preferredHeight: -1
-            Layout.preferredWidth: -1
-            Layout.fillWidth: true
+            Layout.preferredHeight: rowHeight
+            Layout.preferredWidth: columnWidth * Layout.columnSpan
+            Layout.fillWidth: false
             Layout.fillHeight: false
             Layout.alignment: Qt.AlignLeft
 
@@ -161,16 +154,13 @@ Item {
 
             id: pipModeLabel
 
-            height: ScreenTools.defaultFontPixelHeight
-
             text: qsTr("PIP MODE")
-            font.family: ScreenTools.demiboldFontFamily
-            font.pointSize: ScreenTools.largeFontPointSize
             color: "White"
 
             horizontalAlignment: Text.AlignHCenter
             verticalAlignment: Text.AlignVCenter
 
+            Layout.preferredHeight: rowHeight
             Layout.columnSpan: 6
             Layout.fillHeight: false
             Layout.fillWidth: true
@@ -180,15 +170,14 @@ Item {
             id: pipModeCombo
             sizeToContents: true
             centeredLabel: true
-            font.pointSize: ScreenTools.isMobile ? point_size : ScreenTools.mediumFontPointSize
             model: _pipModesStr
 
             Layout.rowSpan: 1
-            Layout.columnSpan: 3
+            Layout.columnSpan: 5
 
-            Layout.preferredHeight: -1
-            Layout.preferredWidth: -1
-            Layout.fillWidth: true
+            Layout.preferredHeight: rowHeight
+            Layout.preferredWidth: columnWidth * Layout.columnSpan
+            Layout.fillWidth: false
             Layout.fillHeight: false
             Layout.alignment: Qt.AlignLeft
         }
@@ -198,16 +187,14 @@ Item {
             id: pipModeSetButton
 
             showBorder: true
-            font.pointSize: ScreenTools.isMobile ? point_size : ScreenTools.smallFontPointSize
-            pointSize: ScreenTools.isMobile ? point_size : ScreenTools.defaultFontPointSize
             text: qsTr("SET")
 
             Layout.rowSpan: 1
-            Layout.columnSpan: 6
+            Layout.columnSpan: 1
 
-            Layout.preferredHeight: -1
-            Layout.preferredWidth: -1
-            Layout.fillWidth: true
+            Layout.preferredHeight: rowHeight
+            Layout.preferredWidth: columnWidth * Layout.columnSpan
+            Layout.fillWidth: false
             Layout.fillHeight: false
             Layout.alignment: Qt.AlignLeft
 
@@ -222,16 +209,13 @@ Item {
 
             id: sbsModeLabel
 
-            height: ScreenTools.defaultFontPixelHeight
-
             text: qsTr("SBS MODE")
-            font.family: ScreenTools.demiboldFontFamily
-            font.pointSize: ScreenTools.largeFontPointSize
             color: "White"
 
             horizontalAlignment: Text.AlignHCenter
             verticalAlignment: Text.AlignVCenter
 
+            Layout.preferredHeight: rowHeight
             Layout.columnSpan: 6
             Layout.fillHeight: false
             Layout.fillWidth: true
@@ -241,15 +225,14 @@ Item {
             id: sbsModeCombo
             sizeToContents: true
             centeredLabel: true
-            font.pointSize: ScreenTools.isMobile ? point_size : ScreenTools.mediumFontPointSize
             model: _sbsModesStr
 
             Layout.rowSpan: 1
-            Layout.columnSpan: 3
+            Layout.columnSpan: 5
 
-            Layout.preferredHeight: -1
-            Layout.preferredWidth: -1
-            Layout.fillWidth: true
+            Layout.preferredHeight: rowHeight
+            Layout.preferredWidth: columnWidth * Layout.columnSpan
+            Layout.fillWidth: false
             Layout.fillHeight: false
             Layout.alignment: Qt.AlignLeft
         }
@@ -259,16 +242,14 @@ Item {
             id: sbsModeSetButton
 
             showBorder: true
-            font.pointSize: ScreenTools.isMobile ? point_size : ScreenTools.smallFontPointSize
-            pointSize: ScreenTools.isMobile ? point_size : ScreenTools.defaultFontPointSize
             text: qsTr("SET")
 
             Layout.rowSpan: 1
-            Layout.columnSpan: 6
+            Layout.columnSpan: 1
 
-            Layout.preferredHeight: -1
-            Layout.preferredWidth: -1
-            Layout.fillWidth: true
+            Layout.preferredHeight: rowHeight
+            Layout.preferredWidth: columnWidth * Layout.columnSpan
+            Layout.fillWidth: false
             Layout.fillHeight: false
             Layout.alignment: Qt.AlignLeft
 

@@ -16,8 +16,10 @@ import QGroundControl.SettingsManager 1.0
 Item {
     id: element
     anchors.fill: parent
-
     visible: true
+
+    property int rowHeight: (parent.height - (grid.rows * grid.rowSpacing)) / (grid.rows)
+    property int columnWidth: (parent.width - (grid.columns * grid.columnSpacing)) / (grid.columns)
 
     property var _videoChannelsStr: ["Channel-0", "Channel-1"]
     property var _activeVehicle: QGroundControl.multiVehicleManager.activeVehicle
@@ -74,11 +76,11 @@ Item {
         id: grid
 
         columns: 6
-        rows: 11
+        rows: 8
         anchors.fill: parent
         anchors.margins: 3
-        columnSpacing: 5
-        rowSpacing: 5
+        columnSpacing: 2
+        rowSpacing: 2
 
         onWidthChanged: {
             console.log("Record mode:", grid.width, grid.height)
@@ -88,16 +90,14 @@ Item {
 
             id: mainlabel
 
-            height: ScreenTools.defaultFontPixelHeight
-
             text: qsTr("REC")
             font.family: ScreenTools.demiboldFontFamily
-            font.pointSize: ScreenTools.largeFontPointSize
             color: "White"
 
             horizontalAlignment: Text.AlignHCenter
             verticalAlignment: Text.AlignVCenter
 
+            //Layout.preferredHeight: rowHeight
             Layout.alignment: Qt.AlignLeft | Qt.AlignTop
             Layout.columnSpan: 6
             Layout.fillHeight: false
@@ -108,17 +108,14 @@ Item {
 
             id: lrlabel
 
-            height: ScreenTools.defaultFontPixelHeight
-
-            text: qsTr("Local Recording")
-            font.family: ScreenTools.demiboldFontFamily
-            font.pointSize: ScreenTools.largeFontPointSize
+            text: qsTr("LOCAL")
             color: "White"
 
             horizontalAlignment: Text.AlignHCenter
             verticalAlignment: Text.AlignVCenter
 
-            Layout.columnSpan: 6
+            Layout.preferredHeight: rowHeight
+            Layout.columnSpan: 3
             Layout.fillHeight: false
             Layout.fillWidth: true
         }
@@ -127,19 +124,16 @@ Item {
 
             id: localrec
 
-            height: parent.height / parent.rows
-            width: height
-
             color: Qt.rgba(0, 0, 0, 0)
             radius: width * 0.5
             border.color: qgcPal.buttonText
             border.width: 3
 
             Layout.rowSpan: 1
-            Layout.columnSpan: 6
+            Layout.columnSpan: 3
 
-            Layout.preferredHeight: -1
-            Layout.preferredWidth: -1
+            Layout.preferredHeight: rowHeight
+            Layout.preferredWidth: rowHeight
             Layout.fillWidth: false
             Layout.fillHeight: false
             Layout.alignment: Qt.AlignHCenter | Qt.AlignVCenter
@@ -163,36 +157,16 @@ Item {
             id: videoChannelCombo
             sizeToContents: true
             centeredLabel: true
-            font.pointSize: ScreenTools.isMobile ? point_size : ScreenTools.mediumFontPointSize
             model: _videoChannelsStr
 
             Layout.rowSpan: 1
             Layout.columnSpan: 6
 
-            Layout.preferredHeight: -1
+            Layout.preferredHeight: rowHeight
             Layout.preferredWidth: -1
             Layout.fillWidth: true
             Layout.fillHeight: false
             Layout.alignment: Qt.AlignLeft
-        }
-
-        QGCLabel {
-
-            id: rrlabel
-
-            height: ScreenTools.defaultFontPixelHeight
-
-            text: qsTr("Remote Recording ")
-            font.family: ScreenTools.demiboldFontFamily
-            font.pointSize: ScreenTools.largeFontPointSize
-            color: "White"
-
-            horizontalAlignment: Text.AlignHCenter
-            verticalAlignment: Text.AlignVCenter
-
-            Layout.columnSpan: 6
-            Layout.fillHeight: false
-            Layout.fillWidth: true
         }
 
         QGCButton {
@@ -200,16 +174,14 @@ Item {
             id: _recordOnModeButton
 
             showBorder: true
-            font.pointSize: ScreenTools.isMobile ? point_size : ScreenTools.smallFontPointSize
-            pointSize: ScreenTools.isMobile ? point_size : ScreenTools.defaultFontPointSize
-            text: qsTr("REC On")
+            text: qsTr("REC ON")
 
             Layout.rowSpan: 1
             Layout.columnSpan: 2
 
-            Layout.preferredHeight: -1
-            Layout.preferredWidth: -1
-            Layout.fillWidth: true
+            Layout.preferredHeight: rowHeight
+            Layout.preferredWidth: columnWidth * 2
+            Layout.fillWidth: false
             Layout.fillHeight: true
             Layout.alignment: Qt.AlignLeft
 
@@ -225,16 +197,14 @@ Item {
             id: _recordOffModeButton
 
             showBorder: true
-            font.pointSize: ScreenTools.isMobile ? point_size : ScreenTools.smallFontPointSize
-            pointSize: ScreenTools.isMobile ? point_size : ScreenTools.defaultFontPointSize
-            text: qsTr("REC Off")
+            text: qsTr("REC OFF")
 
             Layout.rowSpan: 1
             Layout.columnSpan: 2
 
-            Layout.preferredHeight: -1
-            Layout.preferredWidth: -1
-            Layout.fillWidth: true
+            Layout.preferredHeight: rowHeight
+            Layout.preferredWidth: columnWidth * 2
+            Layout.fillWidth: false
             Layout.fillHeight: true
             Layout.alignment: Qt.AlignLeft
 
@@ -250,16 +220,14 @@ Item {
             id: _snapshotModeButton
 
             showBorder: true
-            font.pointSize: ScreenTools.isMobile ? point_size : ScreenTools.smallFontPointSize
-            pointSize: ScreenTools.isMobile ? point_size : ScreenTools.defaultFontPointSize
-            text: qsTr("Snap")
+            text: qsTr("SNAP")
 
             Layout.rowSpan: 1
             Layout.columnSpan: 2
 
-            Layout.preferredHeight: -1
-            Layout.preferredWidth: -1
-            Layout.fillWidth: true
+            Layout.preferredHeight: rowHeight
+            Layout.preferredWidth: columnWidth * 2
+            Layout.fillWidth: false
             Layout.fillHeight: true
             Layout.alignment: Qt.AlignLeft
 
@@ -272,35 +240,13 @@ Item {
 
         QGCLabel {
 
-            id: vclabel
-
-            height: ScreenTools.defaultFontPixelHeight
-
-            text: qsTr("Auto Snapshots")
-            font.family: ScreenTools.demiboldFontFamily
-            font.pointSize: ScreenTools.largeFontPointSize
+            text: qsTr("INT[ms]")
             color: "White"
 
             horizontalAlignment: Text.AlignHCenter
             verticalAlignment: Text.AlignVCenter
 
-            Layout.columnSpan: 6
-            Layout.fillHeight: false
-            Layout.fillWidth: true
-        }
-
-        QGCLabel {
-
-            height: ScreenTools.defaultFontPixelHeight
-
-            text: qsTr(" Int[ms]")
-            font.family: ScreenTools.demiboldFontFamily
-            font.pointSize: ScreenTools.smallFontPointSize
-            color: "White"
-
-            horizontalAlignment: Text.AlignHCenter
-            verticalAlignment: Text.AlignVCenter
-
+            Layout.preferredHeight: rowHeight
             Layout.columnSpan: 2
             Layout.fillHeight: false
             Layout.fillWidth: true
@@ -310,13 +256,12 @@ Item {
 
             id: _snapInerval
             maximumLength: 5
-            font.pointSize: ScreenTools.isMobile ? point_size : 9
             text: qsTr("1000")
 
             Layout.rowSpan: 1
             Layout.columnSpan: 2
 
-            Layout.preferredHeight: -1
+            Layout.preferredHeight: rowHeight
             Layout.preferredWidth: -1
             Layout.fillWidth: true
             Layout.fillHeight: true
@@ -326,13 +271,13 @@ Item {
         QGCLabel {
 
             id: _snapStatus
-            text: qsTr("Idle")
-            font.pointSize: ScreenTools.isMobile ? point_size : 9
+            text: qsTr("IDLE")
             color: "white"
 
             horizontalAlignment: Text.AlignHCenter
             verticalAlignment: Text.AlignVCenter
 
+            Layout.preferredHeight: rowHeight
             Layout.columnSpan: 2
             Layout.fillHeight: false
             Layout.fillWidth: true
@@ -353,16 +298,13 @@ Item {
 
         QGCLabel {
 
-            height: ScreenTools.defaultFontPixelHeight
-
-            text: qsTr(" Count")
-            font.family: ScreenTools.demiboldFontFamily
-            font.pointSize: ScreenTools.smallFontPointSize
+            text: qsTr("COUNT")
             color: "White"
 
             horizontalAlignment: Text.AlignHCenter
             verticalAlignment: Text.AlignVCenter
 
+            Layout.preferredHeight: rowHeight
             Layout.columnSpan: 2
             Layout.fillHeight: false
             Layout.fillWidth: true
@@ -372,13 +314,12 @@ Item {
 
             id: _snapCount
             maximumLength: 5
-            font.pointSize: ScreenTools.isMobile ? point_size : 9
             text: qsTr("10")
 
             Layout.rowSpan: 1
             Layout.columnSpan: 2
 
-            Layout.preferredHeight: -1
+            Layout.preferredHeight: rowHeight
             Layout.preferredWidth: -1
             Layout.fillWidth: true
             Layout.fillHeight: true
@@ -388,14 +329,13 @@ Item {
         QGCCheckBox {
 
             id: _snapInf
-            text: qsTr("Inf")
+            text: qsTr("INF")
             textColor: "white"
-            textFontPointSize: ScreenTools.isMobile ? point_size : 9
 
             Layout.rowSpan: 1
             Layout.columnSpan: 2
 
-            Layout.preferredHeight: -1
+            Layout.preferredHeight: rowHeight
             Layout.preferredWidth: -1
             Layout.fillWidth: true
             Layout.fillHeight: true
@@ -407,14 +347,12 @@ Item {
             id: _startModeButton
 
             showBorder: true
-            font.pointSize: ScreenTools.isMobile ? point_size : ScreenTools.smallFontPointSize
-            pointSize: ScreenTools.isMobile ? point_size : ScreenTools.defaultFontPointSize
-            text: qsTr("Start")
+            text: qsTr("START")
 
             Layout.rowSpan: 1
             Layout.columnSpan: 3
 
-            Layout.preferredHeight: -1
+            Layout.preferredHeight: rowHeight
             Layout.preferredWidth: -1
             Layout.fillWidth: true
             Layout.fillHeight: true
@@ -434,14 +372,12 @@ Item {
             id: _stopModeButton
 
             showBorder: true
-            font.pointSize: ScreenTools.isMobile ? point_size : ScreenTools.smallFontPointSize
-            pointSize: ScreenTools.isMobile ? point_size : ScreenTools.defaultFontPointSize
-            text: qsTr("Stop")
+            text: qsTr("STOP")
 
             Layout.rowSpan: 1
             Layout.columnSpan: 3
 
-            Layout.preferredHeight: -1
+            Layout.preferredHeight: rowHeight
             Layout.preferredWidth: -1
             Layout.fillWidth: true
             Layout.fillHeight: true
