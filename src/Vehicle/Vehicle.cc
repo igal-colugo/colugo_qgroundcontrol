@@ -88,6 +88,7 @@ const char *Vehicle::_groundSpeedFactName = "groundSpeed";
 const char *Vehicle::_climbRateFactName = "climbRate";
 const char *Vehicle::_altitudeRelativeFactName = "altitudeRelative";
 const char *Vehicle::_altitudeAMSLFactName = "altitudeAMSL";
+const char *Vehicle::_altitudeMonotonicFactName = "altitudeMonotonic";
 const char *Vehicle::_altitudeTuningFactName = "altitudeTuning";
 const char *Vehicle::_altitudeTuningSetpointFactName = "altitudeTuningSetpoint";
 const char *Vehicle::_flightDistanceFactName = "flightDistance";
@@ -132,17 +133,17 @@ Vehicle::Vehicle(LinkInterface *link, int vehicleId, int defaultComponentId, MAV
       _yawRateFact(0, _yawRateFactName, FactMetaData::valueTypeDouble), _groundSpeedFact(0, _groundSpeedFactName, FactMetaData::valueTypeDouble),
       _airSpeedFact(0, _airSpeedFactName, FactMetaData::valueTypeDouble), _airSpeedSetpointFact(0, _airSpeedSetpointFactName, FactMetaData::valueTypeDouble),
       _climbRateFact(0, _climbRateFactName, FactMetaData::valueTypeDouble), _altitudeRelativeFact(0, _altitudeRelativeFactName, FactMetaData::valueTypeDouble),
-      _altitudeAMSLFact(0, _altitudeAMSLFactName, FactMetaData::valueTypeDouble), _altitudeTuningFact(0, _altitudeTuningFactName, FactMetaData::valueTypeDouble),
-      _altitudeTuningSetpointFact(0, _altitudeTuningSetpointFactName, FactMetaData::valueTypeDouble), _xTrackErrorFact(0, _xTrackErrorFactName, FactMetaData::valueTypeDouble),
-      _rangeFinderDistFact(0, _rangeFinderDistFactName, FactMetaData::valueTypeFloat), _flightDistanceFact(0, _flightDistanceFactName, FactMetaData::valueTypeDouble),
-      _flightTimeFact(0, _flightTimeFactName, FactMetaData::valueTypeElapsedTimeInSeconds), _distanceToHomeFact(0, _distanceToHomeFactName, FactMetaData::valueTypeDouble),
-      _missionItemIndexFact(0, _missionItemIndexFactName, FactMetaData::valueTypeUint16), _headingToNextWPFact(0, _headingToNextWPFactName, FactMetaData::valueTypeDouble),
-      _headingToHomeFact(0, _headingToHomeFactName, FactMetaData::valueTypeDouble), _distanceToGCSFact(0, _distanceToGCSFactName, FactMetaData::valueTypeDouble),
-      _hobbsFact(0, _hobbsFactName, FactMetaData::valueTypeString), _throttlePctFact(0, _throttlePctFactName, FactMetaData::valueTypeUint16),
-      _throttleCurrawongFact(0, _throttleCurrawongFactName, FactMetaData::valueTypeFloat), _fuelUsedCurrawongFact(0, _fuelUsedCurrawongFactName, FactMetaData::valueTypeUint32),
-      _rpmCurrawongFact(0, _rpmCurrawongFactName, FactMetaData::valueTypeUint16), _gpsFactGroup(this), _gps2FactGroup(this), _windFactGroup(this), _vibrationFactGroup(this),
-      _temperatureFactGroup(this), _clockFactGroup(this), _setpointFactGroup(this), _distanceSensorFactGroup(this), _localPositionFactGroup(this), _localPositionSetpointFactGroup(this),
-      _escStatusFactGroup(this), _estimatorStatusFactGroup(this), _hygrometerFactGroup(this), _terrainFactGroup(this),
+      _altitudeAMSLFact(0, _altitudeAMSLFactName, FactMetaData::valueTypeDouble), _altitudeMonotonicFact(0, _altitudeMonotonicFactName, FactMetaData::valueTypeDouble),
+      _altitudeTuningFact(0, _altitudeTuningFactName, FactMetaData::valueTypeDouble), _altitudeTuningSetpointFact(0, _altitudeTuningSetpointFactName, FactMetaData::valueTypeDouble),
+      _xTrackErrorFact(0, _xTrackErrorFactName, FactMetaData::valueTypeDouble), _rangeFinderDistFact(0, _rangeFinderDistFactName, FactMetaData::valueTypeFloat),
+      _flightDistanceFact(0, _flightDistanceFactName, FactMetaData::valueTypeDouble), _flightTimeFact(0, _flightTimeFactName, FactMetaData::valueTypeElapsedTimeInSeconds),
+      _distanceToHomeFact(0, _distanceToHomeFactName, FactMetaData::valueTypeDouble), _missionItemIndexFact(0, _missionItemIndexFactName, FactMetaData::valueTypeUint16),
+      _headingToNextWPFact(0, _headingToNextWPFactName, FactMetaData::valueTypeDouble), _headingToHomeFact(0, _headingToHomeFactName, FactMetaData::valueTypeDouble),
+      _distanceToGCSFact(0, _distanceToGCSFactName, FactMetaData::valueTypeDouble), _hobbsFact(0, _hobbsFactName, FactMetaData::valueTypeString),
+      _throttlePctFact(0, _throttlePctFactName, FactMetaData::valueTypeUint16), _throttleCurrawongFact(0, _throttleCurrawongFactName, FactMetaData::valueTypeFloat),
+      _fuelUsedCurrawongFact(0, _fuelUsedCurrawongFactName, FactMetaData::valueTypeUint32), _rpmCurrawongFact(0, _rpmCurrawongFactName, FactMetaData::valueTypeUint16), _gpsFactGroup(this),
+      _gps2FactGroup(this), _windFactGroup(this), _vibrationFactGroup(this), _temperatureFactGroup(this), _clockFactGroup(this), _setpointFactGroup(this), _distanceSensorFactGroup(this),
+      _localPositionFactGroup(this), _localPositionSetpointFactGroup(this), _escStatusFactGroup(this), _estimatorStatusFactGroup(this), _hygrometerFactGroup(this), _terrainFactGroup(this),
       _terrainProtocolHandler(new TerrainProtocolHandler(this, &_terrainFactGroup, this))
 {
     _linkManager = _toolbox->linkManager();
@@ -152,7 +153,6 @@ Vehicle::Vehicle(LinkInterface *link, int vehicleId, int defaultComponentId, MAV
 
     _mavlink = _toolbox->mavlinkProtocol();
     _nextVision_mavlink = _toolbox->nextVisionMavlinkProtocol();
-
 
     qCDebug(VehicleLog) << "Link started with Mavlink " << (_mavlink->getCurrentVersion() >= 200 ? "V2" : "V1");
 
@@ -262,16 +262,16 @@ Vehicle::Vehicle(MAV_AUTOPILOT firmwareType, MAV_TYPE vehicleType, FirmwarePlugi
       _groundSpeedFact(0, _groundSpeedFactName, FactMetaData::valueTypeDouble), _airSpeedFact(0, _airSpeedFactName, FactMetaData::valueTypeDouble),
       _airSpeedSetpointFact(0, _airSpeedSetpointFactName, FactMetaData::valueTypeDouble), _climbRateFact(0, _climbRateFactName, FactMetaData::valueTypeDouble),
       _altitudeRelativeFact(0, _altitudeRelativeFactName, FactMetaData::valueTypeDouble), _altitudeAMSLFact(0, _altitudeAMSLFactName, FactMetaData::valueTypeDouble),
-      _altitudeTuningFact(0, _altitudeTuningFactName, FactMetaData::valueTypeDouble), _altitudeTuningSetpointFact(0, _altitudeTuningSetpointFactName, FactMetaData::valueTypeDouble),
-      _xTrackErrorFact(0, _xTrackErrorFactName, FactMetaData::valueTypeDouble), _rangeFinderDistFact(0, _rangeFinderDistFactName, FactMetaData::valueTypeFloat),
-      _flightDistanceFact(0, _flightDistanceFactName, FactMetaData::valueTypeDouble), _flightTimeFact(0, _flightTimeFactName, FactMetaData::valueTypeElapsedTimeInSeconds),
-      _distanceToHomeFact(0, _distanceToHomeFactName, FactMetaData::valueTypeDouble), _missionItemIndexFact(0, _missionItemIndexFactName, FactMetaData::valueTypeUint16),
-      _headingToNextWPFact(0, _headingToNextWPFactName, FactMetaData::valueTypeDouble), _headingToHomeFact(0, _headingToHomeFactName, FactMetaData::valueTypeDouble),
-      _distanceToGCSFact(0, _distanceToGCSFactName, FactMetaData::valueTypeDouble), _hobbsFact(0, _hobbsFactName, FactMetaData::valueTypeString),
-      _throttlePctFact(0, _throttlePctFactName, FactMetaData::valueTypeUint16), _throttleCurrawongFact(0, _throttleCurrawongFactName, FactMetaData::valueTypeFloat),
-      _fuelUsedCurrawongFact(0, _throttleCurrawongFactName, FactMetaData::valueTypeUint32), _rpmCurrawongFact(0, _rpmCurrawongFactName, FactMetaData::valueTypeUint16), _gpsFactGroup(this),
-      _gps2FactGroup(this), _windFactGroup(this), _vibrationFactGroup(this), _clockFactGroup(this), _distanceSensorFactGroup(this), _localPositionFactGroup(this),
-      _localPositionSetpointFactGroup(this)
+      _altitudeMonotonicFact(0, _altitudeMonotonicFactName, FactMetaData::valueTypeDouble), _altitudeTuningFact(0, _altitudeTuningFactName, FactMetaData::valueTypeDouble),
+      _altitudeTuningSetpointFact(0, _altitudeTuningSetpointFactName, FactMetaData::valueTypeDouble), _xTrackErrorFact(0, _xTrackErrorFactName, FactMetaData::valueTypeDouble),
+      _rangeFinderDistFact(0, _rangeFinderDistFactName, FactMetaData::valueTypeFloat), _flightDistanceFact(0, _flightDistanceFactName, FactMetaData::valueTypeDouble),
+      _flightTimeFact(0, _flightTimeFactName, FactMetaData::valueTypeElapsedTimeInSeconds), _distanceToHomeFact(0, _distanceToHomeFactName, FactMetaData::valueTypeDouble),
+      _missionItemIndexFact(0, _missionItemIndexFactName, FactMetaData::valueTypeUint16), _headingToNextWPFact(0, _headingToNextWPFactName, FactMetaData::valueTypeDouble),
+      _headingToHomeFact(0, _headingToHomeFactName, FactMetaData::valueTypeDouble), _distanceToGCSFact(0, _distanceToGCSFactName, FactMetaData::valueTypeDouble),
+      _hobbsFact(0, _hobbsFactName, FactMetaData::valueTypeString), _throttlePctFact(0, _throttlePctFactName, FactMetaData::valueTypeUint16),
+      _throttleCurrawongFact(0, _throttleCurrawongFactName, FactMetaData::valueTypeFloat), _fuelUsedCurrawongFact(0, _throttleCurrawongFactName, FactMetaData::valueTypeUint32),
+      _rpmCurrawongFact(0, _rpmCurrawongFactName, FactMetaData::valueTypeUint16), _gpsFactGroup(this), _gps2FactGroup(this), _windFactGroup(this), _vibrationFactGroup(this),
+      _clockFactGroup(this), _distanceSensorFactGroup(this), _localPositionFactGroup(this), _localPositionSetpointFactGroup(this)
 {
     _linkManager = _toolbox->linkManager();
 
@@ -374,6 +374,7 @@ void Vehicle::_commonInit()
     _addFact(&_climbRateFact, _climbRateFactName);
     _addFact(&_altitudeRelativeFact, _altitudeRelativeFactName);
     _addFact(&_altitudeAMSLFact, _altitudeAMSLFactName);
+    _addFact(&_altitudeMonotonicFact, _altitudeMonotonicFactName);
     _addFact(&_altitudeTuningFact, _altitudeTuningFactName);
     _addFact(&_altitudeTuningSetpointFact, _altitudeTuningSetpointFactName);
     _addFact(&_xTrackErrorFact, _xTrackErrorFactName);
@@ -806,11 +807,13 @@ void Vehicle::_nextVisonMavlinkMessageReceived(NextVisionLinkInterface *link, ma
     switch (message.msgid)
     {
     case MAVLINK_MSG_ID_V2_EXTENSION:
-        if(message.len == MAVLINK_MSG_NVEXT_GND_CRS_REPORT_LEN){
+        if (message.len == MAVLINK_MSG_NVEXT_GND_CRS_REPORT_LEN)
+        {
             _handleNvExt_GndCrs(message);
         }
-        else if(message.len == MAVLINK_MSG_NVEXT_LOS_REPORT_LEN){
-            //ig todo - draw nextvision payload trace on map...
+        else if (message.len == MAVLINK_MSG_NVEXT_LOS_REPORT_LEN)
+        {
+            // ig todo - draw nextvision payload trace on map...
         }
         break;
 
@@ -821,15 +824,14 @@ void Vehicle::_nextVisonMavlinkMessageReceived(NextVisionLinkInterface *link, ma
         break;
 #endif
     }
-/*
-    // This must be emitted after the vehicle processes the message. This way the vehicle state is up to date when anyone else
-    // does processing.
-    emit mavlinkMessageReceived(message);
+    /*
+        // This must be emitted after the vehicle processes the message. This way the vehicle state is up to date when anyone else
+        // does processing.
+        emit mavlinkMessageReceived(message);
 
-    _uas->receiveMessage(message);
-*/
+        _uas->receiveMessage(message);
+    */
 }
-
 
 #if !defined(NO_ARDUPILOT_DIALECT)
 void Vehicle::_handleCameraFeedback(const mavlink_message_t &message)
@@ -1201,10 +1203,10 @@ void Vehicle::_handleGpsRawInt(mavlink_message_t &message)
     }
 }
 
+void Vehicle::_handleNvExt_GndCrs(mavlink_message_t &message)
+{
 
-void Vehicle::_handleNvExt_GndCrs(mavlink_message_t &message){
-
-    //mode check should be done airborne, add delay between commands - add function to camguide mode name
+    // mode check should be done airborne, add delay between commands - add function to camguide mode name
     if (flightMode() != cCamGuideFlightMode())
     {
         return;
@@ -1212,16 +1214,16 @@ void Vehicle::_handleNvExt_GndCrs(mavlink_message_t &message){
     QDateTime currentTime = QDateTime::currentDateTime();
     qint64 millisecondsSinceLastSent = _camGuideCoordlastSentTime.msecsTo(currentTime);
 
-    if (millisecondsSinceLastSent >= 2000){
+    if (millisecondsSinceLastSent >= 2000)
+    {
         mavlink_nvext_gnd_crs_report_t nvext_gnd_crs_report;
         mavlink_nvext_gnd_crs_report_decode(&message, &nvext_gnd_crs_report);
         QGeoCoordinate location(nvext_gnd_crs_report.gnd_crossing_lat, nvext_gnd_crs_report.gnd_crossing_lon);
         CCamGuideModeGotoLocation(location);
         _camGuideCoordlastSentTime = currentTime;
-      //qCDebug(VehicleLog) << "colugo got V2, flightMode:"<<flightMode();
-        qCDebug(VehicleLog) << "colugo got GndCrs, lat:"<<nvext_gnd_crs_report.gnd_crossing_lat;
+        // qCDebug(VehicleLog) << "colugo got V2, flightMode:"<<flightMode();
+        qCDebug(VehicleLog) << "colugo got GndCrs, lat:" << nvext_gnd_crs_report.gnd_crossing_lat;
     }
-
 }
 void Vehicle::_handleGlobalPositionInt(mavlink_message_t &message)
 {
@@ -1377,6 +1379,7 @@ void Vehicle::_handleAltitude(mavlink_message_t &message)
     _altitudeMessageAvailable = true;
     _altitudeRelativeFact.setRawValue(altitude.altitude_relative);
     _altitudeAMSLFact.setRawValue(altitude.altitude_amsl);
+    _altitudeMonotonicFact.setRawValue(altitude.altitude_monotonic);
 }
 
 void Vehicle::_setCapabilities(uint64_t capabilityBits)
@@ -2829,7 +2832,7 @@ void Vehicle::startMission()
 
 void Vehicle::guidedModeGotoLocation(const QGeoCoordinate &gotoCoord)
 {
-    //ig debug delete later
+    // ig debug delete later
     /*
     if (flightMode() == cCamGuideFlightMode())
     {
@@ -2870,26 +2873,18 @@ void Vehicle::guidedModeGotoLocation(const QGeoCoordinate &gotoCoord)
     _firmwarePlugin->guidedModeGotoLocation(this, gotoCoord);
 }
 
-
 void Vehicle::CCamGuideModeGotoLocation(const QGeoCoordinate &CamGroundCrossCoord)
 {
-    //mode check should be done airborne, add delay between commands - add function to camguide mode name
+    // mode check should be done airborne, add delay between commands - add function to camguide mode name
     if (!coordinate().isValid())
     {
         return;
-    }   
-    _firmwarePlugin->ColugoProprietaryCommand(this,
-                                              MAV_CMD_DO_REPOSITION,
-                                              MAV_FRAME_GLOBAL,
-                                              false,   // show error is fails
+    }
+    _firmwarePlugin->ColugoProprietaryCommand(this, MAV_CMD_DO_REPOSITION, MAV_FRAME_GLOBAL,
+                                              false, // show error is fails
                                               -1.0f,
-                                              0,//   MAV_DO_REPOSITION_FLAGS_CHANGE_MODE,
-                                              0.0f,
-                                              NAN,
-                                              CamGroundCrossCoord.latitude(),
-                                              CamGroundCrossCoord.longitude(),
-                                              altitudeAMSL()->rawValue().toFloat());
-
+                                              0, //   MAV_DO_REPOSITION_FLAGS_CHANGE_MODE,
+                                              0.0f, NAN, CamGroundCrossCoord.latitude(), CamGroundCrossCoord.longitude(), altitudeAMSL()->rawValue().toFloat());
 }
 
 void Vehicle::guidedModeChangeAltitude(double altitudeChange, bool pauseVehicle)
