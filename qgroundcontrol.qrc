@@ -292,6 +292,7 @@
         <file alias="QGroundControl/FlightMap/EpsilonPhotoVideoControl.qml">src/FlightMap/Widgets/EpsilonPhotoVideoControl.qml</file>
         <file alias="QGroundControl/FlightDisplay/GuidedActionStartEngine.qml">src/FlightDisplay/GuidedActionStartEngine.qml</file>
         <file alias="QGroundControl/FlightDisplay/GuidedActionStopEngine.qml">src/FlightDisplay/GuidedActionStopEngine.qml</file>
+        <file alias="CommtactLinkSettings.qml">src/ui/preferences/CommtactLinkSettings.qml</file>
     </qresource>
     <qresource prefix="/FirstRunPromptDialogs">
         <file alias="UnitsFirstRunPrompt.qml">src/FirstRunPromptDialogs/UnitsFirstRunPrompt.qml</file>
@@ -360,7 +361,6 @@
         <file alias="Parameter.MetaData.json.xz">src/comm/MockLink.Parameter.MetaData.json.xz</file>
         <file alias="Parameter.MetaData.json">src/comm/MockLink.Parameter.MetaData.json</file>
     </qresource>
-    <qresource prefix="/"/>
     <qresource prefix="/nvqml">
         <file alias="CamFModePanel.qml">src/NextVisionExt/CamFModePanel.qml</file>
         <file alias="CamIRGainLevelPanel.qml">src/NextVisionExt/CamIRGainLevelPanel.qml</file>
@@ -404,5 +404,9 @@
         <file alias="EpsilonCamIRGainLevelPanel.qml">src/Epsilon/Qml/EpsilonCamIRGainLevelPanel.qml</file>
         <file alias="EpsilonCamIRPanel.qml">src/Epsilon/Qml/EpsilonCamIRPanel.qml</file>
         <file alias="EpsilonCamJoystickConfig.qml">src/Epsilon/Qml/EpsilonCamJoystickConfig.qml</file>
+    </qresource>
+    <qresource prefix="/commtactqml">
+        <file alias="CommtactModePanel.qml">src/Commtact/Qml/CommtactModePanel.qml</file>
+        <file alias="CommtactQuickPanel.qml">src/Commtact/Qml/CommtactQuickPanel.qml</file>
     </qresource>
 </RCC>

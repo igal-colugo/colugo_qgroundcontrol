@@ -63,6 +63,8 @@ class QGroundControlQmlGlobal : public QGCTool
     Q_PROPERTY(LinkManager *linkManager READ linkManager CONSTANT)
     Q_PROPERTY(NextVisionLinkManager *nextVisionLinkManager READ nextVisionLinkManager CONSTANT)
     Q_PROPERTY(EpsilonLinkManager *epsilonLinkManager READ epsilonLinkManager CONSTANT)
+    Q_PROPERTY(CommtactLinkManager *commtactLinkManager READ commtactLinkManager CONSTANT)
+    Q_PROPERTY(CommtactLinkManagement *commtactLinkManagement READ commtactLinkManagement CONSTANT)
     Q_PROPERTY(MultiVehicleManager *multiVehicleManager READ multiVehicleManager CONSTANT)
     Q_PROPERTY(QGCMapEngineManager *mapEngineManager READ mapEngineManager CONSTANT)
     Q_PROPERTY(QGCPositionManager *qgcPositionManger READ qgcPositionManger CONSTANT)
@@ -183,6 +185,14 @@ class QGroundControlQmlGlobal : public QGCTool
     EpsilonLinkManager *epsilonLinkManager()
     {
         return _epsilonLinkManager;
+    }
+    CommtactLinkManager *commtactLinkManager()
+    {
+        return _commtactLinkManager;
+    }
+    CommtactLinkManagement *commtactLinkManagement()
+    {
+        return _commtactLinkManagement;
     }
     MultiVehicleManager *multiVehicleManager()
     {
@@ -407,6 +417,8 @@ class QGroundControlQmlGlobal : public QGCTool
     LinkManager *_linkManager = nullptr;
     NextVisionLinkManager *_nextVisionLinkManager = nullptr;
     EpsilonLinkManager *_epsilonLinkManager = nullptr;
+    CommtactLinkManager *_commtactLinkManager = nullptr;
+    CommtactLinkManagement *_commtactLinkManagement = nullptr;
     MultiVehicleManager *_multiVehicleManager = nullptr;
     QGCMapEngineManager *_mapEngineManager = nullptr;
     QGCPositionManager *_qgcPositionManager = nullptr;

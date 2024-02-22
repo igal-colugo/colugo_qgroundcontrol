@@ -428,6 +428,13 @@ contains (DEFINES, QGC_ENABLE_PAIRING) {
 #
 
 HEADERS += \
+    src/Commtact/CommtactLinkConfiguration.h \
+    src/Commtact/CommtactLinkInterface.h \
+    src/Commtact/CommtactLinkManagement.h \
+    src/Commtact/CommtactLinkManager.h \
+    src/Commtact/CommtactLinkProtocol.h \
+    src/Commtact/CommtactTCPLink.h \
+    src/Commtact/CommtactUDPLink.h \
     src/Epsilon/EpsilonCameraManagement.h \
     src/Epsilon/EpsilonLinkConfiguration.h \
     src/Epsilon/EpsilonLinkInterface.h \
@@ -456,6 +463,13 @@ contains (DEFINES, QGC_ENABLE_PAIRING) {
 }
 
 SOURCES += \
+    src/Commtact/CommtactLinkConfiguration.cc \
+    src/Commtact/CommtactLinkInterface.cc \
+    src/Commtact/CommtactLinkManagement.cc \
+    src/Commtact/CommtactLinkManager.cc \
+    src/Commtact/CommtactLinkProtocol.cc \
+    src/Commtact/CommtactTCPLink.cc \
+    src/Commtact/CommtactUDPLink.cc \
     src/Epsilon/EpsilonCameraManagement.cc \
     src/Epsilon/EpsilonLinkConfiguration.cc \
     src/Epsilon/EpsilonLinkInterface.cc \
@@ -1553,6 +1567,7 @@ contains (CONFIG, QGC_DISABLE_INSTALLER_SETUP) {
 }
 
 DISTFILES += \
+    src/Commtact/CMakeLists.txt \
     src/Epsilon/CMakeLists.txt \
     src/NextVision/CMakeLists.txt \
     src/NextVisionCamera/CMakeLists.txt \

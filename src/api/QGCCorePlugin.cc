@@ -49,6 +49,8 @@ class QGCCorePlugin_p
             delete pNextVisionLinks;
         if (pEpsilonLinks)
             delete pEpsilonLinks;
+        if (pCommtactLinks)
+            delete pCommtactLinks;
         if (pOfflineMaps)
             delete pOfflineMaps;
 #if defined(QGC_GST_TAISYNC_ENABLED)
@@ -83,6 +85,7 @@ class QGCCorePlugin_p
     QmlComponentInfo *pCommLinks = nullptr;
     QmlComponentInfo *pNextVisionLinks = nullptr;
     QmlComponentInfo *pEpsilonLinks = nullptr;
+    QmlComponentInfo *pCommtactLinks = nullptr;
     QmlComponentInfo *pOfflineMaps = nullptr;
 #if defined(QGC_GST_TAISYNC_ENABLED)
     QmlComponentInfo *pTaisync = nullptr;
@@ -151,6 +154,12 @@ QVariantList &QGCCorePlugin::settingsPages()
         {
             _p->pEpsilonLinks = new QmlComponentInfo(tr("Epsilon"), QUrl::fromUserInput("qrc:/qml/EpsilonLinkSettings.qml"), QUrl::fromUserInput("qrc:/res/waves.svg"));
             _p->settingsList.append(QVariant::fromValue(reinterpret_cast<QmlComponentInfo *>(_p->pEpsilonLinks)));
+        }
+        int commtactUsed = 1; // qgcApp()->toolbox()->settingsManager()->appSettings()->enableCommtact()->rawValue().toInt();
+        if (commtactUsed > 0)
+        {
+            _p->pCommtactLinks = new QmlComponentInfo(tr("Commtact"), QUrl::fromUserInput("qrc:/qml/CommtactLinkSettings.qml"), QUrl::fromUserInput("qrc:/res/waves.svg"));
+            _p->settingsList.append(QVariant::fromValue(reinterpret_cast<QmlComponentInfo *>(_p->pCommtactLinks)));
         }
 
         _p->pOfflineMaps = new QmlComponentInfo(tr("Offline Maps"), QUrl::fromUserInput("qrc:/qml/OfflineMap.qml"), QUrl::fromUserInput("qrc:/res/waves.svg"));

@@ -34,6 +34,7 @@
 
 #include "AutoPilotPlugin.h"
 #include "CmdLineOptParser.h"
+#include "Commtact/CommtactLinkManager.h"
 #include "ESP8266ComponentController.h"
 #include "Epsilon/EpsilonLinkManager.h"
 #include "FirmwarePluginManager.h"
@@ -279,8 +280,8 @@ QGCApplication::QGCApplication(int &argc, char *argv[], bool unitTesting) : QApp
     setOrganizationName(QGC_ORG_NAME);
     setOrganizationDomain(QGC_ORG_DOMAIN);
 
-    QString ORIGINAL_VER {APP_VERSION_STR};
-    QString COLUGO_VER {"\nColugo 1.0.4"};
+    QString ORIGINAL_VER{APP_VERSION_STR};
+    QString COLUGO_VER{"\nColugo 1.0.4"};
     this->setApplicationVersion(ORIGINAL_VER + COLUGO_VER);
 
     // Set settings format
@@ -610,6 +611,7 @@ bool QGCApplication::_initForNormalAppBoot()
     toolbox()->linkManager()->loadLinkConfigurationList();
     toolbox()->nextVisionLinkManager()->loadLinkConfigurationList();
     toolbox()->epsilonLinkManager()->loadLinkConfigurationList();
+    toolbox()->commtactLinkManager()->loadLinkConfigurationList();
 
     // Probe for joysticks
     toolbox()->joystickManager()->init();
