@@ -18,6 +18,9 @@
 #include <iostream>
 
 #include "CommtactUDPLink.h"
+#include "QGC.h"
+#include "QGCApplication.h"
+#include "SettingsManager.h"
 
 static bool is_ip(const QString &address)
 {
@@ -191,9 +194,9 @@ void CommtactUDPLink::readBytes()
         }
         databuffer.append(datagram);
         //-- Wait a bit before sending it over
-        if (databuffer.size() > 10 * 1024)
+        if (databuffer.size() > 127)
         {
-            emit bytesReceived(this, databuffer);
+            // emit bytesReceived(this, databuffer);
             databuffer.clear();
         }
         // TODO: This doesn't validade the sender. Anything sending UDP packets to this port gets
@@ -451,22 +454,22 @@ void CommtactUDPConfiguration::saveSettings(QSettings &settings, const QString &
 
 void CommtactUDPConfiguration::loadSettings(QSettings &settings, const QString &root)
 {
-    //    AutoConnectSettings *acSettings = qgcApp()->toolbox()->settingsManager()->autoConnectSettings();
-    //    _clearTargetHosts();
-    //    settings.beginGroup(root);
-    //    _localPort = (quint16) settings.value("port", acSettings->udpListenPort()->rawValue().toInt()).toUInt();
-    //    int hostCount = settings.value("hostCount", 0).toInt();
-    //    for (int i = 0; i < hostCount; i++)
-    //    {
-    //        QString hkey = QString("host%1").arg(i);
-    //        QString pkey = QString("port%1").arg(i);
-    //        if (settings.contains(hkey) && settings.contains(pkey))
-    //        {
-    //            addHost(settings.value(hkey).toString(), settings.value(pkey).toUInt());
-    //        }
-    //    }
-    //    settings.endGroup();
-    //    _updateHostList();
+    AutoConnectSettings *acSettings = qgcApp()->toolbox()->settingsManager()->autoConnectSettings();
+    _clearTargetHosts();
+    settings.beginGroup(root);
+    _localPort = (quint16) settings.value("port", acSettings->udpListenPort()->rawValue().toInt()).toUInt();
+    int hostCount = settings.value("hostCount", 0).toInt();
+    for (int i = 0; i < hostCount; i++)
+    {
+        QString hkey = QString("host%1").arg(i);
+        QString pkey = QString("port%1").arg(i);
+        if (settings.contains(hkey) && settings.contains(pkey))
+        {
+            addHost(settings.value(hkey).toString(), settings.value(pkey).toUInt());
+        }
+    }
+    settings.endGroup();
+    _updateHostList();
 }
 
 void CommtactUDPConfiguration::_updateHostList()

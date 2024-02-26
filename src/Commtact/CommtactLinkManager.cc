@@ -14,6 +14,7 @@
 
 #include <memory>
 
+#include "CommtactLinkManagement.h"
 #include "CommtactLinkManager.h"
 #include "CommtactTCPLink.h"
 #include "CommtactUDPLink.h"
@@ -84,6 +85,7 @@ bool CommtactLinkManager::createConnectedLink(SharedCommtactLinkConfigurationPtr
         connect(link.get(), &CommtactLinkInterface::bytesReceived, _linkProtocol, &CommtactLinkProtocol::receiveBytes);
         connect(link.get(), &CommtactLinkInterface::bytesSent, _linkProtocol, &CommtactLinkProtocol::logSentBytes);
         connect(link.get(), &CommtactLinkInterface::disconnected, this, &CommtactLinkManager::_linkDisconnected);
+        connect(_linkProtocol, &CommtactLinkProtocol::messageReceived, this->_toolbox->commtactLinkManagement(), &CommtactLinkManagement::_commtactLinkMessageReceived);
 
         if (!link->_connect())
         {

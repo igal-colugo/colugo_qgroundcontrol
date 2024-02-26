@@ -56,50 +56,20 @@ class CommtactLinkProtocol : public QGCTool
     Q_OBJECT
 
   public:
+    PACKED_STRUCT(typedef struct __commtact_link_message_header {
+        uint8_t time_stamp[4]; ///< protocol magic marker
+        uint8_t seq_num[2];    ///< ID of device
+        uint8_t opcode;        ///< ID of message in payload
+    })
+    commtact_link_message_header_t;
+
     PACKED_STRUCT(typedef struct __commtact_link_message {
-        uint8_t magic[2];        ///< protocol magic marker
-        uint8_t device_id;       ///< ID of device
-        uint8_t message_id;      ///< ID of message in payload
-        uint8_t length;          ///< Length of payload
-        uint8_t header_checksum; ///< Header checksum
+        uint8_t time_stamp[4]; ///< protocol magic marker
+        uint8_t seq_num[2];    ///< ID of device
+        uint8_t opcode;        ///< ID of message in payload
         uint64_t payload64[COMMTACT_LINK_MAX_PAYLOAD_LEN / 8];
-        uint8_t checksum;   ///< Data checksum
-        uint8_t terminator; ///< Terminator
     })
     commtact_link_message_t;
-
-    PACKED_STRUCT(typedef struct __commtact_link_zero_length_message {
-        uint8_t magic[2];        ///< protocol magic marker
-        uint8_t device_id;       ///< ID of device
-        uint8_t message_id;      ///< ID of message in payload
-        uint8_t length;          ///< Length of payload
-        uint8_t header_checksum; ///< Header checksum
-        uint8_t terminator;      ///< Terminator
-    })
-    commtact_link_zero_length_message_t;
-
-    PACKED_STRUCT(typedef struct __commtact_rate_control_message {
-        int8_t pan_speed;
-        int8_t tilt_speed;
-        int8_t nudge_column;
-        int8_t nudge_raw;
-        int8_t optical_zoom_speed;
-        int8_t focus_adjustment;
-        int16_t geo_dted;
-    })
-    commtact_rate_control_message_t;
-
-    PACKED_STRUCT(typedef struct __commtact_digital_zoom_message { int8_t digital_zoom; })
-    commtact_digital_zoom_message_t;
-
-    PACKED_STRUCT(typedef struct __commtact_on_screen_information_message { uint16_t switch_flags; })
-    commtact_on_screen_information_message_t;
-
-    PACKED_STRUCT(typedef struct __commtact_camera_order_message { uint8_t order; })
-    commtact_camera_order_message_t;
-
-    PACKED_STRUCT(typedef struct __commtact_focus_mode_message { uint8_t switch_mode; })
-    commtact_focus_mode_message_t;
 
     PACKED_STRUCT(typedef struct __commtact_control_mode_message {
         int8_t mode;
@@ -146,38 +116,55 @@ class CommtactLinkProtocol : public QGCTool
     })
     commtact_global_status_t;
 
-    PACKED_STRUCT(typedef struct __commtact_do_snapshot_message {
-        uint8_t frame_step;
-        uint8_t number_of_snapshots;
-        uint8_t source;
-        uint8_t format;
-        uint8_t metadata;
-        uint8_t file_name[32];
+    PACKED_STRUCT(typedef struct __commtact_gdt_operational_modes_report {
+        uint8_t transmitter_operational_mode;
+        uint8_t gdt_pedestal_track_mode;
+        uint8_t gdt_antenna_select;
+        uint8_t reserved_1;
+        uint8_t reserved_2;
+        uint8_t reserved_3;
+        uint8_t frequency_mode;
+        uint8_t reserved_4;
+        uint16_t azimuth_position;
+        int16_t elevation_position;
+        uint8_t reserved_5;
+        uint32_t reserved_6;
+        uint8_t tdd_operational_mode;
+        uint8_t aes_encryption;
+        uint8_t reserved_7;
+        uint8_t bit;
+        uint8_t unit_mode;
     })
-    commtact_do_snapshot_message_t;
+    commtact_gdt_operational_modes_report_t;
 
-    PACKED_STRUCT(typedef struct __commtact_video_recording_message {
-        uint8_t recording_state;
-        uint8_t file_name[32];
+    PACKED_STRUCT(typedef struct __commtact_gdt_operational_mode {
+        uint8_t transmitter_operational_mode;
+        uint8_t gdt_pedestal_track_mode;
+        uint8_t gdt_antenna_select;
+        uint16_t set_azimuth;
+        int16_t set_elevation;
+        uint8_t frequency_mode;
+        uint8_t reserved_1;
+        uint8_t tdd_operational_mode;
+        uint8_t aes_encryption;
+        uint8_t reserved_2;
+        uint8_t symbol_rate;
+        uint8_t unit_mode;
     })
-    commtact_video_recording_message_t;
+    commtact_gdt_operational_mode_t;
 
     typedef enum
     {
         COMMTACT_LINK_PARSE_STATE_UNINIT = 0,
         COMMTACT_LINK_PARSE_STATE_IDLE,
-        COMMTACT_LINK_PARSE_STATE_GOT_STX_1,
-        COMMTACT_LINK_PARSE_STATE_GOT_STX_2,
-        COMMTACT_LINK_PARSE_STATE_GOT_DEVICE_ID,
-        COMMTACT_LINK_PARSE_STATE_GOT_MESSAGE_ID,
-        COMMTACT_LINK_PARSE_STATE_GOT_LENGTH,
-        COMMTACT_LINK_PARSE_STATE_GOT_HEADER_CRC,
-        COMMTACT_LINK_PARSE_STATE_GOT_PAYLOAD,
-        COMMTACT_LINK_PARSE_STATE_GOT_CRC,
-        COMMTACT_LINK_PARSE_STATE_GOT_TERMINATOR,
-        COMMTACT_LINK_PARSE_STATE_GOT_BAD_CRC,
-        COMMTACT_LINK_PARSE_STATE_GOT_BAD_HEADER_CRC,
-        COMMTACT_LINK_PARSE_STATE_GOT_BAD_TERMINATOR
+        COMMTACT_LINK_PARSE_STATE_GOT_TIME_STAMP_1,
+        COMMTACT_LINK_PARSE_STATE_GOT_TIME_STAMP_2,
+        COMMTACT_LINK_PARSE_STATE_GOT_TIME_STAMP_3,
+        COMMTACT_LINK_PARSE_STATE_GOT_TIME_STAMP_4,
+        COMMTACT_LINK_PARSE_STATE_GOT_SEQ_NUM_1,
+        COMMTACT_LINK_PARSE_STATE_GOT_SEQ_NUM_2,
+        COMMTACT_LINK_PARSE_STATE_GOT_OPCODE,
+        COMMTACT_LINK_PARSE_STATE_GOT_DATA
     } commtact_link_parse_state_t; ///< The state machine for the comm parser
 
     typedef struct __commtact_link_status
@@ -197,35 +184,17 @@ class CommtactLinkProtocol : public QGCTool
     typedef enum
     {
         COMMTACT_LINK_FRAMING_INCOMPLETE = 0,
-        COMMTACT_LINK_FRAMING_OK = 1,
-        COMMTACT_LINK_FRAMING_BAD_CRC = 2,
-        COMMTACT_LINK_FRAMING_BAD_SIGNATURE = 3
+        COMMTACT_LINK_FRAMING_OK = 1
     } commtact_link_framing_t;
-
-    typedef struct __commtact_link_msg_entry
-    {
-        uint32_t msgid;
-        uint8_t crc_extra;
-        uint8_t min_msg_len;          // minimum message length
-        uint8_t max_msg_len;          // maximum message length (e.g. including mavlink2 extensions)
-        uint8_t flags;                // MAV_MSG_ENTRY_FLAG_*
-        uint8_t target_system_ofs;    // payload offset to target_system, or 0
-        uint8_t target_component_ofs; // payload offset to target_component, or 0
-    } commtact_link_msg_entry_t;
 
     typedef enum
     {
-        COMMTACT_NO_CHANGE = 0,
-        COMMTACT_RATE,
-        COMMTACT_RATE_AID,
-        COMMTACT_TRACKING_STATIONARY,
-        COMMTACT_TRACKING_VEHICLE,
-        COMMTACT_TRACKING_SCENE,
-        COMMTACT_TRACKING_STATIC,
-        COMMTACT_GEO_LOCK,
-        COMMTACT_STOW,
-        COMMTACT_PILOT
-    } commtact_control_mode_t; ///< The state machine for the comm parser
+        GDT_OPERATIONAL_MODE_SET = 0x01,
+        GDT_OPERATIONAL_MODES_REPORT = 0X80,
+        GDT_STATUS_REPORT = 0X81,
+        GDT_MISSION_ADT_STATUS_REPORT = 0X82,
+        GDT_PBIT_REPORT = 0X86
+    } commtact_link_opcode_t;
 
   public:
     CommtactLinkProtocol(QGCApplication *app, QGCToolbox *toolbox);
@@ -245,26 +214,15 @@ class CommtactLinkProtocol : public QGCTool
     // Override from QGCTool
     virtual void setToolbox(QGCToolbox *toolbox);
 
-    uint16_t commtact_link_msg_rate_control_pack(CommtactLinkProtocol::commtact_link_message_t *msg, int8_t pan_speed, int8_t tilt_speed, int8_t nudge_column, int8_t nudge_raw,
-                                                 int8_t optical_zoom_speed, int8_t focus_adjustment, int16_t geo_dted);
-
     uint16_t commtact_link_msg_control_mode_pack(CommtactLinkProtocol::commtact_link_message_t *msg, uint8_t mode, uint16_t pixel_pos_x, uint16_t pixel_pos_y, uint8_t box_sizes,
                                                  uint8_t tracking_advanced, uint8_t options);
 
-    uint16_t commtact_link_msg_digital_zoom_pack(CommtactLinkProtocol::commtact_link_message_t *msg, uint8_t digital_zoom);
+    uint16_t commtact_link_msg_operational_mode_pack(CommtactLinkProtocol::commtact_link_message_t *msg, uint8_t transmitter_operational_mode, uint8_t pedestal_track__mode,
+                                                     uint8_t gdt_antenna_select, uint16_t set_azimuth, int16_t set_elevation, uint8_t frequency_mode, uint8_t reserved_1,
+                                                     uint8_t tdd_operational_mode, uint8_t aes_encryption_enable, uint8_t reserved_2, uint8_t bit, uint8_t unit_mode);
 
-    uint16_t commtact_link_msg_on_screen_information_pack(CommtactLinkProtocol::commtact_link_message_t *msg, uint16_t switch_flags);
-
-    uint16_t commtact_link_msg_camera_order_pack(CommtactLinkProtocol::commtact_link_message_t *msg, uint8_t order);
-
-    uint16_t commtact_link_msg_focus_mode_pack(CommtactLinkProtocol::commtact_link_message_t *msg, uint8_t switch_mode);
-
-    uint16_t commtact_link_msg_to_send_buffer(uint8_t *buf, const CommtactLinkProtocol::commtact_link_message_t *msg);
-
-    uint16_t commtact_link_msg_do_snapshot_pack(CommtactLinkProtocol::commtact_link_message_t *msg, uint8_t frame_step, uint8_t number_of_snapshots, uint8_t source, uint8_t format,
-                                                uint8_t metadata, uint8_t file_name[32]);
-
-    uint16_t commtact_link_msg_video_recording_pack(CommtactLinkProtocol::commtact_link_message_t *msg, uint8_t recording_state, uint8_t file_name[32]);
+    uint16_t commtact_link_msg_to_send_buffer(uint8_t *buf, const CommtactLinkProtocol::commtact_link_message_t *msg, uint32_t payload_size);
+    void commtact_link_msg_operational_modes_report_decode(const commtact_link_message_t *msg, commtact_gdt_operational_modes_report_t *operational_modes_report);
 
   public slots:
     /** @brief Receive bytes from a communication interface */
@@ -296,7 +254,7 @@ class CommtactLinkProtocol : public QGCTool
   signals:
 
     /** @brief Message received and directly copied via signal */
-    void messageReceived(CommtactLinkInterface *link, mavlink_message_t message);
+    void messageReceived(CommtactLinkInterface *link, commtact_link_message_t message);
 
     /// Emitted when a temporary telemetry log file is ready for saving
     void saveTelemetryLog(QString tempLogfile);
@@ -328,19 +286,16 @@ class CommtactLinkProtocol : public QGCTool
 
     CommtactLinkManager *_linkMgr;
 
-    uint8_t _commtact_link_parse_char(uint8_t c, commtact_link_message_t *r_message, commtact_link_status_t *r_mavlink_status);
-    uint8_t _commtact_link_frame_char(uint8_t c, commtact_link_message_t *r_message, commtact_link_status_t *r_mavlink_status);
-    uint8_t _commtact_link_frame_char_buffer(commtact_link_message_t *rxmsg, commtact_link_status_t *status, uint8_t c);
+    uint8_t _commtact_link_parse_char(uint8_t c, int buffer_size, commtact_link_message_t *r_message, commtact_link_status_t *r_mavlink_status);
+    uint8_t _commtact_link_frame_char(uint8_t c, int buffer_size, commtact_link_message_t *r_message, commtact_link_status_t *r_mavlink_status);
+    uint8_t _commtact_link_frame_char_buffer(commtact_link_message_t *rxmsg, int buffer_size, commtact_link_status_t *status, uint8_t c);
     void _commtact_link_start_checksum(commtact_link_message_t *msg);
-    void _commtact_link_start_header_checksum(commtact_link_message_t *msg);
     void _crc_init(uint8_t *crcAccum);
     void _commtact_parse_error(commtact_link_status_t *status);
     void _commtact_link_update_checksum(commtact_link_message_t *msg, uint8_t c);
-    void _commtact_link_update_header_checksum(commtact_link_message_t *msg, uint8_t c);
     void _crc_accumulate(uint8_t data, uint8_t *crcAccum);
     uint8_t _check_sum_calculation(uint8_t *data, int8_t length);
 
-    void _commtact_link_msg_global_status_decode(const commtact_link_message_t *msg, commtact_global_status_t *global_status);
     void _swap_bytes(uint16_t *data);
     void _swap_bytes(uint32_t *data);
 };

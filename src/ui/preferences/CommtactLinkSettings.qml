@@ -22,13 +22,23 @@ Rectangle {
     id: _linkRoot
     color: qgcPal.window
     anchors.fill: parent
-    anchors.margins: ScreenTools.defaultFontPixelWidth
+    anchors.margins: 2
 
     property var _currentSelection: null
     property int _firstColumnWidth: ScreenTools.defaultFontPixelWidth * 12
     property int _secondColumnWidth: ScreenTools.defaultFontPixelWidth * 30
     property int _rowSpacing: ScreenTools.defaultFontPixelHeight / 2
     property int _colSpacing: ScreenTools.defaultFontPixelWidth / 2
+
+    property int gdtRowHeight: (parent.height / 3
+                                - (gdtGrid.rows * gdtGrid.rowSpacing)) / (gdtGrid.rows)
+    property int gdtColumnWidth: (parent.width - (gdtGrid.columns * gdtGrid.columnSpacing))
+                                 / (gdtGrid.columns)
+
+    property int adtRowHeight: (parent.height / 3
+                                - (adtGrid.rows * adtGrid.rowSpacing)) / (adtGrid.rows)
+    property int adtColumnWidth: (parent.width - (adtGrid.columns * adtGrid.columnSpacing))
+                                 / (adtGrid.columns)
 
     QGCPalette {
         id: qgcPal
@@ -58,167 +68,471 @@ Rectangle {
         }
     }
 
-    //-- Header
+    //---------------- GDT settings -------------------
     Rectangle {
-        id: _header
+        id: _gdtSettings
         width: parent.width
-        height: (parent.height - buttonRow.height) / 2
+        height: (parent.height - buttonRow.height) / 3
         color: qgcPal.window
         anchors.top: parent.top
+        border.width: 2
+        border.color: "White"
 
         QGCFlickable {
             clip: true
             anchors.fill: parent
             anchors.margins: ScreenTools.defaultFontPixelWidth
-            contentHeight: settingsColumn_0.height
-            contentWidth: settingsColumn_0.width
             flickableDirection: Flickable.VerticalFlick
 
-            Column {
-                id: settingsColumn_0
-                width: _header.width
-                spacing: ScreenTools.defaultFontPixelHeight * 0.5
-                anchors.margins: ScreenTools.defaultFontPixelWidth
-                //-----------------------------------------------------------------
-                //-- GDT settings
-                Item {
-                    width: _header.width * 0.8
-                    height: gdtLabel.height
-                    anchors.margins: ScreenTools.defaultFontPixelWidth
-                    anchors.horizontalCenter: parent.horizontalCenter
-                    QGCLabel {
-                        id: gdtLabel
-                        text: qsTr("GDT settings")
-                        font.family: ScreenTools.demiboldFontFamily
-                    }
-                }
-                Rectangle {
-                    height: gdtColumn.height + (ScreenTools.defaultFontPixelHeight * 2)
-                    width: _header.width * 0.8
-                    color: qgcPal.windowShade
-                    anchors.margins: ScreenTools.defaultFontPixelWidth
-                    anchors.horizontalCenter: parent.horizontalCenter
+            GridLayout {
+                id: gdtGrid
 
-                    Column {
-                        id: gdtColumn
-                        spacing: ScreenTools.defaultFontPixelWidth
-                        anchors.centerIn: parent
-                        Row {
-                            spacing: ScreenTools.defaultFontPixelWidth
-                            QGCLabel {
-                                width: 200
-                                anchors.baseline: gdtFreq.baseline
-                                text: qsTr("Frequency:")
-                            }
-                            QGCTextField {
-                                id: gdtFreq
-                                text: QGroundControl.mavlinkSystemID.toString()
-                                width: 100
-                                inputMethodHints: Qt.ImhFormattedNumbersOnly
-                                anchors.verticalCenter: parent.verticalCenter
-                                onEditingFinished: {
-                                    saveItems()
-                                }
-                            }
-                            QGCButton {
-                                text: qsTr("SET")
-                                width: 100
-                                enabled: true
-                                onClicked: QGroundControl.commtactLinkManagement.setCameraModeCommand(
-                                               0)
-                                anchors.verticalCenter: parent.verticalCenter
-                            }
+                columns: 14
+                rows: 7
+                anchors.fill: parent
+                anchors.margins: 3
+                columnSpacing: 2
+                rowSpacing: 2
+
+                onWidthChanged: {
+                    console.log("Commtact gdt:", gdtGrid.width, gdtGrid.height)
+                }
+
+                QGCLabel {
+
+                    id: gdtMainlabel
+
+                    height: ScreenTools.defaultFontPixelHeight
+
+                    text: qsTr("GDT SETTINGS")
+                    font.family: ScreenTools.demiboldFontFamily
+                    color: "White"
+
+                    horizontalAlignment: Text.AlignHCenter
+                    verticalAlignment: Text.AlignVCenter
+
+                    Layout.alignment: Qt.AlignLeft | Qt.AlignTop
+                    Layout.columnSpan: 14
+                    Layout.fillHeight: false
+                    Layout.fillWidth: true
+                }
+                QGCLabel {
+
+                    height: ScreenTools.defaultFontPixelHeight
+
+                    text: {
+                        if (QGroundControl.commtactLinkManagement.transmitterOperationalMode
+                                === 0) {
+                            qsTr("TX OFF")
+                        } else if (QGroundControl.commtactLinkManagement.transmitterOperationalMode
+                                   === 1) {
+                            qsTr("TX HIGH")
+                        } else if (QGroundControl.commtactLinkManagement.transmitterOperationalMode
+                                   === 2) {
+                            qsTr("TX LOW")
+                        } else if (QGroundControl.commtactLinkManagement.transmitterOperationalMode
+                                   === 3) {
+                            qsTr("IBIT")
+                        } else if (QGroundControl.commtactLinkManagement.transmitterOperationalMode
+                                   === 124) {
+                            qsTr("24dBm")
+                        } else if (QGroundControl.commtactLinkManagement.transmitterOperationalMode
+                                   === 127) {
+                            qsTr("27dBm")
+                        } else {
+                            qsTr("NAN")
                         }
-
-                        //                        QGCCheckBox {
-                        //                            text: qsTr("Emit heartbeat")
-                        //                            checked: QGroundControl.multiVehicleManager.gcsHeartBeatEnabled
-                        //                            onClicked: {
-                        //                                QGroundControl.multiVehicleManager.gcsHeartBeatEnabled = checked
-                        //                            }
-                        //                        }
-
-                        //                        QGCCheckBox {
-                        //                            text: qsTr("Only accept MAVs with same protocol version")
-                        //                            checked: QGroundControl.isVersionCheckEnabled
-                        //                            onClicked: {
-                        //                                QGroundControl.isVersionCheckEnabled = checked
-                        //                            }
-                        //                        }
-
-                        //                        FactCheckBox {
-                        //                            id: mavlinkForwardingChecked
-                        //                            text: qsTr("Enable MAVLink forwarding")
-                        //                            fact: QGroundControl.settingsManager.appSettings.forwardMavlink
-                        //                            visible: QGroundControl.settingsManager.appSettings.forwardMavlink.visible
-                        //                        }
                     }
-                }
-
-                //-- ADT settings
-                Item {
-                    width: _header.width * 0.8
-                    height: adtLabel.height
-                    anchors.margins: ScreenTools.defaultFontPixelWidth
-                    anchors.horizontalCenter: parent.horizontalCenter
-                    QGCLabel {
-                        id: adtLabel
-                        text: qsTr("ADT settings")
-                        font.family: ScreenTools.demiboldFontFamily
-                    }
-                }
-                Rectangle {
-                    height: adtColumn.height + (ScreenTools.defaultFontPixelHeight * 2)
-                    width: _header.width * 0.8
-                    color: qgcPal.windowShade
-                    anchors.margins: ScreenTools.defaultFontPixelWidth
-                    anchors.horizontalCenter: parent.horizontalCenter
-
-                    Column {
-                        id: adtColumn
-                        spacing: ScreenTools.defaultFontPixelWidth
-                        anchors.centerIn: parent
-                        Row {
-                            spacing: ScreenTools.defaultFontPixelWidth
-                            QGCLabel {
-                                width: 200
-                                anchors.baseline: adtFreq.baseline
-                                text: qsTr("Frequency:")
-                            }
-                            QGCTextField {
-                                id: adtFreq
-                                text: QGroundControl.mavlinkSystemID.toString()
-                                width: 100
-                                inputMethodHints: Qt.ImhFormattedNumbersOnly
-                                anchors.verticalCenter: parent.verticalCenter
-                                onEditingFinished: {
-                                    saveItems()
-                                }
-                            }
+                    font.family: ScreenTools.demiboldFontFamily
+                    color: {
+                        if (QGroundControl.commtactLinkManagement.transmitterOperationalMode
+                                === 0) {
+                            "Red"
+                        } else if (QGroundControl.commtactLinkManagement.transmitterOperationalMode
+                                   === 1) {
+                            "Green"
+                        } else if (QGroundControl.commtactLinkManagement.transmitterOperationalMode
+                                   === 2) {
+                            "Yellow"
+                        } else if (QGroundControl.commtactLinkManagement.transmitterOperationalMode
+                                   === 3) {
+                            "Green"
+                        } else if (QGroundControl.commtactLinkManagement.transmitterOperationalMode
+                                   === 124) {
+                            "Green"
+                        } else if (QGroundControl.commtactLinkManagement.transmitterOperationalMode
+                                   === 127) {
+                            "Green"
+                        } else {
+                            "White"
                         }
+                    }
 
-                        //                        QGCCheckBox {
-                        //                            text: qsTr("Emit heartbeat")
-                        //                            checked: QGroundControl.multiVehicleManager.gcsHeartBeatEnabled
-                        //                            onClicked: {
-                        //                                QGroundControl.multiVehicleManager.gcsHeartBeatEnabled = checked
-                        //                            }
-                        //                        }
+                    horizontalAlignment: Text.AlignHCenter
+                    verticalAlignment: Text.AlignVCenter
 
-                        //                        QGCCheckBox {
-                        //                            text: qsTr("Only accept MAVs with same protocol version")
-                        //                            checked: QGroundControl.isVersionCheckEnabled
-                        //                            onClicked: {
-                        //                                QGroundControl.isVersionCheckEnabled = checked
-                        //                            }
-                        //                        }
+                    Layout.alignment: Qt.AlignLeft
+                    Layout.columnSpan: 2
+                    Layout.fillHeight: false
+                    Layout.fillWidth: true
+                }
 
-                        //                        FactCheckBox {
-                        //                            id: mavlinkForwardingChecked
-                        //                            text: qsTr("Enable MAVLink forwarding")
-                        //                            fact: QGroundControl.settingsManager.appSettings.forwardMavlink
-                        //                            visible: QGroundControl.settingsManager.appSettings.forwardMavlink.visible
-                        //                        }
+                QGCButton {
+
+                    id: _gdtTxLowButton
+
+                    showBorder: true
+                    text: qsTr("TX LOW")
+
+                    Layout.rowSpan: 1
+                    Layout.columnSpan: 2
+
+                    Layout.preferredHeight: gdtRowHeight
+                    Layout.preferredWidth: gdtColumnWidth * Layout.columnSpan
+                    Layout.fillWidth: false
+                    Layout.fillHeight: false
+                    Layout.alignment: Qt.AlignLeft
+
+                    onClicked: {
+                        QGroundControl.commtactLinkManagement.setGDTOperationalModeCommand(
+                                    2)
+                    }
+                }
+                QGCButton {
+
+                    id: _gdtTxHighButton
+
+                    showBorder: true
+                    text: qsTr("TX HIGH")
+
+                    Layout.rowSpan: 1
+                    Layout.columnSpan: 2
+
+                    Layout.preferredHeight: gdtRowHeight
+                    Layout.preferredWidth: gdtColumnWidth * Layout.columnSpan
+                    Layout.fillWidth: false
+                    Layout.fillHeight: false
+                    Layout.alignment: Qt.AlignLeft
+
+                    onClicked: {
+                        QGroundControl.commtactLinkManagement.setGDTOperationalModeCommand(
+                                    1)
+                    }
+                }
+                QGCButton {
+
+                    id: _gdtTxOffButton
+
+                    showBorder: true
+                    text: qsTr("TX OFF")
+
+                    Layout.rowSpan: 1
+                    Layout.columnSpan: 2
+
+                    Layout.preferredHeight: gdtRowHeight
+                    Layout.preferredWidth: gdtColumnWidth * Layout.columnSpan
+                    Layout.fillWidth: false
+                    Layout.fillHeight: false
+                    Layout.alignment: Qt.AlignLeft
+
+                    onClicked: {
+                        QGroundControl.commtactLinkManagement.setGDTOperationalModeCommand(
+                                    0)
+                    }
+                }
+                QGCButton {
+
+                    id: _gdtIbitButton
+
+                    showBorder: true
+                    text: qsTr("IBIT")
+
+                    Layout.rowSpan: 1
+                    Layout.columnSpan: 2
+
+                    Layout.preferredHeight: gdtRowHeight
+                    Layout.preferredWidth: gdtColumnWidth * Layout.columnSpan
+                    Layout.fillWidth: false
+                    Layout.fillHeight: false
+                    Layout.alignment: Qt.AlignLeft
+
+                    onClicked: {
+                        QGroundControl.commtactLinkManagement.setGDTOperationalModeCommand(
+                                    3)
+                    }
+                }
+                QGCButton {
+
+                    id: _gdt24dBmButton
+
+                    showBorder: true
+                    text: qsTr("24dBm")
+
+                    Layout.rowSpan: 1
+                    Layout.columnSpan: 2
+
+                    Layout.preferredHeight: gdtRowHeight
+                    Layout.preferredWidth: gdtColumnWidth * Layout.columnSpan
+                    Layout.fillWidth: false
+                    Layout.fillHeight: false
+                    Layout.alignment: Qt.AlignLeft
+
+                    onClicked: {
+                        QGroundControl.commtactLinkManagement.setGDTOperationalModeCommand(
+                                    124)
+                    }
+                }
+                QGCButton {
+
+                    id: _gdt27DbmButton
+
+                    showBorder: true
+                    text: qsTr("27dBm")
+
+                    Layout.rowSpan: 1
+                    Layout.columnSpan: 2
+
+                    Layout.preferredHeight: gdtRowHeight
+                    Layout.preferredWidth: gdtColumnWidth * Layout.columnSpan
+                    Layout.fillWidth: false
+                    Layout.fillHeight: false
+                    Layout.alignment: Qt.AlignLeft
+
+                    onClicked: {
+                        QGroundControl.commtactLinkManagement.setGDTOperationalModeCommand(
+                                    127)
+                    }
+                }
+
+                QGCLabel {
+
+                    id: _gdtSetCameraScreenInformationLabel
+
+                    height: ScreenTools.defaultFontPixelHeight
+
+                    text: qsTr("INFO")
+                    color: "White"
+
+                    horizontalAlignment: Text.AlignHCenter
+                    verticalAlignment: Text.AlignVCenter
+
+                    Layout.rowSpan: 1
+                    Layout.columnSpan: 4
+
+                    Layout.preferredHeight: gdtRowHeight
+                    Layout.preferredWidth: gdtColumnWidth * Layout.columnSpan
+                    Layout.fillWidth: false
+                    Layout.fillHeight: false
+                    Layout.alignment: Qt.AlignLeft
+                }
+                QGCTextField {
+
+                    id: _gdtSetCameraScreenInformationField
+
+                    Layout.rowSpan: 1
+                    Layout.columnSpan: 4
+
+                    Layout.preferredHeight: gdtRowHeight
+                    Layout.preferredWidth: gdtColumnWidth * Layout.columnSpan
+                    Layout.fillWidth: false
+                    Layout.fillHeight: false
+                    Layout.alignment: Qt.AlignLeft
+
+                    maximumLength: 4
+                    font.pointSize: ScreenTools.isMobile ? point_size : 9
+                    text: qsTr("2047")
+                }
+                QGCButton {
+
+                    id: _gdtSetCameraScreenInformationButton
+
+                    showBorder: true
+                    text: qsTr("SET")
+
+                    Layout.rowSpan: 1
+                    Layout.columnSpan: 4
+
+                    Layout.preferredHeight: gdtRowHeight
+                    Layout.preferredWidth: gdtColumnWidth * Layout.columnSpan
+                    Layout.fillWidth: false
+                    Layout.fillHeight: false
+                    Layout.alignment: Qt.AlignLeft
+
+                    onReleased: {
+                        if (parseInt(_gdtSetCameraScreenInformationField.text) >= 0
+                                && parseInt(
+                                    _gdtSetCameraScreenInformationField.text) <= 2047) {
+                            joystickManager.epsilonCameraManagement.setCameraScreenInformationCommand(
+                                        parseInt(
+                                            _gdtSetCameraScreenInformationField.text))
+                        }
+                    }
+                }
+            }
+        }
+    }
+    //---------------- ADT settings -------------------
+    Rectangle {
+        id: _adtSettings
+        width: parent.width
+        height: (parent.height - buttonRow.height) / 3
+        color: qgcPal.window
+        anchors.top: _gdtSettings.bottom
+        border.width: 2
+        border.color: "White"
+
+        QGCFlickable {
+            clip: true
+            anchors.fill: parent
+            anchors.margins: ScreenTools.defaultFontPixelWidth
+            flickableDirection: Flickable.VerticalFlick
+
+            GridLayout {
+                id: adtGrid
+
+                columns: 6
+                rows: 7
+                anchors.fill: parent
+                anchors.margins: 3
+                columnSpacing: 2
+                rowSpacing: 2
+
+                onWidthChanged: {
+                    console.log("Commtact adt:", adtGrid.width, adtGrid.height)
+                }
+
+                QGCLabel {
+
+                    id: adtMainlabel
+
+                    height: ScreenTools.defaultFontPixelHeight
+
+                    text: qsTr("GDT SETTINGS")
+                    font.family: ScreenTools.demiboldFontFamily
+                    color: "White"
+
+                    horizontalAlignment: Text.AlignHCenter
+                    verticalAlignment: Text.AlignVCenter
+
+                    Layout.alignment: Qt.AlignLeft | Qt.AlignTop
+                    Layout.columnSpan: 6
+                    Layout.fillHeight: false
+                    Layout.fillWidth: true
+                }
+                QGCLabel {
+
+                    height: ScreenTools.defaultFontPixelHeight
+
+                    text: qsTr("MODE")
+                    font.family: ScreenTools.demiboldFontFamily
+                    color: "White"
+
+                    horizontalAlignment: Text.AlignHCenter
+                    verticalAlignment: Text.AlignVCenter
+
+                    Layout.alignment: Qt.AlignLeft | Qt.AlignTop
+                    Layout.columnSpan: 2
+                    Layout.fillHeight: false
+                    Layout.fillWidth: true
+                }
+                QGCLabel {
+                    height: ScreenTools.defaultFontPixelHeight
+
+                    text: QGroundControl.commtactLinkManagement.transmitterOperationalMode
+                    font.family: ScreenTools.demiboldFontFamily
+                    color: "White"
+
+                    horizontalAlignment: Text.AlignHCenter
+                    verticalAlignment: Text.AlignVCenter
+
+                    Layout.alignment: Qt.AlignLeft | Qt.AlignTop
+                    Layout.columnSpan: 2
+                    Layout.fillHeight: false
+                    Layout.fillWidth: true
+                }
+                QGCButton {
+
+                    id: _adtTxOffButton
+
+                    showBorder: true
+                    text: qsTr("TX OFF")
+
+                    Layout.rowSpan: 1
+                    Layout.columnSpan: 2
+
+                    Layout.preferredHeight: adtRowHeight
+                    Layout.preferredWidth: adtColumnWidth * Layout.columnSpan
+                    Layout.fillWidth: false
+                    Layout.fillHeight: true
+                    Layout.alignment: Qt.AlignLeft
+
+                    onClicked: {
+                        QGroundControl.commtactLinkManagement.setGDTOperationalModeCommand(
+                                    0)
+                    }
+                }
+                QGCLabel {
+
+                    id: _adtSetCameraScreenInformationLabel
+
+                    height: ScreenTools.defaultFontPixelHeight
+
+                    text: qsTr("INFO")
+                    color: "White"
+
+                    horizontalAlignment: Text.AlignHCenter
+                    verticalAlignment: Text.AlignVCenter
+
+                    Layout.rowSpan: 1
+                    Layout.columnSpan: 2
+
+                    Layout.preferredHeight: adtRowHeight
+                    Layout.preferredWidth: adtColumnWidth * Layout.columnSpan
+                    Layout.fillWidth: false
+                    Layout.fillHeight: true
+                    Layout.alignment: Qt.AlignLeft
+                }
+                QGCTextField {
+
+                    id: _adtSetCameraScreenInformationField
+
+                    Layout.rowSpan: 1
+                    Layout.columnSpan: 2
+
+                    Layout.preferredHeight: adtRowHeight
+                    Layout.preferredWidth: adtColumnWidth * Layout.columnSpan
+                    Layout.fillWidth: false
+                    Layout.fillHeight: true
+                    Layout.alignment: Qt.AlignLeft
+
+                    maximumLength: 4
+                    font.pointSize: ScreenTools.isMobile ? point_size : 9
+                    text: qsTr("2047")
+                }
+                QGCButton {
+
+                    id: _adtSetCameraScreenInformationButton
+
+                    showBorder: true
+                    text: qsTr("SET")
+
+                    Layout.rowSpan: 1
+                    Layout.columnSpan: 2
+
+                    Layout.preferredHeight: adtRowHeight
+                    Layout.preferredWidth: adtColumnWidth * Layout.columnSpan
+                    Layout.fillWidth: false
+                    Layout.fillHeight: true
+                    Layout.alignment: Qt.AlignLeft
+
+                    onReleased: {
+                        if (parseInt(_adtSetCameraScreenInformationField.text) >= 0
+                                && parseInt(
+                                    _adtSetCameraScreenInformationField.text) <= 2047) {
+                            joystickManager.epsilonCameraManagement.setCameraScreenInformationCommand(
+                                        parseInt(
+                                            _adtSetCameraScreenInformationField.text))
+                        }
                     }
                 }
             }
@@ -229,9 +543,11 @@ Rectangle {
     Rectangle {
         id: _links
         width: parent.width
-        height: (parent.height - buttonRow.height) / 2
+        height: (parent.height - buttonRow.height) / 3
         color: qgcPal.window
-        anchors.top: _header.bottom
+        anchors.top: _adtSettings.bottom
+        border.width: 2
+        border.color: "White"
         //-------------------------------------------------------------------------
         QGCFlickable {
             clip: true

@@ -131,6 +131,8 @@ void CommtactLinkProtocol::logSentBytes(CommtactLinkInterface *link, QByteArray 
  **/
 void CommtactLinkProtocol::receiveBytes(CommtactLinkInterface *link, QByteArray b)
 {
+    int recieved_buffer_size = b.size();
+
     // Since receiveBytes signals cross threads we can end up with signals in the queue
     // that come through after the link is disconnected. For these we just drop the data
     // since the link is closed.
@@ -141,38 +143,31 @@ void CommtactLinkProtocol::receiveBytes(CommtactLinkInterface *link, QByteArray 
         return;
     }
 
-    for (int position = 0; position < b.size(); position++)
+    for (int position = 0; position < recieved_buffer_size; position++)
     {
-        if (_commtact_link_parse_char(static_cast<uint8_t>(b[position]), &_message, &_status))
+        if (_commtact_link_parse_char(static_cast<uint8_t>(b[position]), recieved_buffer_size, &_message, &_status))
         {
             // Got a valid message
             // Increase receive counter
             totalReceiveCounter++;
 
-            if (_message.message_id == COMMTACT_GLOBAL_STATUS_MSG_ID)
-            {
-                //_startLogging();
-                commtact_global_status_t global_status;
-                _commtact_link_msg_global_status_decode(&_message, &global_status);
-            }
+            //            if (_message.message_id == COMMTACT_GLOBAL_STATUS_MSG_ID)
+            //            {
+            //                //_startLogging();
+            //                commtact_global_status_t global_status;
+            //                _commtact_link_msg_global_status_decode(&_message, &global_status);
+            //            }
 
             // The packet is emitted as a whole
             // kind of inefficient, but no issue for a groundstation pc.
             // It buys as reentrancy for the whole code over all threads
-            //            emit messageReceived(link, _message);
+            emit messageReceived(link, _message);
 
             // Reset message parsing
             memset(&_status, 0, sizeof(_status));
             memset(&_message, 0, sizeof(_message));
         }
     }
-}
-
-void CommtactLinkProtocol::_commtact_link_msg_global_status_decode(const commtact_link_message_t *msg, commtact_global_status_t *global_status)
-{
-    uint8_t len = msg->length < COMMTACT_LINK_MSG_ID_GLOBAL_STATUS_LEN ? msg->length : COMMTACT_LINK_MSG_ID_GLOBAL_STATUS_LEN;
-    memset(global_status, 0, COMMTACT_LINK_MSG_ID_GLOBAL_STATUS_LEN);
-    memcpy(global_status, _COMMTACT_PAYLOAD(msg), len);
 }
 
 /**
@@ -298,188 +293,103 @@ void CommtactLinkProtocol::deleteTempLogFiles(void)
     }
 }
 
-uint8_t CommtactLinkProtocol::_commtact_link_parse_char(uint8_t c, commtact_link_message_t *r_message, commtact_link_status_t *r_mavlink_status)
+uint8_t CommtactLinkProtocol::_commtact_link_parse_char(uint8_t c, int buffer_size, commtact_link_message_t *r_message, commtact_link_status_t *r_mavlink_status)
 {
-    uint8_t msg_received = _commtact_link_frame_char(c, r_message, r_mavlink_status);
+    uint8_t msg_received = _commtact_link_frame_char(c, buffer_size, r_message, r_mavlink_status);
 
-    if (msg_received == COMMTACT_LINK_FRAMING_BAD_CRC || msg_received == COMMTACT_LINK_PARSE_STATE_GOT_BAD_TERMINATOR || msg_received == COMMTACT_LINK_PARSE_STATE_GOT_BAD_HEADER_CRC)
-    {
-        commtact_link_message_t *rxmsg = r_message;
-        commtact_link_status_t *status = r_mavlink_status;
+    //    if (msg_received == COMMTACT_LINK_FRAMING_BAD_CRC || msg_received == COMMTACT_LINK_PARSE_STATE_GOT_BAD_TERMINATOR || msg_received == COMMTACT_LINK_PARSE_STATE_GOT_BAD_HEADER_CRC)
+    //    {
+    //        commtact_link_message_t *rxmsg = r_message;
+    //        commtact_link_status_t *status = r_mavlink_status;
 
-        _commtact_parse_error(status);
+    //        _commtact_parse_error(status);
 
-        status->msg_received = COMMTACT_LINK_FRAMING_INCOMPLETE;
-        status->parse_state = COMMTACT_LINK_PARSE_STATE_IDLE;
-        if (c == COMMTACT_LINK_STX_1)
-        {
-            status->parse_state = COMMTACT_LINK_PARSE_STATE_GOT_STX_1;
-            rxmsg->length = 0;
-            _commtact_link_start_header_checksum(rxmsg);
-            _commtact_link_start_checksum(rxmsg);
-        }
+    //        status->msg_received = COMMTACT_LINK_FRAMING_INCOMPLETE;
+    //        status->parse_state = COMMTACT_LINK_PARSE_STATE_IDLE;
+    //        if (c == COMMTACT_LINK_STX_1)
+    //        {
+    //            status->parse_state = COMMTACT_LINK_PARSE_STATE_GOT_STX_1;
+    //            rxmsg->length = 0;
+    //            _commtact_link_start_header_checksum(rxmsg);
+    //            _commtact_link_start_checksum(rxmsg);
+    //        }
 
-        return 0;
-    }
+    //        return 0;
+    //    }
 
     return msg_received;
 }
 
-uint8_t CommtactLinkProtocol::_commtact_link_frame_char(uint8_t c, commtact_link_message_t *r_message, commtact_link_status_t *r_mavlink_status)
+uint8_t CommtactLinkProtocol::_commtact_link_frame_char(uint8_t c, int buffer_size, commtact_link_message_t *r_message, commtact_link_status_t *r_mavlink_status)
 {
-    return _commtact_link_frame_char_buffer(r_message, r_mavlink_status, c);
+    return _commtact_link_frame_char_buffer(r_message, buffer_size, r_mavlink_status, c);
 }
 
-uint8_t CommtactLinkProtocol::_commtact_link_frame_char_buffer(commtact_link_message_t *rxmsg, commtact_link_status_t *status, uint8_t c)
+uint8_t CommtactLinkProtocol::_commtact_link_frame_char_buffer(commtact_link_message_t *rxmsg, int buffer_size, commtact_link_status_t *status, uint8_t c)
 {
-    // int bufferIndex = 0;
-
     status->msg_received = COMMTACT_LINK_FRAMING_INCOMPLETE;
 
     switch (status->parse_state)
     {
     case COMMTACT_LINK_PARSE_STATE_UNINIT:
     case COMMTACT_LINK_PARSE_STATE_IDLE:
-        if (c == COMMTACT_LINK_STX_1)
-        {
-            status->parse_state = COMMTACT_LINK_PARSE_STATE_GOT_STX_1;
-            rxmsg->length = 0;
-            rxmsg->magic[0] = c;
-        }
+        status->parse_state = COMMTACT_LINK_PARSE_STATE_GOT_TIME_STAMP_1;
+        rxmsg->time_stamp[0] = c;
         break;
 
-    case COMMTACT_LINK_PARSE_STATE_GOT_STX_1:
-        if (c == COMMTACT_LINK_STX_2)
-        {
-            _commtact_link_start_header_checksum(rxmsg);
-
-            status->parse_state = COMMTACT_LINK_PARSE_STATE_GOT_STX_2;
-            rxmsg->magic[1] = c;
-        }
+    case COMMTACT_LINK_PARSE_STATE_GOT_TIME_STAMP_1:
+        status->parse_state = COMMTACT_LINK_PARSE_STATE_GOT_TIME_STAMP_2;
+        rxmsg->time_stamp[1] = c;
         break;
 
-    case COMMTACT_LINK_PARSE_STATE_GOT_STX_2:
-
-        _commtact_link_update_header_checksum(rxmsg, c);
-
-        status->parse_state = COMMTACT_LINK_PARSE_STATE_GOT_DEVICE_ID;
-        rxmsg->device_id = c;
-
+    case COMMTACT_LINK_PARSE_STATE_GOT_TIME_STAMP_2:
+        status->parse_state = COMMTACT_LINK_PARSE_STATE_GOT_TIME_STAMP_3;
+        rxmsg->time_stamp[2] = c;
         break;
 
-    case COMMTACT_LINK_PARSE_STATE_GOT_DEVICE_ID:
-
-        _commtact_link_update_header_checksum(rxmsg, c);
-
-        status->parse_state = COMMTACT_LINK_PARSE_STATE_GOT_MESSAGE_ID;
-        rxmsg->message_id = c;
-
+    case COMMTACT_LINK_PARSE_STATE_GOT_TIME_STAMP_3:
+        status->parse_state = COMMTACT_LINK_PARSE_STATE_GOT_TIME_STAMP_4;
+        rxmsg->time_stamp[3] = c;
         break;
 
-    case COMMTACT_LINK_PARSE_STATE_GOT_MESSAGE_ID:
-
-        _commtact_link_update_header_checksum(rxmsg, c);
-
-        rxmsg->length = c;
-        status->parse_state = COMMTACT_LINK_PARSE_STATE_GOT_LENGTH;
-
+    case COMMTACT_LINK_PARSE_STATE_GOT_TIME_STAMP_4:
+        status->parse_state = COMMTACT_LINK_PARSE_STATE_GOT_SEQ_NUM_1;
+        rxmsg->seq_num[0] = c;
         break;
 
-    case COMMTACT_LINK_PARSE_STATE_GOT_LENGTH:
-
-        if (rxmsg->header_checksum == c)
-        {
-            _commtact_link_start_checksum(rxmsg);
-
-            status->packet_idx = 0;
-            status->parse_state = COMMTACT_LINK_PARSE_STATE_GOT_HEADER_CRC;
-        }
-        else
-        {
-            status->parse_state = COMMTACT_LINK_PARSE_STATE_GOT_BAD_HEADER_CRC;
-        }
-
+    case COMMTACT_LINK_PARSE_STATE_GOT_SEQ_NUM_1:
+        status->parse_state = COMMTACT_LINK_PARSE_STATE_GOT_SEQ_NUM_2;
+        rxmsg->seq_num[1] = c;
         break;
 
-    case COMMTACT_LINK_PARSE_STATE_GOT_HEADER_CRC:
+    case COMMTACT_LINK_PARSE_STATE_GOT_SEQ_NUM_2:
+        status->parse_state = COMMTACT_LINK_PARSE_STATE_GOT_OPCODE;
+        rxmsg->opcode = c;
+        status->packet_idx = 0;
+        break;
 
-        _commtact_link_update_checksum(rxmsg, c);
+    case COMMTACT_LINK_PARSE_STATE_GOT_OPCODE:
 
         _COMMTACT_PAYLOAD_NON_CONST(rxmsg)[status->packet_idx++] = (char) c;
 
-        if (status->packet_idx == rxmsg->length)
+        if (status->packet_idx == buffer_size - 7 - 1)
         {
-            status->parse_state = COMMTACT_LINK_PARSE_STATE_GOT_PAYLOAD;
+            status->parse_state = COMMTACT_LINK_PARSE_STATE_GOT_DATA;
         }
 
         break;
 
-    case COMMTACT_LINK_PARSE_STATE_GOT_PAYLOAD:
-
-        if (c != rxmsg->checksum)
-        {
-            status->parse_state = COMMTACT_LINK_PARSE_STATE_GOT_BAD_CRC;
-        }
-        else
-        {
-            status->parse_state = COMMTACT_LINK_PARSE_STATE_GOT_TERMINATOR;
-        }
-
-        rxmsg->checksum = c;
+    case COMMTACT_LINK_PARSE_STATE_GOT_DATA:
 
         // zero-fill the packet to cope with short incoming packets
-        if (status->packet_idx < rxmsg->length)
-        {
-            memset(&_COMMTACT_PAYLOAD_NON_CONST(rxmsg)[status->packet_idx], 0, rxmsg->length - status->packet_idx);
-        }
+        //        if (status->packet_idx < rxmsg->length)
+        //        {
+        //            memset(&_COMMTACT_PAYLOAD_NON_CONST(rxmsg)[status->packet_idx], 0, buffer_size - status->packet_idx);
+        //        }
 
-        break;
-
-    case COMMTACT_LINK_PARSE_STATE_GOT_TERMINATOR: {
-
-        rxmsg->terminator = c;
-
-        if (rxmsg->terminator != COMMTACT_LINK_TERMINATOR)
-        {
-            status->parse_state = COMMTACT_LINK_PARSE_STATE_GOT_BAD_TERMINATOR;
-        }
-        else
-        {
-            // Successfully got message
-            status->msg_received = COMMTACT_LINK_FRAMING_OK;
-        }
-
-        break;
-    }
-
-    case COMMTACT_LINK_PARSE_STATE_GOT_CRC:
-    case COMMTACT_LINK_PARSE_STATE_GOT_BAD_CRC:
-        if (status->parse_state == COMMTACT_LINK_PARSE_STATE_GOT_BAD_CRC || c != (rxmsg->checksum))
-        {
-            // got a bad CRC message
-            status->msg_received = COMMTACT_LINK_FRAMING_BAD_CRC;
-        }
-        else
-        {
-            // Successfully got message
-            status->msg_received = COMMTACT_LINK_FRAMING_OK;
-        }
-
-        status->parse_state = COMMTACT_LINK_PARSE_STATE_IDLE;
-
-        break;
-
-    case COMMTACT_LINK_PARSE_STATE_GOT_BAD_HEADER_CRC:
-
-        // got a bad header CRC message
-        status->msg_received = COMMTACT_LINK_PARSE_STATE_GOT_BAD_HEADER_CRC;
-        status->parse_state = COMMTACT_LINK_PARSE_STATE_IDLE;
-
-        break;
-
-    case COMMTACT_LINK_PARSE_STATE_GOT_BAD_TERMINATOR:
-
-        status->msg_received = COMMTACT_LINK_PARSE_STATE_GOT_BAD_TERMINATOR;
+        // Successfully got message
+        status->packet_idx = 0;
+        status->msg_received = COMMTACT_LINK_FRAMING_OK;
         status->parse_state = COMMTACT_LINK_PARSE_STATE_IDLE;
 
         break;
@@ -506,14 +416,7 @@ void CommtactLinkProtocol::_commtact_link_start_checksum(commtact_link_message_t
 {
     uint8_t crcTmp = 0;
     _crc_init(&crcTmp);
-    msg->checksum = crcTmp;
-}
-
-void CommtactLinkProtocol::_commtact_link_start_header_checksum(commtact_link_message_t *msg)
-{
-    uint8_t crcTmp = 0;
-    _crc_init(&crcTmp);
-    msg->header_checksum = crcTmp;
+    // msg->checksum = crcTmp;
 }
 
 void CommtactLinkProtocol::_crc_init(uint8_t *crcAccum)
@@ -528,20 +431,11 @@ void CommtactLinkProtocol::_commtact_parse_error(commtact_link_status_t *status)
 
 void CommtactLinkProtocol::_commtact_link_update_checksum(commtact_link_message_t *msg, uint8_t c)
 {
-    uint8_t checksum = msg->checksum;
+    //    uint8_t checksum = msg->checksum;
 
-    _crc_accumulate(c, &checksum);
+    //    _crc_accumulate(c, &checksum);
 
-    msg->checksum = checksum;
-}
-
-void CommtactLinkProtocol::_commtact_link_update_header_checksum(commtact_link_message_t *msg, uint8_t c)
-{
-    uint8_t checksum = msg->header_checksum;
-
-    _crc_accumulate(c, &checksum);
-
-    msg->header_checksum = checksum;
+    //    msg->checksum = checksum;
 }
 
 void CommtactLinkProtocol::_crc_accumulate(uint8_t data, uint8_t *crcAccum)
@@ -596,62 +490,20 @@ void CommtactLinkProtocol::_swap_bytes(uint32_t *data)
     *(data) = temp;
 }
 
-uint16_t CommtactLinkProtocol::commtact_link_msg_rate_control_pack(CommtactLinkProtocol::commtact_link_message_t *msg, int8_t pan_speed, int8_t tilt_speed, int8_t nudge_column,
-                                                                   int8_t nudge_raw, int8_t optical_zoom_speed, int8_t focus_adjustment, int16_t geo_dted)
-{
-    CommtactLinkProtocol::commtact_rate_control_message_t packet = {};
-
-    msg->magic[0] = COMMTACT_LINK_STX_1;
-    msg->magic[1] = COMMTACT_LINK_STX_2;
-    msg->device_id = 0;
-    msg->message_id = 0x05;
-    msg->length = 8;
-    msg->terminator = 0xFF;
-
-    uint8_t data[3] = {};
-    data[0] = msg->device_id;
-    data[1] = msg->message_id;
-    data[2] = msg->length;
-
-    msg->header_checksum = _check_sum_calculation(&data[0], 3);
-
-    packet.pan_speed = pan_speed;
-    packet.tilt_speed = tilt_speed;
-    packet.nudge_column = nudge_column;
-    packet.nudge_raw = nudge_raw;
-    packet.optical_zoom_speed = optical_zoom_speed;
-    packet.focus_adjustment = focus_adjustment;
-    packet.geo_dted = geo_dted;
-
-    uint8_t payload[msg->length] = {};
-
-    memcpy(&payload, &packet, sizeof(packet));
-
-    msg->checksum = _check_sum_calculation(&payload[0], msg->length);
-
-    memcpy(_COMMTACT_PAYLOAD_NON_CONST(msg), &packet, sizeof(packet));
-
-    return 0;
-}
-
 uint16_t CommtactLinkProtocol::commtact_link_msg_control_mode_pack(CommtactLinkProtocol::commtact_link_message_t *msg, uint8_t mode, uint16_t pixel_pos_x, uint16_t pixel_pos_y,
                                                                    uint8_t box_sizes, uint8_t tracking_advanced, uint8_t options)
 {
     CommtactLinkProtocol::commtact_control_mode_message_t packet = {};
 
-    msg->magic[0] = COMMTACT_LINK_STX_1;
-    msg->magic[1] = COMMTACT_LINK_STX_2;
-    msg->device_id = 0;
-    msg->message_id = 0x14;
-    msg->length = 8;
-    msg->terminator = 0xFF;
+    msg->time_stamp[0] = 0;
+    msg->time_stamp[1] = 0;
+    msg->time_stamp[2] = 0;
+    msg->time_stamp[3] = 0;
 
-    uint8_t data[3] = {};
-    data[0] = msg->device_id;
-    data[1] = msg->message_id;
-    data[2] = msg->length;
+    msg->seq_num[0] = 0;
+    msg->seq_num[1] = 0;
 
-    msg->header_checksum = _check_sum_calculation(&data[0], 3);
+    msg->opcode = 0;
 
     packet.mode = mode;
     packet.pixel_pos_x = pixel_pos_x;
@@ -660,223 +512,70 @@ uint16_t CommtactLinkProtocol::commtact_link_msg_control_mode_pack(CommtactLinkP
     packet.tracking_advanced = tracking_advanced;
     packet.options = options;
 
-    uint8_t payload[msg->length] = {};
+    uint8_t payload[127] = {};
 
     memcpy(&payload, &packet, sizeof(packet));
-
-    msg->checksum = _check_sum_calculation(&payload[0], msg->length);
 
     memcpy(_COMMTACT_PAYLOAD_NON_CONST(msg), &packet, sizeof(packet));
 
     return 0;
 }
 
-uint16_t CommtactLinkProtocol::commtact_link_msg_digital_zoom_pack(CommtactLinkProtocol::commtact_link_message_t *msg, uint8_t digital_zoom)
+uint16_t CommtactLinkProtocol::commtact_link_msg_operational_mode_pack(CommtactLinkProtocol::commtact_link_message_t *msg, uint8_t transmitter_operational_mode, uint8_t pedestal_track__mode,
+                                                                       uint8_t gdt_antenna_select, uint16_t set_azimuth, int16_t set_elevation, uint8_t frequency_mode, uint8_t reserved_1,
+                                                                       uint8_t tdd_operational_mode, uint8_t aes_encryption_enable, uint8_t reserved_2, uint8_t symbol_rate,
+                                                                       uint8_t unit_mode)
 {
-    CommtactLinkProtocol::commtact_digital_zoom_message_t packet = {};
+    CommtactLinkProtocol::commtact_gdt_operational_mode_t packet = {};
 
-    msg->magic[0] = COMMTACT_LINK_STX_1;
-    msg->magic[1] = COMMTACT_LINK_STX_2;
-    msg->device_id = 0;
-    msg->message_id = 0x0B;
-    msg->length = 1;
-    msg->terminator = 0xFF;
+    msg->time_stamp[0] = 0;
+    msg->time_stamp[1] = 0;
+    msg->time_stamp[2] = 0;
+    msg->time_stamp[3] = 0;
 
-    uint8_t data[3] = {};
-    data[0] = msg->device_id;
-    data[1] = msg->message_id;
-    data[2] = msg->length;
+    msg->seq_num[0] = 0;
+    msg->seq_num[1] = 0;
 
-    msg->header_checksum = _check_sum_calculation(&data[0], 3);
+    msg->opcode = GDT_OPERATIONAL_MODE_SET;
 
-    packet.digital_zoom = digital_zoom;
+    packet.transmitter_operational_mode = transmitter_operational_mode;
+    packet.gdt_pedestal_track_mode = pedestal_track__mode;
+    packet.gdt_antenna_select = gdt_antenna_select;
+    packet.set_azimuth = set_azimuth;
+    packet.set_elevation = set_elevation;
+    packet.frequency_mode = frequency_mode;
+    packet.reserved_1 = reserved_1;
+    packet.tdd_operational_mode = tdd_operational_mode;
+    packet.aes_encryption = aes_encryption_enable;
+    packet.reserved_2 = reserved_2;
+    packet.symbol_rate = symbol_rate;
+    packet.unit_mode = unit_mode;
 
-    uint8_t payload[msg->length] = {};
+    uint8_t payload[sizeof(commtact_gdt_operational_mode_t)] = {};
 
-    memcpy(&payload, &packet, sizeof(packet));
-
-    msg->checksum = _check_sum_calculation(&payload[0], msg->length);
+    memcpy(&payload, &packet, sizeof(commtact_gdt_operational_mode_t));
 
     memcpy(_COMMTACT_PAYLOAD_NON_CONST(msg), &packet, sizeof(packet));
 
-    return 0;
+    return sizeof(commtact_gdt_operational_mode_t);
 }
 
-uint16_t CommtactLinkProtocol::commtact_link_msg_on_screen_information_pack(CommtactLinkProtocol::commtact_link_message_t *msg, uint16_t switch_flags)
+uint16_t CommtactLinkProtocol::commtact_link_msg_to_send_buffer(uint8_t *buf, const CommtactLinkProtocol::commtact_link_message_t *msg, uint32_t payload_size)
 {
-    CommtactLinkProtocol::commtact_on_screen_information_message_t packet = {};
+    buf[0] = msg->time_stamp[0];
+    buf[1] = msg->time_stamp[1];
+    buf[2] = msg->time_stamp[2];
+    buf[3] = msg->time_stamp[3];
+    buf[4] = msg->seq_num[0];
+    buf[5] = msg->seq_num[1];
+    buf[6] = msg->opcode;
+    memcpy(&buf[7], _COMMTACT_PAYLOAD(msg), payload_size);
 
-    msg->magic[0] = COMMTACT_LINK_STX_1;
-    msg->magic[1] = COMMTACT_LINK_STX_2;
-    msg->device_id = 0;
-    msg->message_id = 0x0C;
-    msg->length = 1;
-    msg->terminator = 0xFF;
-
-    uint8_t data[3] = {};
-    data[0] = msg->device_id;
-    data[1] = msg->message_id;
-    data[2] = msg->length;
-
-    msg->header_checksum = _check_sum_calculation(&data[0], 3);
-
-    packet.switch_flags = switch_flags;
-
-    uint8_t payload[msg->length] = {};
-
-    memcpy(&payload, &packet, sizeof(packet));
-
-    msg->checksum = _check_sum_calculation(&payload[0], msg->length);
-
-    memcpy(_COMMTACT_PAYLOAD_NON_CONST(msg), &packet, sizeof(packet));
-
-    return 0;
+    return 7 + payload_size;
 }
 
-uint16_t CommtactLinkProtocol::commtact_link_msg_camera_order_pack(CommtactLinkProtocol::commtact_link_message_t *msg, uint8_t order)
+void CommtactLinkProtocol::commtact_link_msg_operational_modes_report_decode(const commtact_link_message_t *msg, commtact_gdt_operational_modes_report_t *operational_modes_report)
 {
-    CommtactLinkProtocol::commtact_camera_order_message_t packet = {};
-
-    msg->magic[0] = COMMTACT_LINK_STX_1;
-    msg->magic[1] = COMMTACT_LINK_STX_2;
-    msg->device_id = 0;
-    msg->message_id = 0x1A;
-    msg->length = 1;
-    msg->terminator = 0xFF;
-
-    uint8_t data[3] = {};
-    data[0] = msg->device_id;
-    data[1] = msg->message_id;
-    data[2] = msg->length;
-
-    msg->header_checksum = _check_sum_calculation(&data[0], 3);
-
-    packet.order = order;
-
-    uint8_t payload[msg->length] = {};
-
-    memcpy(&payload, &packet, sizeof(packet));
-
-    msg->checksum = _check_sum_calculation(&payload[0], msg->length);
-
-    memcpy(_COMMTACT_PAYLOAD_NON_CONST(msg), &packet, sizeof(packet));
-
-    return 0;
-}
-
-uint16_t CommtactLinkProtocol::commtact_link_msg_focus_mode_pack(CommtactLinkProtocol::commtact_link_message_t *msg, uint8_t switch_mode)
-{
-    CommtactLinkProtocol::commtact_focus_mode_message_t packet = {};
-
-    msg->magic[0] = COMMTACT_LINK_STX_1;
-    msg->magic[1] = COMMTACT_LINK_STX_2;
-    msg->device_id = 0;
-    msg->message_id = 0x10;
-    msg->length = 1;
-    msg->terminator = 0xFF;
-
-    uint8_t data[3] = {};
-    data[0] = msg->device_id;
-    data[1] = msg->message_id;
-    data[2] = msg->length;
-
-    msg->header_checksum = _check_sum_calculation(&data[0], 3);
-
-    packet.switch_mode = switch_mode;
-
-    uint8_t payload[msg->length] = {};
-
-    memcpy(&payload, &packet, sizeof(packet));
-
-    msg->checksum = _check_sum_calculation(&payload[0], msg->length);
-
-    memcpy(_COMMTACT_PAYLOAD_NON_CONST(msg), &packet, sizeof(packet));
-
-    return 0;
-}
-
-uint16_t CommtactLinkProtocol::commtact_link_msg_do_snapshot_pack(CommtactLinkProtocol::commtact_link_message_t *msg, uint8_t frame_step, uint8_t number_of_snapshots, uint8_t source,
-                                                                  uint8_t format, uint8_t metadata, uint8_t file_name[32])
-{
-    CommtactLinkProtocol::commtact_do_snapshot_message_t packet = {};
-
-    msg->magic[0] = COMMTACT_LINK_STX_1;
-    msg->magic[1] = COMMTACT_LINK_STX_2;
-    msg->device_id = 0;
-    msg->message_id = 0x08;
-    msg->length = 37;
-    msg->terminator = 0xFF;
-
-    uint8_t data[3] = {};
-    data[0] = msg->device_id;
-    data[1] = msg->message_id;
-    data[2] = msg->length;
-
-    msg->header_checksum = _check_sum_calculation(&data[0], 3);
-
-    packet.frame_step = frame_step;
-    packet.number_of_snapshots = number_of_snapshots;
-    packet.source = source;
-    packet.format = format;
-    packet.metadata = metadata;
-
-    memcpy(&packet.file_name, &file_name, 32);
-
-    uint8_t payload[msg->length] = {};
-
-    memcpy(&payload, &packet, sizeof(packet));
-
-    msg->checksum = _check_sum_calculation(&payload[0], msg->length);
-
-    memcpy(_COMMTACT_PAYLOAD_NON_CONST(msg), &packet, sizeof(packet));
-
-    return 0;
-}
-
-uint16_t CommtactLinkProtocol::commtact_link_msg_video_recording_pack(CommtactLinkProtocol::commtact_link_message_t *msg, uint8_t recording_state, uint8_t file_name[32])
-{
-    CommtactLinkProtocol::commtact_video_recording_message_t packet = {};
-
-    msg->magic[0] = COMMTACT_LINK_STX_1;
-    msg->magic[1] = COMMTACT_LINK_STX_2;
-    msg->device_id = 0;
-    msg->message_id = 0x09;
-    msg->length = 33;
-    msg->terminator = 0xFF;
-
-    uint8_t data[3] = {};
-    data[0] = msg->device_id;
-    data[1] = msg->message_id;
-    data[2] = msg->length;
-
-    msg->header_checksum = _check_sum_calculation(&data[0], 3);
-
-    packet.recording_state = recording_state;
-
-    memcpy(&packet.file_name, &file_name, 32);
-
-    uint8_t payload[msg->length] = {};
-
-    memcpy(&payload, &packet, sizeof(packet));
-
-    msg->checksum = _check_sum_calculation(&payload[0], msg->length);
-
-    memcpy(_COMMTACT_PAYLOAD_NON_CONST(msg), &packet, sizeof(packet));
-
-    return 0;
-}
-
-uint16_t CommtactLinkProtocol::commtact_link_msg_to_send_buffer(uint8_t *buf, const CommtactLinkProtocol::commtact_link_message_t *msg)
-{
-    buf[0] = msg->magic[0];
-    buf[1] = msg->magic[1];
-    buf[2] = msg->device_id;
-    buf[3] = msg->message_id;
-    buf[4] = msg->length;
-    buf[5] = msg->header_checksum;
-    memcpy(&buf[6], _COMMTACT_PAYLOAD(msg), msg->length);
-    buf[6 + msg->length] = msg->checksum;
-    buf[6 + msg->length + 1] = msg->terminator;
-
-    return 6 + msg->length + 2;
+    memset(operational_modes_report, 0, sizeof(commtact_gdt_operational_modes_report_t));
+    memcpy(operational_modes_report, _COMMTACT_PAYLOAD(msg), sizeof(commtact_gdt_operational_modes_report_t));
 }
