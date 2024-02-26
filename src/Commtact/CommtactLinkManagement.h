@@ -26,6 +26,7 @@ class CommtactLinkManagement : public QGCTool
     // UI state management functions (called periodically, their result is meant to update Qml proprties dynamically)
     Q_INVOKABLE bool getShouldUiEnabledRescueElement();
 
+    Q_PROPERTY(QStringList operationalModeTypeStrings READ operationalModeTypeStrings CONSTANT)
     Q_PROPERTY(uint transmitterOperationalMode READ getTransmitterOperationalMode WRITE setTransmitterOperationalMode NOTIFY transmitterOperationalModeChanged)
     uint getTransmitterOperationalMode()
     {
@@ -37,11 +38,14 @@ class CommtactLinkManagement : public QGCTool
         emit transmitterOperationalModeChanged();
     }
 
+    QStringList operationalModeTypeStrings(void) const;
+
   protected:
     CommtactLinkManager *_commtactLinkManager = nullptr;
 
   private:
     uint8_t _transmitterOperationalMode;
+    CommtactLinkProtocol::commtact_gdt_operational_modes_report_t _operational_modes_report;
 
   signals:
     void transmitterOperationalModeChanged();

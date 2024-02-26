@@ -30,9 +30,9 @@ Rectangle {
     property int _rowSpacing: ScreenTools.defaultFontPixelHeight / 2
     property int _colSpacing: ScreenTools.defaultFontPixelWidth / 2
 
-    property int gdtRowHeight: (parent.height / 3
+    property int gdtRowHeight: (_gdtSettings.height
                                 - (gdtGrid.rows * gdtGrid.rowSpacing)) / (gdtGrid.rows)
-    property int gdtColumnWidth: (parent.width - (gdtGrid.columns * gdtGrid.columnSpacing))
+    property int gdtColumnWidth: (_gdtSettings.width - (gdtGrid.columns * gdtGrid.columnSpacing))
                                  / (gdtGrid.columns)
 
     property int adtRowHeight: (parent.height / 3
@@ -75,8 +75,6 @@ Rectangle {
         height: (parent.height - buttonRow.height) / 3
         color: qgcPal.window
         anchors.top: parent.top
-        border.width: 2
-        border.color: "White"
 
         QGCFlickable {
             clip: true
@@ -84,287 +82,209 @@ Rectangle {
             anchors.margins: ScreenTools.defaultFontPixelWidth
             flickableDirection: Flickable.VerticalFlick
 
-            GridLayout {
-                id: gdtGrid
-
-                columns: 14
-                rows: 7
+            QGCGroupBox {
+                id: gdtSettingsGroupBox
                 anchors.fill: parent
-                anchors.margins: 3
-                columnSpacing: 2
-                rowSpacing: 2
+                title: qsTr("GDT SETTINGS")
 
-                onWidthChanged: {
-                    console.log("Commtact gdt:", gdtGrid.width, gdtGrid.height)
-                }
+                GridLayout {
+                    id: gdtGrid
 
-                QGCLabel {
+                    columns: 14
+                    rows: 7
+                    anchors.fill: parent
+                    anchors.margins: 3
+                    columnSpacing: 2
+                    rowSpacing: 2
 
-                    id: gdtMainlabel
+                    onWidthChanged: {
+                        console.log("Commtact gdt:", gdtGrid.width,
+                                    gdtGrid.height)
+                    }
 
-                    height: ScreenTools.defaultFontPixelHeight
+                    QGCLabel {
 
-                    text: qsTr("GDT SETTINGS")
-                    font.family: ScreenTools.demiboldFontFamily
-                    color: "White"
+                        height: ScreenTools.defaultFontPixelHeight
 
-                    horizontalAlignment: Text.AlignHCenter
-                    verticalAlignment: Text.AlignVCenter
+                        text: {
+                            if (QGroundControl.commtactLinkManagement.transmitterOperationalMode
+                                    === 0) {
+                                qsTr("MODE:TX OFF")
+                            } else if (QGroundControl.commtactLinkManagement.transmitterOperationalMode === 1) {
+                                qsTr("MODE:TX HIGH")
+                            } else if (QGroundControl.commtactLinkManagement.transmitterOperationalMode === 2) {
+                                qsTr("MODE:TX LOW")
+                            } else if (QGroundControl.commtactLinkManagement.transmitterOperationalMode === 3) {
+                                qsTr("MODE:IBIT")
+                            } else if (QGroundControl.commtactLinkManagement.transmitterOperationalMode === 124) {
+                                qsTr("MODE:24dBm")
+                            } else if (QGroundControl.commtactLinkManagement.transmitterOperationalMode === 127) {
+                                qsTr("MODE:27dBm")
+                            } else if (QGroundControl.commtactLinkManagement.transmitterOperationalMode === 130) {
+                                qsTr("MODE:30dBm")
+                            } else {
+                                qsTr("MODE:NAN")
+                            }
+                        }
+                        font.family: ScreenTools.demiboldFontFamily
+                        color: {
+                            if (QGroundControl.commtactLinkManagement.transmitterOperationalMode
+                                    === 0) {
+                                "Red"
+                            } else if (QGroundControl.commtactLinkManagement.transmitterOperationalMode === 1) {
+                                "Green"
+                            } else if (QGroundControl.commtactLinkManagement.transmitterOperationalMode === 2) {
+                                "Yellow"
+                            } else if (QGroundControl.commtactLinkManagement.transmitterOperationalMode === 3) {
+                                "Green"
+                            } else if (QGroundControl.commtactLinkManagement.transmitterOperationalMode === 124) {
+                                "Green"
+                            } else if (QGroundControl.commtactLinkManagement.transmitterOperationalMode === 127) {
+                                "Green"
+                            } else if (QGroundControl.commtactLinkManagement.transmitterOperationalMode === 130) {
+                                "Green"
+                            } else {
+                                "White"
+                            }
+                        }
 
-                    Layout.alignment: Qt.AlignLeft | Qt.AlignTop
-                    Layout.columnSpan: 14
-                    Layout.fillHeight: false
-                    Layout.fillWidth: true
-                }
-                QGCLabel {
+                        horizontalAlignment: Text.AlignHCenter
+                        verticalAlignment: Text.AlignVCenter
 
-                    height: ScreenTools.defaultFontPixelHeight
+                        Layout.alignment: Qt.AlignLeft
+                        Layout.columnSpan: 4
+                        Layout.fillHeight: false
+                        Layout.fillWidth: true
+                    }
+                    QGCComboBox {
+                        id: _gdtOperationalMode
+                        Layout.rowSpan: 1
+                        Layout.columnSpan: 4
 
-                    text: {
-                        if (QGroundControl.commtactLinkManagement.transmitterOperationalMode
-                                === 0) {
-                            qsTr("TX OFF")
-                        } else if (QGroundControl.commtactLinkManagement.transmitterOperationalMode
-                                   === 1) {
-                            qsTr("TX HIGH")
-                        } else if (QGroundControl.commtactLinkManagement.transmitterOperationalMode
-                                   === 2) {
-                            qsTr("TX LOW")
-                        } else if (QGroundControl.commtactLinkManagement.transmitterOperationalMode
-                                   === 3) {
-                            qsTr("IBIT")
-                        } else if (QGroundControl.commtactLinkManagement.transmitterOperationalMode
-                                   === 124) {
-                            qsTr("24dBm")
-                        } else if (QGroundControl.commtactLinkManagement.transmitterOperationalMode
-                                   === 127) {
-                            qsTr("27dBm")
-                        } else {
-                            qsTr("NAN")
+                        Layout.preferredHeight: gdtRowHeight
+                        Layout.preferredWidth: gdtColumnWidth * Layout.columnSpan
+                        Layout.fillWidth: false
+                        Layout.fillHeight: false
+                        Layout.alignment: Qt.AlignCenter
+
+                        model: QGroundControl.commtactLinkManagement.operationalModeTypeStrings
+                        currentIndex: 0
+
+                        //                        onActivated: {
+                        //                            if (index !== editingConfig.linkType) {
+                        //                                // Save current name
+                        //                                var name = nameField.text
+                        //                                // Create new link configuration
+                        //                                editingConfig
+                        //                                        = QGroundControl.commtactLinkManager.createConfiguration(
+                        //                                            index, name)
+                        //                            }
+                        //                        }
+                    }
+                    QGCButton {
+
+                        id: _gdtSetModeButton
+
+                        showBorder: true
+                        text: qsTr("SET")
+
+                        Layout.rowSpan: 1
+                        Layout.columnSpan: 4
+
+                        Layout.preferredHeight: gdtRowHeight
+                        Layout.preferredWidth: gdtColumnWidth * Layout.columnSpan
+                        Layout.fillWidth: false
+                        Layout.fillHeight: false
+                        Layout.alignment: Qt.AlignLeft
+
+                        onClicked: {
+                            if (_gdtOperationalMode.currentIndex === 0) {
+                                QGroundControl.commtactLinkManagement.setGDTOperationalModeCommand(
+                                            0)
+                            } else if (_gdtOperationalMode.currentIndex === 1) {
+                                QGroundControl.commtactLinkManagement.setGDTOperationalModeCommand(
+                                            2)
+                            } else if (_gdtOperationalMode.currentIndex === 2) {
+                                QGroundControl.commtactLinkManagement.setGDTOperationalModeCommand(
+                                            1)
+                            } else if (_gdtOperationalMode.currentIndex === 3) {
+                                QGroundControl.commtactLinkManagement.setGDTOperationalModeCommand(
+                                            3)
+                            } else if (_gdtOperationalMode.currentIndex === 4) {
+                                QGroundControl.commtactLinkManagement.setGDTOperationalModeCommand(
+                                            124)
+                            } else if (_gdtOperationalMode.currentIndex === 5) {
+                                QGroundControl.commtactLinkManagement.setGDTOperationalModeCommand(
+                                            127)
+                            } else if (_gdtOperationalMode.currentIndex === 6) {
+                                QGroundControl.commtactLinkManagement.setGDTOperationalModeCommand(
+                                            130)
+                            }
                         }
                     }
-                    font.family: ScreenTools.demiboldFontFamily
-                    color: {
-                        if (QGroundControl.commtactLinkManagement.transmitterOperationalMode
-                                === 0) {
-                            "Red"
-                        } else if (QGroundControl.commtactLinkManagement.transmitterOperationalMode
-                                   === 1) {
-                            "Green"
-                        } else if (QGroundControl.commtactLinkManagement.transmitterOperationalMode
-                                   === 2) {
-                            "Yellow"
-                        } else if (QGroundControl.commtactLinkManagement.transmitterOperationalMode
-                                   === 3) {
-                            "Green"
-                        } else if (QGroundControl.commtactLinkManagement.transmitterOperationalMode
-                                   === 124) {
-                            "Green"
-                        } else if (QGroundControl.commtactLinkManagement.transmitterOperationalMode
-                                   === 127) {
-                            "Green"
-                        } else {
-                            "White"
-                        }
+
+                    QGCLabel {
+
+                        id: _gdtSetCameraScreenInformationLabel
+
+                        height: ScreenTools.defaultFontPixelHeight
+
+                        text: qsTr("INFO")
+                        color: "White"
+
+                        horizontalAlignment: Text.AlignHCenter
+                        verticalAlignment: Text.AlignVCenter
+
+                        Layout.rowSpan: 1
+                        Layout.columnSpan: 4
+
+                        Layout.preferredHeight: gdtRowHeight
+                        Layout.preferredWidth: gdtColumnWidth * Layout.columnSpan
+                        Layout.fillWidth: false
+                        Layout.fillHeight: false
+                        Layout.alignment: Qt.AlignLeft
                     }
+                    QGCTextField {
 
-                    horizontalAlignment: Text.AlignHCenter
-                    verticalAlignment: Text.AlignVCenter
+                        id: _gdtSetCameraScreenInformationField
 
-                    Layout.alignment: Qt.AlignLeft
-                    Layout.columnSpan: 2
-                    Layout.fillHeight: false
-                    Layout.fillWidth: true
-                }
+                        Layout.rowSpan: 1
+                        Layout.columnSpan: 4
 
-                QGCButton {
+                        Layout.preferredHeight: gdtRowHeight
+                        Layout.preferredWidth: gdtColumnWidth * Layout.columnSpan
+                        Layout.fillWidth: false
+                        Layout.fillHeight: false
+                        Layout.alignment: Qt.AlignLeft
 
-                    id: _gdtTxLowButton
-
-                    showBorder: true
-                    text: qsTr("TX LOW")
-
-                    Layout.rowSpan: 1
-                    Layout.columnSpan: 2
-
-                    Layout.preferredHeight: gdtRowHeight
-                    Layout.preferredWidth: gdtColumnWidth * Layout.columnSpan
-                    Layout.fillWidth: false
-                    Layout.fillHeight: false
-                    Layout.alignment: Qt.AlignLeft
-
-                    onClicked: {
-                        QGroundControl.commtactLinkManagement.setGDTOperationalModeCommand(
-                                    2)
+                        maximumLength: 4
+                        font.pointSize: ScreenTools.isMobile ? point_size : 9
+                        text: qsTr("2047")
                     }
-                }
-                QGCButton {
+                    QGCButton {
 
-                    id: _gdtTxHighButton
+                        id: _gdtSetCameraScreenInformationButton
 
-                    showBorder: true
-                    text: qsTr("TX HIGH")
+                        showBorder: true
+                        text: qsTr("SET")
 
-                    Layout.rowSpan: 1
-                    Layout.columnSpan: 2
+                        Layout.rowSpan: 1
+                        Layout.columnSpan: 4
 
-                    Layout.preferredHeight: gdtRowHeight
-                    Layout.preferredWidth: gdtColumnWidth * Layout.columnSpan
-                    Layout.fillWidth: false
-                    Layout.fillHeight: false
-                    Layout.alignment: Qt.AlignLeft
+                        Layout.preferredHeight: gdtRowHeight
+                        Layout.preferredWidth: gdtColumnWidth * Layout.columnSpan
+                        Layout.fillWidth: false
+                        Layout.fillHeight: false
+                        Layout.alignment: Qt.AlignLeft
 
-                    onClicked: {
-                        QGroundControl.commtactLinkManagement.setGDTOperationalModeCommand(
-                                    1)
-                    }
-                }
-                QGCButton {
-
-                    id: _gdtTxOffButton
-
-                    showBorder: true
-                    text: qsTr("TX OFF")
-
-                    Layout.rowSpan: 1
-                    Layout.columnSpan: 2
-
-                    Layout.preferredHeight: gdtRowHeight
-                    Layout.preferredWidth: gdtColumnWidth * Layout.columnSpan
-                    Layout.fillWidth: false
-                    Layout.fillHeight: false
-                    Layout.alignment: Qt.AlignLeft
-
-                    onClicked: {
-                        QGroundControl.commtactLinkManagement.setGDTOperationalModeCommand(
-                                    0)
-                    }
-                }
-                QGCButton {
-
-                    id: _gdtIbitButton
-
-                    showBorder: true
-                    text: qsTr("IBIT")
-
-                    Layout.rowSpan: 1
-                    Layout.columnSpan: 2
-
-                    Layout.preferredHeight: gdtRowHeight
-                    Layout.preferredWidth: gdtColumnWidth * Layout.columnSpan
-                    Layout.fillWidth: false
-                    Layout.fillHeight: false
-                    Layout.alignment: Qt.AlignLeft
-
-                    onClicked: {
-                        QGroundControl.commtactLinkManagement.setGDTOperationalModeCommand(
-                                    3)
-                    }
-                }
-                QGCButton {
-
-                    id: _gdt24dBmButton
-
-                    showBorder: true
-                    text: qsTr("24dBm")
-
-                    Layout.rowSpan: 1
-                    Layout.columnSpan: 2
-
-                    Layout.preferredHeight: gdtRowHeight
-                    Layout.preferredWidth: gdtColumnWidth * Layout.columnSpan
-                    Layout.fillWidth: false
-                    Layout.fillHeight: false
-                    Layout.alignment: Qt.AlignLeft
-
-                    onClicked: {
-                        QGroundControl.commtactLinkManagement.setGDTOperationalModeCommand(
-                                    124)
-                    }
-                }
-                QGCButton {
-
-                    id: _gdt27DbmButton
-
-                    showBorder: true
-                    text: qsTr("27dBm")
-
-                    Layout.rowSpan: 1
-                    Layout.columnSpan: 2
-
-                    Layout.preferredHeight: gdtRowHeight
-                    Layout.preferredWidth: gdtColumnWidth * Layout.columnSpan
-                    Layout.fillWidth: false
-                    Layout.fillHeight: false
-                    Layout.alignment: Qt.AlignLeft
-
-                    onClicked: {
-                        QGroundControl.commtactLinkManagement.setGDTOperationalModeCommand(
-                                    127)
-                    }
-                }
-
-                QGCLabel {
-
-                    id: _gdtSetCameraScreenInformationLabel
-
-                    height: ScreenTools.defaultFontPixelHeight
-
-                    text: qsTr("INFO")
-                    color: "White"
-
-                    horizontalAlignment: Text.AlignHCenter
-                    verticalAlignment: Text.AlignVCenter
-
-                    Layout.rowSpan: 1
-                    Layout.columnSpan: 4
-
-                    Layout.preferredHeight: gdtRowHeight
-                    Layout.preferredWidth: gdtColumnWidth * Layout.columnSpan
-                    Layout.fillWidth: false
-                    Layout.fillHeight: false
-                    Layout.alignment: Qt.AlignLeft
-                }
-                QGCTextField {
-
-                    id: _gdtSetCameraScreenInformationField
-
-                    Layout.rowSpan: 1
-                    Layout.columnSpan: 4
-
-                    Layout.preferredHeight: gdtRowHeight
-                    Layout.preferredWidth: gdtColumnWidth * Layout.columnSpan
-                    Layout.fillWidth: false
-                    Layout.fillHeight: false
-                    Layout.alignment: Qt.AlignLeft
-
-                    maximumLength: 4
-                    font.pointSize: ScreenTools.isMobile ? point_size : 9
-                    text: qsTr("2047")
-                }
-                QGCButton {
-
-                    id: _gdtSetCameraScreenInformationButton
-
-                    showBorder: true
-                    text: qsTr("SET")
-
-                    Layout.rowSpan: 1
-                    Layout.columnSpan: 4
-
-                    Layout.preferredHeight: gdtRowHeight
-                    Layout.preferredWidth: gdtColumnWidth * Layout.columnSpan
-                    Layout.fillWidth: false
-                    Layout.fillHeight: false
-                    Layout.alignment: Qt.AlignLeft
-
-                    onReleased: {
-                        if (parseInt(_gdtSetCameraScreenInformationField.text) >= 0
-                                && parseInt(
-                                    _gdtSetCameraScreenInformationField.text) <= 2047) {
-                            joystickManager.epsilonCameraManagement.setCameraScreenInformationCommand(
-                                        parseInt(
-                                            _gdtSetCameraScreenInformationField.text))
+                        onReleased: {
+                            if (parseInt(_gdtSetCameraScreenInformationField.text) >= 0
+                                    && parseInt(
+                                        _gdtSetCameraScreenInformationField.text) <= 2047) {
+                                joystickManager.epsilonCameraManagement.setCameraScreenInformationCommand(
+                                            parseInt(
+                                                _gdtSetCameraScreenInformationField.text))
+                            }
                         }
                     }
                 }
@@ -378,8 +298,6 @@ Rectangle {
         height: (parent.height - buttonRow.height) / 3
         color: qgcPal.window
         anchors.top: _gdtSettings.bottom
-        border.width: 2
-        border.color: "White"
 
         QGCFlickable {
             clip: true
@@ -387,151 +305,139 @@ Rectangle {
             anchors.margins: ScreenTools.defaultFontPixelWidth
             flickableDirection: Flickable.VerticalFlick
 
-            GridLayout {
-                id: adtGrid
-
-                columns: 6
-                rows: 7
+            QGCGroupBox {
                 anchors.fill: parent
-                anchors.margins: 3
-                columnSpacing: 2
-                rowSpacing: 2
+                title: qsTr("ADT SETTINGS")
 
-                onWidthChanged: {
-                    console.log("Commtact adt:", adtGrid.width, adtGrid.height)
-                }
+                GridLayout {
+                    id: adtGrid
 
-                QGCLabel {
+                    columns: 6
+                    rows: 7
+                    anchors.fill: parent
+                    anchors.margins: 3
+                    columnSpacing: 2
+                    rowSpacing: 2
 
-                    id: adtMainlabel
-
-                    height: ScreenTools.defaultFontPixelHeight
-
-                    text: qsTr("GDT SETTINGS")
-                    font.family: ScreenTools.demiboldFontFamily
-                    color: "White"
-
-                    horizontalAlignment: Text.AlignHCenter
-                    verticalAlignment: Text.AlignVCenter
-
-                    Layout.alignment: Qt.AlignLeft | Qt.AlignTop
-                    Layout.columnSpan: 6
-                    Layout.fillHeight: false
-                    Layout.fillWidth: true
-                }
-                QGCLabel {
-
-                    height: ScreenTools.defaultFontPixelHeight
-
-                    text: qsTr("MODE")
-                    font.family: ScreenTools.demiboldFontFamily
-                    color: "White"
-
-                    horizontalAlignment: Text.AlignHCenter
-                    verticalAlignment: Text.AlignVCenter
-
-                    Layout.alignment: Qt.AlignLeft | Qt.AlignTop
-                    Layout.columnSpan: 2
-                    Layout.fillHeight: false
-                    Layout.fillWidth: true
-                }
-                QGCLabel {
-                    height: ScreenTools.defaultFontPixelHeight
-
-                    text: QGroundControl.commtactLinkManagement.transmitterOperationalMode
-                    font.family: ScreenTools.demiboldFontFamily
-                    color: "White"
-
-                    horizontalAlignment: Text.AlignHCenter
-                    verticalAlignment: Text.AlignVCenter
-
-                    Layout.alignment: Qt.AlignLeft | Qt.AlignTop
-                    Layout.columnSpan: 2
-                    Layout.fillHeight: false
-                    Layout.fillWidth: true
-                }
-                QGCButton {
-
-                    id: _adtTxOffButton
-
-                    showBorder: true
-                    text: qsTr("TX OFF")
-
-                    Layout.rowSpan: 1
-                    Layout.columnSpan: 2
-
-                    Layout.preferredHeight: adtRowHeight
-                    Layout.preferredWidth: adtColumnWidth * Layout.columnSpan
-                    Layout.fillWidth: false
-                    Layout.fillHeight: true
-                    Layout.alignment: Qt.AlignLeft
-
-                    onClicked: {
-                        QGroundControl.commtactLinkManagement.setGDTOperationalModeCommand(
-                                    0)
+                    onWidthChanged: {
+                        console.log("Commtact adt:", adtGrid.width,
+                                    adtGrid.height)
                     }
-                }
-                QGCLabel {
 
-                    id: _adtSetCameraScreenInformationLabel
+                    QGCLabel {
 
-                    height: ScreenTools.defaultFontPixelHeight
+                        height: ScreenTools.defaultFontPixelHeight
 
-                    text: qsTr("INFO")
-                    color: "White"
+                        text: qsTr("MODE")
+                        font.family: ScreenTools.demiboldFontFamily
+                        color: "White"
 
-                    horizontalAlignment: Text.AlignHCenter
-                    verticalAlignment: Text.AlignVCenter
+                        horizontalAlignment: Text.AlignHCenter
+                        verticalAlignment: Text.AlignVCenter
 
-                    Layout.rowSpan: 1
-                    Layout.columnSpan: 2
+                        Layout.alignment: Qt.AlignLeft | Qt.AlignTop
+                        Layout.columnSpan: 2
+                        Layout.fillHeight: false
+                        Layout.fillWidth: true
+                    }
+                    QGCLabel {
+                        height: ScreenTools.defaultFontPixelHeight
 
-                    Layout.preferredHeight: adtRowHeight
-                    Layout.preferredWidth: adtColumnWidth * Layout.columnSpan
-                    Layout.fillWidth: false
-                    Layout.fillHeight: true
-                    Layout.alignment: Qt.AlignLeft
-                }
-                QGCTextField {
+                        text: QGroundControl.commtactLinkManagement.transmitterOperationalMode
+                        font.family: ScreenTools.demiboldFontFamily
+                        color: "White"
 
-                    id: _adtSetCameraScreenInformationField
+                        horizontalAlignment: Text.AlignHCenter
+                        verticalAlignment: Text.AlignVCenter
 
-                    Layout.rowSpan: 1
-                    Layout.columnSpan: 2
+                        Layout.alignment: Qt.AlignLeft | Qt.AlignTop
+                        Layout.columnSpan: 2
+                        Layout.fillHeight: false
+                        Layout.fillWidth: true
+                    }
+                    QGCButton {
 
-                    Layout.preferredHeight: adtRowHeight
-                    Layout.preferredWidth: adtColumnWidth * Layout.columnSpan
-                    Layout.fillWidth: false
-                    Layout.fillHeight: true
-                    Layout.alignment: Qt.AlignLeft
+                        id: _adtTxOffButton
 
-                    maximumLength: 4
-                    font.pointSize: ScreenTools.isMobile ? point_size : 9
-                    text: qsTr("2047")
-                }
-                QGCButton {
+                        showBorder: true
+                        text: qsTr("TX OFF")
 
-                    id: _adtSetCameraScreenInformationButton
+                        Layout.rowSpan: 1
+                        Layout.columnSpan: 2
 
-                    showBorder: true
-                    text: qsTr("SET")
+                        Layout.preferredHeight: adtRowHeight
+                        Layout.preferredWidth: adtColumnWidth * Layout.columnSpan
+                        Layout.fillWidth: false
+                        Layout.fillHeight: true
+                        Layout.alignment: Qt.AlignLeft
 
-                    Layout.rowSpan: 1
-                    Layout.columnSpan: 2
+                        onClicked: {
+                            QGroundControl.commtactLinkManagement.setGDTOperationalModeCommand(
+                                        0)
+                        }
+                    }
+                    QGCLabel {
 
-                    Layout.preferredHeight: adtRowHeight
-                    Layout.preferredWidth: adtColumnWidth * Layout.columnSpan
-                    Layout.fillWidth: false
-                    Layout.fillHeight: true
-                    Layout.alignment: Qt.AlignLeft
+                        id: _adtSetCameraScreenInformationLabel
 
-                    onReleased: {
-                        if (parseInt(_adtSetCameraScreenInformationField.text) >= 0
-                                && parseInt(
-                                    _adtSetCameraScreenInformationField.text) <= 2047) {
-                            joystickManager.epsilonCameraManagement.setCameraScreenInformationCommand(
-                                        parseInt(
-                                            _adtSetCameraScreenInformationField.text))
+                        height: ScreenTools.defaultFontPixelHeight
+
+                        text: qsTr("INFO")
+                        color: "White"
+
+                        horizontalAlignment: Text.AlignHCenter
+                        verticalAlignment: Text.AlignVCenter
+
+                        Layout.rowSpan: 1
+                        Layout.columnSpan: 2
+
+                        Layout.preferredHeight: adtRowHeight
+                        Layout.preferredWidth: adtColumnWidth * Layout.columnSpan
+                        Layout.fillWidth: false
+                        Layout.fillHeight: true
+                        Layout.alignment: Qt.AlignLeft
+                    }
+                    QGCTextField {
+
+                        id: _adtSetCameraScreenInformationField
+
+                        Layout.rowSpan: 1
+                        Layout.columnSpan: 2
+
+                        Layout.preferredHeight: adtRowHeight
+                        Layout.preferredWidth: adtColumnWidth * Layout.columnSpan
+                        Layout.fillWidth: false
+                        Layout.fillHeight: true
+                        Layout.alignment: Qt.AlignLeft
+
+                        maximumLength: 4
+                        font.pointSize: ScreenTools.isMobile ? point_size : 9
+                        text: qsTr("2047")
+                    }
+                    QGCButton {
+
+                        id: _adtSetCameraScreenInformationButton
+
+                        showBorder: true
+                        text: qsTr("SET")
+
+                        Layout.rowSpan: 1
+                        Layout.columnSpan: 2
+
+                        Layout.preferredHeight: adtRowHeight
+                        Layout.preferredWidth: adtColumnWidth * Layout.columnSpan
+                        Layout.fillWidth: false
+                        Layout.fillHeight: true
+                        Layout.alignment: Qt.AlignLeft
+
+                        onReleased: {
+                            if (parseInt(_adtSetCameraScreenInformationField.text) >= 0
+                                    && parseInt(
+                                        _adtSetCameraScreenInformationField.text) <= 2047) {
+                                joystickManager.epsilonCameraManagement.setCameraScreenInformationCommand(
+                                            parseInt(
+                                                _adtSetCameraScreenInformationField.text))
+                            }
                         }
                     }
                 }
@@ -546,48 +452,38 @@ Rectangle {
         height: (parent.height - buttonRow.height) / 3
         color: qgcPal.window
         anchors.top: _adtSettings.bottom
-        border.width: 2
-        border.color: "White"
+
         //-------------------------------------------------------------------------
         QGCFlickable {
             clip: true
             anchors.fill: parent
             anchors.margins: ScreenTools.defaultFontPixelWidth
-            contentHeight: settingsColumn.height
-            contentWidth: settingsColumn.width
             flickableDirection: Flickable.VerticalFlick
 
-            Column {
-                id: settingsColumn
-                width: _links.width
-                spacing: ScreenTools.defaultFontPixelHeight * 0.5
-                anchors.margins: ScreenTools.defaultFontPixelWidth
+            QGCGroupBox {
+                anchors.fill: parent
+                title: qsTr("LINKS")
 
-                Item {
-                    width: _links.width * 0.8
-                    height: linksLabel.height
+                Column {
+                    id: settingsColumn
+                    width: _links.width
+                    spacing: ScreenTools.defaultFontPixelHeight * 0.5
                     anchors.margins: ScreenTools.defaultFontPixelWidth
-                    anchors.horizontalCenter: parent.horizontalCenter
-                    QGCLabel {
-                        id: linksLabel
-                        text: qsTr("Links")
-                        font.family: ScreenTools.demiboldFontFamily
-                    }
-                }
 
-                Repeater {
-                    model: QGroundControl.commtactLinkManager.linkConfigurations
-                    delegate: QGCButton {
-                        anchors.horizontalCenter: settingsColumn.horizontalCenter
-                        width: _linkRoot.width * 0.5
-                        text: object.name
-                        autoExclusive: true
-                        visible: !object.dynamic
-                        onClicked: {
-                            checked = true
-                            _currentSelection = object
-                            QGroundControl.commtactLinkManager.selectConfiguration(
-                                        _currentSelection)
+                    Repeater {
+                        model: QGroundControl.commtactLinkManager.linkConfigurations
+                        delegate: QGCButton {
+                            anchors.horizontalCenter: settingsColumn.horizontalCenter
+                            width: parent.width * 0.5
+                            text: object.name
+                            autoExclusive: true
+                            visible: !object.dynamic
+                            onClicked: {
+                                checked = true
+                                _currentSelection = object
+                                QGroundControl.commtactLinkManager.selectConfiguration(
+                                            _currentSelection)
+                            }
                         }
                     }
                 }
