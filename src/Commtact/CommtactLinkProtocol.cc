@@ -490,37 +490,6 @@ void CommtactLinkProtocol::_swap_bytes(uint32_t *data)
     *(data) = temp;
 }
 
-uint16_t CommtactLinkProtocol::commtact_link_msg_control_mode_pack(CommtactLinkProtocol::commtact_link_message_t *msg, uint8_t mode, uint16_t pixel_pos_x, uint16_t pixel_pos_y,
-                                                                   uint8_t box_sizes, uint8_t tracking_advanced, uint8_t options)
-{
-    CommtactLinkProtocol::commtact_control_mode_message_t packet = {};
-
-    msg->time_stamp[0] = 0;
-    msg->time_stamp[1] = 0;
-    msg->time_stamp[2] = 0;
-    msg->time_stamp[3] = 0;
-
-    msg->seq_num[0] = 0;
-    msg->seq_num[1] = 0;
-
-    msg->opcode = 0;
-
-    packet.mode = mode;
-    packet.pixel_pos_x = pixel_pos_x;
-    packet.pixel_pos_y = pixel_pos_y;
-    packet.box_sizes = box_sizes;
-    packet.tracking_advanced = tracking_advanced;
-    packet.options = options;
-
-    uint8_t payload[127] = {};
-
-    memcpy(&payload, &packet, sizeof(packet));
-
-    memcpy(_COMMTACT_PAYLOAD_NON_CONST(msg), &packet, sizeof(packet));
-
-    return 0;
-}
-
 uint16_t CommtactLinkProtocol::commtact_link_msg_operational_mode_pack(CommtactLinkProtocol::commtact_link_message_t *msg, uint8_t transmitter_operational_mode, uint8_t pedestal_track__mode,
                                                                        uint8_t gdt_antenna_select, uint16_t set_azimuth, int16_t set_elevation, uint8_t frequency_mode, uint8_t reserved_1,
                                                                        uint8_t tdd_operational_mode, uint8_t aes_encryption_enable, uint8_t reserved_2, uint8_t symbol_rate,
@@ -578,4 +547,10 @@ void CommtactLinkProtocol::commtact_link_msg_operational_modes_report_decode(con
 {
     memset(operational_modes_report, 0, sizeof(commtact_gdt_operational_modes_report_t));
     memcpy(operational_modes_report, _COMMTACT_PAYLOAD(msg), sizeof(commtact_gdt_operational_modes_report_t));
+}
+
+void CommtactLinkProtocol::commtact_link_msg_gdt_status_report_decode(const commtact_link_message_t *msg, commtact_gdt_status_report_t *gdt_status_report)
+{
+    memset(gdt_status_report, 0, sizeof(commtact_gdt_status_report_t));
+    memcpy(gdt_status_report, _COMMTACT_PAYLOAD(msg), sizeof(commtact_gdt_status_report_t));
 }

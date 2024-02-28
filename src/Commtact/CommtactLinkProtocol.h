@@ -71,16 +71,6 @@ class CommtactLinkProtocol : public QGCTool
     })
     commtact_link_message_t;
 
-    PACKED_STRUCT(typedef struct __commtact_control_mode_message {
-        int8_t mode;
-        uint16_t pixel_pos_x;
-        uint16_t pixel_pos_y;
-        uint8_t box_sizes;
-        uint8_t tracking_advanced;
-        uint8_t options;
-    })
-    commtact_control_mode_message_t;
-
     PACKED_STRUCT(typedef struct __commtact_global_status {
         uint8_t status_flags_0;
         uint8_t status_flags_1;
@@ -116,6 +106,15 @@ class CommtactLinkProtocol : public QGCTool
     })
     commtact_global_status_t;
 
+    union gdt_operational_mode_report_byte_20 {
+        uint8_t byte;
+        struct bit
+        {
+            uint8_t reserved : 4;
+            uint8_t symbol_rate : 4;
+        } bit_t;
+    };
+
     PACKED_STRUCT(typedef struct __commtact_gdt_operational_modes_report {
         uint8_t transmitter_operational_mode;
         uint8_t gdt_pedestal_track_mode;
@@ -132,10 +131,36 @@ class CommtactLinkProtocol : public QGCTool
         uint8_t tdd_operational_mode;
         uint8_t aes_encryption;
         uint8_t reserved_7;
-        uint8_t bit;
+        gdt_operational_mode_report_byte_20 byte_20;
         uint8_t unit_mode;
     })
     commtact_gdt_operational_modes_report_t;
+
+    union gdt_status_report_byte_0 {
+        uint8_t byte;
+        struct bit
+        {
+            uint8_t tdd_sync : 1;
+            uint8_t track_mode_status : 1;
+            uint8_t pedestal_calibration_stat : 1;
+        } bit_t;
+    };
+
+    PACKED_STRUCT(typedef struct __commtact_gdt_status_report {
+        gdt_status_report_byte_0 byte_0;
+        int8_t link_rssi;
+        uint16_t link_transfered_packets;
+        uint16_t link_error_packets;
+        uint16_t link_crc_errors_packets;
+        uint16_t pedestal_azimuth_pointing;
+        int16_t pedestal_elevation_pointing;
+        int16_t gdt_base_left_right;
+        int16_t gdt_base_back_forward;
+        int16_t gdt_base_roll;
+        uint16_t range_meter;
+        uint32_t range_meter_1m;
+    })
+    commtact_gdt_status_report_t;
 
     PACKED_STRUCT(typedef struct __commtact_gdt_operational_mode {
         uint8_t transmitter_operational_mode;
@@ -214,15 +239,13 @@ class CommtactLinkProtocol : public QGCTool
     // Override from QGCTool
     virtual void setToolbox(QGCToolbox *toolbox);
 
-    uint16_t commtact_link_msg_control_mode_pack(CommtactLinkProtocol::commtact_link_message_t *msg, uint8_t mode, uint16_t pixel_pos_x, uint16_t pixel_pos_y, uint8_t box_sizes,
-                                                 uint8_t tracking_advanced, uint8_t options);
-
     uint16_t commtact_link_msg_operational_mode_pack(CommtactLinkProtocol::commtact_link_message_t *msg, uint8_t transmitter_operational_mode, uint8_t pedestal_track__mode,
                                                      uint8_t gdt_antenna_select, uint16_t set_azimuth, int16_t set_elevation, uint8_t frequency_mode, uint8_t reserved_1,
                                                      uint8_t tdd_operational_mode, uint8_t aes_encryption_enable, uint8_t reserved_2, uint8_t bit, uint8_t unit_mode);
 
     uint16_t commtact_link_msg_to_send_buffer(uint8_t *buf, const CommtactLinkProtocol::commtact_link_message_t *msg, uint32_t payload_size);
     void commtact_link_msg_operational_modes_report_decode(const commtact_link_message_t *msg, commtact_gdt_operational_modes_report_t *operational_modes_report);
+    void commtact_link_msg_gdt_status_report_decode(const commtact_link_message_t *msg, commtact_gdt_status_report_t *gdt_status_report);
 
   public slots:
     /** @brief Receive bytes from a communication interface */

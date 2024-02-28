@@ -408,5 +408,8 @@
     <qresource prefix="/commtactqml">
         <file alias="CommtactModePanel.qml">src/Commtact/Qml/CommtactModePanel.qml</file>
         <file alias="CommtactQuickPanel.qml">src/Commtact/Qml/CommtactQuickPanel.qml</file>
+        <file alias="CommtactADTSettings.qml">src/Commtact/Qml/CommtactADTSettings.qml</file>
+        <file alias="CommtactGDTSettings.qml">src/Commtact/Qml/CommtactGDTSettings.qml</file>
+        <file alias="CommtactEthernetSettings.qml">src/Commtact/Qml/CommtactEthernetSettings.qml</file>
     </qresource>
 </RCC>
