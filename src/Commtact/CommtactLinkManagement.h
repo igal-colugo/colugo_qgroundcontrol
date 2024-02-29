@@ -10,6 +10,7 @@
 #include "CommtactLinkProtocol.h"
 #include "QGCApplication.h"
 #include "Settings/SettingsManager.h"
+#include <QTimer>
 
 class CommtactLinkManagement : public QGCTool
 {
@@ -19,6 +20,7 @@ class CommtactLinkManagement : public QGCTool
     CommtactLinkManagement(QGCApplication *app, QGCToolbox *toolbox);
     // Override from QGCTool
     virtual void setToolbox(QGCToolbox *toolbox);
+    void updateTimeout();
 
     std::atomic<uint8_t> m_should_enable_rescue_btn{};
 
@@ -121,6 +123,39 @@ class CommtactLinkManagement : public QGCTool
         emit gdtAesEncryptionChanged();
     }
 
+    Q_PROPERTY(uint gdtLinkTransferedPackets READ getGdtLinkTransferedPackets WRITE setGdtLinkTransferedPackets NOTIFY gdtLinkTransferedPacketsChanged)
+    uint getGdtLinkTransferedPackets()
+    {
+        return (uint) _gdtLinkTransferedPackets;
+    }
+    void setGdtLinkTransferedPackets(const uint16_t &gdtLinkTransferedPackets)
+    {
+        _gdtLinkTransferedPackets = (uint16_t) gdtLinkTransferedPackets;
+        emit gdtLinkTransferedPacketsChanged();
+    }
+
+    Q_PROPERTY(int gdtLinkRSSI READ getGdtLinkRSSI WRITE setGdtLinkRSSI NOTIFY gdtLinkRSSIChanged)
+    uint getGdtLinkRSSI()
+    {
+        return (int) _gdtLinkRSSI;
+    }
+    void setGdtLinkRSSI(const int &gdtLinkRSSI)
+    {
+        _gdtLinkRSSI = (int8_t) gdtLinkRSSI;
+        emit gdtLinkRSSIChanged();
+    }
+
+    Q_PROPERTY(int gdtOperationFrequency READ getGdtOperationFrequency WRITE setGdtOperationFrequency NOTIFY gdtOperationFrequencyChanged)
+    uint getGdtOperationFrequency()
+    {
+        return (int) _gdtOperationFrequency;
+    }
+    void setGdtOperationFrequency(const int &gdtOperationFrequency)
+    {
+        _gdtOperationFrequency = (uint16_t) gdtOperationFrequency;
+        emit gdtOperationFrequencyChanged();
+    }
+
     QStringList operationalModeTypeStrings(void) const;
     QStringList gdtAntennaSelectTypeStrings(void) const;
     QStringList gdtPedestalTrackModeTypeStrings(void) const;
@@ -139,12 +174,16 @@ class CommtactLinkManagement : public QGCTool
     Q_INVOKABLE void setGDTUnitModeCommand(uint gdt_unit_mode);
     Q_INVOKABLE void setGDTSymbolRateCommand(uint gdt_symbol_rate);
     Q_INVOKABLE void setGDTAesEncryptionCommand(uint gdt_aes_encryption);
+    Q_INVOKABLE void getGDTRequiredMessageCommand(uint gdt_required_message);
+    Q_INVOKABLE void setGDTOperationalFrequencyCommand(uint gdt_operational_frequency);
     //-------------------------------------------------------------------
 
   protected:
     CommtactLinkManager *_commtactLinkManager = nullptr;
 
   private:
+    QTimer _updateTimer;
+
     uint8_t _transmitterOperationalMode;
     uint8_t _gdtAntennaSelect;
     uint8_t _gdtPedestalTrackMode;
@@ -154,8 +193,14 @@ class CommtactLinkManagement : public QGCTool
     uint8_t _gdtSymbolRate;
     uint8_t _gdtAesEncryption;
 
+    uint16_t _gdtLinkTransferedPackets;
+    int8_t _gdtLinkRSSI;
+
+    uint16_t _gdtOperationFrequency;
+
     CommtactLinkProtocol::commtact_gdt_operational_modes_report_t _operational_modes_report;
     CommtactLinkProtocol::commtact_gdt_status_report_t _gdt_status_report;
+    CommtactLinkProtocol::commtact_gdt_constant_frequency_report_t _gdt_constant_frequency_report;
 
   signals:
     void transmitterOperationalModeChanged();
@@ -166,6 +211,11 @@ class CommtactLinkManagement : public QGCTool
     void gdtUnitModeChanged();
     void gdtSymbolRateChanged();
     void gdtAesEncryptionChanged();
+
+    void gdtLinkTransferedPacketsChanged();
+    void gdtLinkRSSIChanged();
+
+    void gdtOperationFrequencyChanged();
 
   public slots:
     void _commtactLinkMessageReceived(CommtactLinkInterface *link, CommtactLinkProtocol::commtact_link_message_t message);

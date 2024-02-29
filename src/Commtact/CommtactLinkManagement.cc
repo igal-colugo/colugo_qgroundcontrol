@@ -3,11 +3,19 @@
 CommtactLinkManagement::CommtactLinkManagement(QGCApplication *app, QGCToolbox *toolbox) : QGCTool(app, toolbox)
 {
     qmlRegisterUncreatableType<CommtactLinkManagement>("QGroundControl", 1, 0, "CommtactLinkManagement", "Reference only");
+    connect(&_updateTimer, &QTimer::timeout, this, &CommtactLinkManagement::updateTimeout);
+    _updateTimer.setInterval(1000);
+    _updateTimer.start();
 }
 void CommtactLinkManagement::setToolbox(QGCToolbox *toolbox)
 {
     QGCTool::setToolbox(toolbox);
     this->_commtactLinkManager = _toolbox->commtactLinkManager();
+}
+
+void CommtactLinkManagement::updateTimeout()
+{
+    getGDTRequiredMessageCommand(0x88);
 }
 
 //------------------------- GDT commands -----------------
@@ -324,6 +332,55 @@ void CommtactLinkManagement::setGDTAesEncryptionCommand(uint gdt_aes_encryption)
         sharedLink->writeBytesThreadSafe((const char *) buffer, len);
     }
 }
+void CommtactLinkManagement::setGDTOperationalFrequencyCommand(uint gdt_operational_frequency)
+{
+    /* Sending the camera command */
+    WeakCommtactLinkInterfacePtr weakLink = this->_commtactLinkManager->selectedSharedLinkInterfacePointerForLink();
+    if (weakLink.expired())
+    {
+        return;
+    }
+    SharedCommtactLinkInterfacePtr sharedLink = weakLink.lock();
+
+    if (sharedLink != nullptr)
+    {
+        CommtactLinkProtocol *linkProtocol = this->_commtactLinkManager->linkProtocol();
+
+        CommtactLinkProtocol::commtact_link_message_t message = {};
+
+        uint16_t payload_size = linkProtocol->commtact_link_msg_gdt_opeartional_frequency_pack(&message, gdt_operational_frequency);
+
+        uint8_t buffer[7 + payload_size] = {};
+        int len = linkProtocol->commtact_link_msg_to_send_buffer(&buffer[0], &message, payload_size);
+
+        sharedLink->writeBytesThreadSafe((const char *) buffer, len);
+    }
+}
+
+void CommtactLinkManagement::getGDTRequiredMessageCommand(uint gdt_required_message)
+{
+    /* Sending the camera command */
+    WeakCommtactLinkInterfacePtr weakLink = this->_commtactLinkManager->selectedSharedLinkInterfacePointerForLink();
+    if (weakLink.expired())
+    {
+        return;
+    }
+    SharedCommtactLinkInterfacePtr sharedLink = weakLink.lock();
+
+    if (sharedLink != nullptr)
+    {
+        CommtactLinkProtocol *linkProtocol = this->_commtactLinkManager->linkProtocol();
+
+        CommtactLinkProtocol::commtact_link_message_t message = {};
+
+        uint16_t payload_size = linkProtocol->commtact_link_msg_get_report_message_pack(&message, gdt_required_message);
+
+        uint8_t buffer[7 + payload_size] = {};
+        int len = linkProtocol->commtact_link_msg_to_send_buffer(&buffer[0], &message, payload_size);
+
+        sharedLink->writeBytesThreadSafe((const char *) buffer, len);
+    }
+}
 //--------------------------------------------------------
 
 bool CommtactLinkManagement::getShouldUiEnabledRescueElement()
@@ -356,6 +413,17 @@ void CommtactLinkManagement::_commtactLinkMessageReceived(CommtactLinkInterface 
     case CommtactLinkProtocol::GDT_STATUS_REPORT:
 
         linkProtocol->commtact_link_msg_gdt_status_report_decode(&message, &_gdt_status_report);
+
+        setGdtLinkRSSI(_gdt_status_report.link_rssi);
+        setGdtLinkTransferedPackets(_gdt_status_report.link_transfered_packets);
+
+        break;
+
+    case CommtactLinkProtocol::GDT_CONSTANT_FREQUENCY_REPORT:
+
+        linkProtocol->commtact_link_msg_gdt_constant_frequency_report_decode(&message, &_gdt_constant_frequency_report);
+
+        setGdtOperationFrequency(_gdt_constant_frequency_report.gdt_operation_frequency);
 
         break;
     }

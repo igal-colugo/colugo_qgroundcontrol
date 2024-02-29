@@ -39,6 +39,15 @@ Item {
                                         - (gdtReportGrid.columns * gdtReportGrid.columnSpacing))
                                        / (gdtReportGrid.columns)
 
+    property int gdtStatusReportGridRowHeight: (gdtStatusReportGrid.height
+                                                - (gdtStatusReportGrid.rows
+                                                   * gdtStatusReportGrid.rowSpacing))
+                                               / (gdtStatusReportGrid.rows)
+    property int gdtStatusReportGridColumnWidth: (gdtStatusReportGrid.width
+                                                  - (gdtStatusReportGrid.columns
+                                                     * gdtStatusReportGrid.columnSpacing))
+                                                 / (gdtStatusReportGrid.columns)
+
     GridLayout {
         id: gdtMainGrid
 
@@ -66,7 +75,7 @@ Item {
                 id: gdtSettingsGrid
 
                 columns: 12
-                rows: 7
+                rows: 10
                 anchors.fill: parent
                 anchors.margins: 3
                 columnSpacing: 2
@@ -519,14 +528,35 @@ Item {
                     }
                 }
 
+                QGCButton {
+
+                    id: _gdtClearCBITButton
+
+                    showBorder: true
+                    text: qsTr("CLEAR CBIT")
+
+                    Layout.rowSpan: 1
+                    Layout.columnSpan: 6
+
+                    Layout.preferredHeight: gdtSettingsRowHeight
+                    Layout.preferredWidth: gdtSettingsColumnWidth * Layout.columnSpan
+                    Layout.fillWidth: false
+                    Layout.fillHeight: false
+                    Layout.alignment: Qt.AlignLeft
+
+                    onClicked: {
+
+                    }
+                }
+
                 QGCCheckBox {
                     id: _enableAesEncryption
                     text: qsTr("AES ENCRYPTION")
 
                     Layout.rowSpan: 1
-                    Layout.column: 7
-                    Layout.row: 3
-                    Layout.columnSpan: 4
+                    //Layout.column: 7
+                    //Layout.row: 3
+                    Layout.columnSpan: 12
 
                     Layout.preferredHeight: gdtSettingsRowHeight
                     Layout.preferredWidth: gdtSettingsColumnWidth * Layout.columnSpan
@@ -548,62 +578,106 @@ Item {
                     }
                 }
 
-                //                QGCGroupBox {
-                //                    id: gdtSetFrequencyGroupBox
-                //                    height: gdtSettingsRowHeight * Layout.rowSpan
-                //                    width: gdtSettingsColumnWidth * Layout.columnSpan
-                //                    Layout.rowSpan: 3
-                //                    Layout.columnSpan: 12
-                //                    Layout.preferredHeight: gdtSettingsRowHeight * Layout.rowSpan
-                //                    Layout.preferredWidth: gdtSettingsColumnWidth * Layout.columnSpan
-                //                    Layout.fillWidth: false
-                //                    Layout.fillHeight: false
-                //                    Layout.alignment: Qt.AlignCenter
-                //                    title: qsTr("SET FREQUENCY")
+                QGCGroupBox {
+                    id: gdtSetFrequencyGroupBox
+                    height: gdtSettingsRowHeight * Layout.rowSpan
+                    width: gdtSettingsColumnWidth * Layout.columnSpan
+                    Layout.rowSpan: 5
+                    Layout.columnSpan: 12
+                    Layout.preferredHeight: gdtSettingsRowHeight * Layout.rowSpan
+                    Layout.preferredWidth: gdtSettingsColumnWidth * Layout.columnSpan
+                    Layout.fillWidth: false
+                    Layout.fillHeight: false
+                    Layout.alignment: Qt.AlignCenter
+                    title: qsTr("SET FREQUENCY")
 
-                //                    //                    GridLayout {
-                //                    //                        id: gdtStatusReportGrid
+                    GridLayout {
+                        id: gdtFrequencyGrid
 
-                //                    //                        columns: 12
-                //                    //                        rows: 7
-                //                    //                        anchors.fill: parent
-                //                    //                        anchors.margins: 3
-                //                    //                        columnSpacing: 2
-                //                    //                        rowSpacing: 2
+                        columns: 12
+                        rows: 3
+                        anchors.fill: parent
+                        anchors.margins: 3
+                        columnSpacing: 2
+                        rowSpacing: 2
 
-                //                    //                        property int gdtStatusReportGridRowHeight: (gdtStatusReportGrid.height - (gdtStatusReportGrid.rows * gdtStatusReportGrid.rowSpacing)) / (gdtStatusReportGrid.rows)
-                //                    //                        property int gdtStatusReportGridColumnWidth: (gdtStatusReportGrid.width - (gdtStatusReportGrid.columns * gdtStatusReportGrid.columnSpacing)) / (gdtStatusReportGrid.columns)
+                        QGCLabel {
 
-                //                    //                        QGCLabel {
+                            id: _setFrequencyLabel
 
-                //                    //                            height: ScreenTools.defaultFontPixelHeight
+                            height: ScreenTools.defaultFontPixelHeight
 
-                //                    //                            text: {
-                //                    //                                if (QGroundControl.commtactLinkManagement.gdtAntennaSelect === 0) {
-                //                    //                                    qsTr("ANTENNA:OMNI")
-                //                    //                                } else if (QGroundControl.commtactLinkManagement.gdtAntennaSelect
-                //                    //                                           === 1) {
-                //                    //                                    qsTr("ANTENNA:DIRECTIONAL")
-                //                    //                                } else if (QGroundControl.commtactLinkManagement.gdtAntennaSelect
-                //                    //                                           === 22) {
-                //                    //                                    qsTr("ANTENNA:ADVANCED")
-                //                    //                                } else {
-                //                    //                                    qsTr("ANTENNA:NAN")
-                //                    //                                }
-                //                    //                            }
-                //                    //                            font.family: ScreenTools.demiboldFontFamily
-                //                    //                            color: "White"
+                            text: qsTr("FREQUENCY:")
+                            color: "White"
 
-                //                    //                            horizontalAlignment: Text.AlignHCenter
-                //                    //                            verticalAlignment: Text.AlignVCenter
+                            horizontalAlignment: Text.AlignHCenter
+                            verticalAlignment: Text.AlignVCenter
 
-                //                    //                            Layout.alignment: Qt.AlignLeft
-                //                    //                            Layout.columnSpan: 4
-                //                    //                            Layout.fillHeight: false
-                //                    //                            Layout.fillWidth: true
-                //                    //                        }
-                //                    //                    }
-                //                }
+                            Layout.rowSpan: 1
+                            Layout.columnSpan: 4
+
+                            Layout.preferredHeight: gdtStatusReportGridRowHeight
+                            Layout.preferredWidth: gdtStatusReportGridColumnWidth
+                                                   * Layout.columnSpan
+                            Layout.fillWidth: false
+                            Layout.fillHeight: true
+                            Layout.alignment: Qt.AlignLeft
+                        }
+
+                        QGCTextField {
+
+                            id: _setFrequencyField
+
+                            Layout.rowSpan: 1
+                            Layout.columnSpan: 4
+
+                            Layout.preferredHeight: gdtStatusReportGridRowHeight
+                            Layout.preferredWidth: gdtStatusReportGridColumnWidth
+                                                   * Layout.columnSpan
+                            Layout.fillWidth: false
+                            Layout.fillHeight: true
+                            Layout.alignment: Qt.AlignLeft
+
+                            height: gdtStatusReportGridRowHeight
+                            width: gdtStatusReportGridColumnWidth * Layout.columnSpan
+
+                            maximumLength: 4
+                            font.pointSize: ScreenTools.isMobile ? point_size : 9
+                            text: qsTr("2200")
+                        }
+
+                        QGCButton {
+
+                            id: _setFrequencyButton
+
+                            showBorder: true
+                            text: qsTr("SET")
+
+                            Layout.rowSpan: 1
+                            Layout.columnSpan: 4
+
+                            Layout.preferredHeight: gdtStatusReportGridRowHeight
+                            Layout.preferredWidth: gdtStatusReportGridColumnWidth
+                                                   * Layout.columnSpan
+                            Layout.fillWidth: false
+                            Layout.fillHeight: true
+                            Layout.alignment: Qt.AlignLeft
+
+                            height: gdtStatusReportGridRowHeight
+                            width: gdtStatusReportGridColumnWidth * Layout.columnSpan
+
+                            onClicked: {
+                                if (parseInt(_setFrequencyField.text) >= 2150
+                                        && parseInt(
+                                            _setFrequencyField.text) <= 2400) {
+                                    QGroundControl.commtactLinkManagement.setGDTOperationalFrequencyCommand(
+                                                parseInt(
+                                                    _setFrequencyField.text))
+                                }
+                            }
+                        }
+                    }
+                }
             }
         }
 
@@ -948,19 +1022,42 @@ Item {
 
                             height: ScreenTools.defaultFontPixelHeight
 
-                            text: {
-                                if (QGroundControl.commtactLinkManagement.gdtAntennaSelect === 0) {
-                                    qsTr("ANTENNA:OMNI")
-                                } else if (QGroundControl.commtactLinkManagement.gdtAntennaSelect
-                                           === 1) {
-                                    qsTr("ANTENNA:DIRECTIONAL")
-                                } else if (QGroundControl.commtactLinkManagement.gdtAntennaSelect
-                                           === 22) {
-                                    qsTr("ANTENNA:ADVANCED")
-                                } else {
-                                    qsTr("ANTENNA:NAN")
-                                }
-                            }
+                            text: qsTr("LINK RSSI:")
+                                  + QGroundControl.commtactLinkManagement.gdtLinkRSSI
+                            font.family: ScreenTools.demiboldFontFamily
+                            color: "White"
+
+                            horizontalAlignment: Text.AlignHCenter
+                            verticalAlignment: Text.AlignVCenter
+
+                            Layout.alignment: Qt.AlignLeft
+                            Layout.columnSpan: 4
+                            Layout.fillHeight: false
+                            Layout.fillWidth: true
+                        }
+                        QGCLabel {
+
+                            height: ScreenTools.defaultFontPixelHeight
+
+                            text: qsTr("LINK PACKETS:")
+                                  + QGroundControl.commtactLinkManagement.gdtLinkTransferedPackets
+                            font.family: ScreenTools.demiboldFontFamily
+                            color: "White"
+
+                            horizontalAlignment: Text.AlignHCenter
+                            verticalAlignment: Text.AlignVCenter
+
+                            Layout.alignment: Qt.AlignLeft
+                            Layout.columnSpan: 4
+                            Layout.fillHeight: false
+                            Layout.fillWidth: true
+                        }
+                        QGCLabel {
+
+                            height: ScreenTools.defaultFontPixelHeight
+
+                            text: qsTr("FREQUENCY:")
+                                  + QGroundControl.commtactLinkManagement.gdtOperationFrequency
                             font.family: ScreenTools.demiboldFontFamily
                             color: "White"
 

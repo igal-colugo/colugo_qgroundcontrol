@@ -56,6 +56,9 @@ class CommtactLinkProtocol : public QGCTool
     Q_OBJECT
 
   public:
+    PACKED_STRUCT(typedef struct __commtact_gdt_get_report { uint8_t gdt_required_message; })
+    commtact_gdt_get_report_t;
+
     PACKED_STRUCT(typedef struct __commtact_link_message_header {
         uint8_t time_stamp[4]; ///< protocol magic marker
         uint8_t seq_num[2];    ///< ID of device
@@ -162,6 +165,9 @@ class CommtactLinkProtocol : public QGCTool
     })
     commtact_gdt_status_report_t;
 
+    PACKED_STRUCT(typedef struct __commtact_gdt_constant_frequency_report { uint16_t gdt_operation_frequency; })
+    commtact_gdt_constant_frequency_report_t;
+
     PACKED_STRUCT(typedef struct __commtact_gdt_operational_mode {
         uint8_t transmitter_operational_mode;
         uint8_t gdt_pedestal_track_mode;
@@ -177,6 +183,9 @@ class CommtactLinkProtocol : public QGCTool
         uint8_t unit_mode;
     })
     commtact_gdt_operational_mode_t;
+
+    PACKED_STRUCT(typedef struct __commtact_gdt_constant_frequency { uint16_t gdt_opeartion_frequency; })
+    commtact_gdt_constant_frequency_t;
 
     typedef enum
     {
@@ -215,10 +224,13 @@ class CommtactLinkProtocol : public QGCTool
     typedef enum
     {
         GDT_OPERATIONAL_MODE_SET = 0x01,
+        GDT_CONSTANT_FREQUENCY_SET = 0x02,
+        GDT_GET_REPORT_MESSAGE = 0x09,
         GDT_OPERATIONAL_MODES_REPORT = 0X80,
         GDT_STATUS_REPORT = 0X81,
         GDT_MISSION_ADT_STATUS_REPORT = 0X82,
-        GDT_PBIT_REPORT = 0X86
+        GDT_PBIT_REPORT = 0X86,
+        GDT_CONSTANT_FREQUENCY_REPORT = 0X88,
     } commtact_link_opcode_t;
 
   public:
@@ -239,6 +251,9 @@ class CommtactLinkProtocol : public QGCTool
     // Override from QGCTool
     virtual void setToolbox(QGCToolbox *toolbox);
 
+    uint16_t commtact_link_msg_get_report_message_pack(CommtactLinkProtocol::commtact_link_message_t *msg, uint8_t required_message);
+    uint16_t commtact_link_msg_gdt_opeartional_frequency_pack(CommtactLinkProtocol::commtact_link_message_t *msg, uint16_t gdt_operational_frequency);
+
     uint16_t commtact_link_msg_operational_mode_pack(CommtactLinkProtocol::commtact_link_message_t *msg, uint8_t transmitter_operational_mode, uint8_t pedestal_track__mode,
                                                      uint8_t gdt_antenna_select, uint16_t set_azimuth, int16_t set_elevation, uint8_t frequency_mode, uint8_t reserved_1,
                                                      uint8_t tdd_operational_mode, uint8_t aes_encryption_enable, uint8_t reserved_2, uint8_t bit, uint8_t unit_mode);
@@ -246,6 +261,7 @@ class CommtactLinkProtocol : public QGCTool
     uint16_t commtact_link_msg_to_send_buffer(uint8_t *buf, const CommtactLinkProtocol::commtact_link_message_t *msg, uint32_t payload_size);
     void commtact_link_msg_operational_modes_report_decode(const commtact_link_message_t *msg, commtact_gdt_operational_modes_report_t *operational_modes_report);
     void commtact_link_msg_gdt_status_report_decode(const commtact_link_message_t *msg, commtact_gdt_status_report_t *gdt_status_report);
+    void commtact_link_msg_gdt_constant_frequency_report_decode(const commtact_link_message_t *msg, commtact_gdt_constant_frequency_report_t *gdt_constant_frequency_report);
 
   public slots:
     /** @brief Receive bytes from a communication interface */

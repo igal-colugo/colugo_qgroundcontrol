@@ -196,7 +196,7 @@ void CommtactUDPLink::readBytes()
         //-- Wait a bit before sending it over
         if (databuffer.size() > 127)
         {
-            // emit bytesReceived(this, databuffer);
+            emit bytesReceived(this, databuffer);
             databuffer.clear();
         }
         // TODO: This doesn't validade the sender. Anything sending UDP packets to this port gets
