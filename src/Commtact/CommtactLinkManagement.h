@@ -27,7 +27,7 @@ class CommtactLinkManagement : public QGCTool
     // UI state management functions (called periodically, their result is meant to update Qml proprties dynamically)
     Q_INVOKABLE bool getShouldUiEnabledRescueElement();
 
-    //---------------------- Properties ---------------------------------
+    //---------------------- GDT Properties ---------------------------------
     Q_PROPERTY(QStringList operationalModeTypeStrings READ operationalModeTypeStrings CONSTANT)
     Q_PROPERTY(uint transmitterOperationalMode READ getTransmitterOperationalMode WRITE setTransmitterOperationalMode NOTIFY transmitterOperationalModeChanged)
     uint getTransmitterOperationalMode()
@@ -123,15 +123,15 @@ class CommtactLinkManagement : public QGCTool
         emit gdtAesEncryptionChanged();
     }
 
-    Q_PROPERTY(uint gdtLinkTransferedPackets READ getGdtLinkTransferedPackets WRITE setGdtLinkTransferedPackets NOTIFY gdtLinkTransferedPacketsChanged)
-    uint getGdtLinkTransferedPackets()
+    Q_PROPERTY(int gdtTDDSync READ getGdtTDDSync WRITE setGdtTDDSync NOTIFY gdtTDDSyncChanged)
+    uint getGdtTDDSync()
     {
-        return (uint) _gdtLinkTransferedPackets;
+        return (int) _gdtTDDSync;
     }
-    void setGdtLinkTransferedPackets(const uint16_t &gdtLinkTransferedPackets)
+    void setGdtTDDSync(const int &gdtTDDSync)
     {
-        _gdtLinkTransferedPackets = (uint16_t) gdtLinkTransferedPackets;
-        emit gdtLinkTransferedPacketsChanged();
+        _gdtTDDSync = (int8_t) gdtTDDSync;
+        emit gdtTDDSyncChanged();
     }
 
     Q_PROPERTY(int gdtLinkRSSI READ getGdtLinkRSSI WRITE setGdtLinkRSSI NOTIFY gdtLinkRSSIChanged)
@@ -145,6 +145,39 @@ class CommtactLinkManagement : public QGCTool
         emit gdtLinkRSSIChanged();
     }
 
+    Q_PROPERTY(uint gdtLinkTransferedPackets READ getGdtLinkTransferedPackets WRITE setGdtLinkTransferedPackets NOTIFY gdtLinkTransferedPacketsChanged)
+    uint getGdtLinkTransferedPackets()
+    {
+        return (uint) _gdtLinkTransferedPackets;
+    }
+    void setGdtLinkTransferedPackets(const uint16_t &gdtLinkTransferedPackets)
+    {
+        _gdtLinkTransferedPackets = (uint16_t) gdtLinkTransferedPackets;
+        emit gdtLinkTransferedPacketsChanged();
+    }
+
+    Q_PROPERTY(uint gdtLinkErrorPackets READ getGdtLinkErrorPackets WRITE setGdtLinkErrorPackets NOTIFY gdtLinkErrorPacketsChanged)
+    uint getGdtLinkErrorPackets()
+    {
+        return (uint) _gdtLinkErrorPackets;
+    }
+    void setGdtLinkErrorPackets(const uint16_t &gdtLinkErrorPackets)
+    {
+        _gdtLinkErrorPackets = (uint16_t) gdtLinkErrorPackets;
+        emit gdtLinkErrorPacketsChanged();
+    }
+
+    Q_PROPERTY(uint gdtLinkCRCErrorPackets READ getGdtLinkCRCErrorPackets WRITE setGdtLinkCRCErrorPackets NOTIFY gdtLinkCRCErrorPacketsChanged)
+    uint getGdtLinkCRCErrorPackets()
+    {
+        return (uint) _gdtLinkCRCErrorPackets;
+    }
+    void setGdtLinkCRCErrorPackets(const uint16_t &gdtLinkCRCErrorPackets)
+    {
+        _gdtLinkCRCErrorPackets = (uint16_t) gdtLinkCRCErrorPackets;
+        emit gdtLinkCRCErrorPacketsChanged();
+    }
+
     Q_PROPERTY(int gdtOperationFrequency READ getGdtOperationFrequency WRITE setGdtOperationFrequency NOTIFY gdtOperationFrequencyChanged)
     uint getGdtOperationFrequency()
     {
@@ -156,6 +189,29 @@ class CommtactLinkManagement : public QGCTool
         emit gdtOperationFrequencyChanged();
     }
 
+    Q_PROPERTY(int gdtCBITPAPowerOutput READ getGdtCBITPAPowerOutput WRITE setGdtCBITPAPowerOutput NOTIFY gdtCBITPAPowerOutputChanged)
+    int getGdtCBITPAPowerOutput()
+    {
+        return (int) _gdtCBITPAPowerOutput;
+    }
+    void setGdtCBITPAPowerOutput(const int &gdtCBITPAPowerOutput)
+    {
+        _gdtCBITPAPowerOutput = (int16_t) gdtCBITPAPowerOutput;
+        emit gdtCBITPAPowerOutputChanged();
+    }
+
+    Q_PROPERTY(int gdtCBITPAReturnPower READ getGdtCBITPAReturnPower WRITE setGdtCBITPAReturnPower NOTIFY gdtCBITPAReturnPowerChanged)
+    int getGdtCBITPAReturnPower()
+    {
+        return (int) _gdtCBITPAReturnPower;
+    }
+    void setGdtCBITPAReturnPower(const int &gdtCBITPAReturnPower)
+    {
+        _gdtCBITPAReturnPower = (int16_t) gdtCBITPAReturnPower;
+        emit gdtCBITPAReturnPowerChanged();
+    }
+
+    //------------------- GDT commands ----------------------------------
     QStringList operationalModeTypeStrings(void) const;
     QStringList gdtAntennaSelectTypeStrings(void) const;
     QStringList gdtPedestalTrackModeTypeStrings(void) const;
@@ -163,6 +219,15 @@ class CommtactLinkManagement : public QGCTool
     QStringList gdtFrequencyModeTypeStrings(void) const;
     QStringList gdtUnitModeTypeStrings(void) const;
     QStringList gdtSymbolRateTypeStrings(void) const;
+    //-------------------------------------------------------------------
+
+    //------------------- ADT commands ----------------------------------
+    QStringList adtOperationalModeTypeStrings(void) const;
+    QStringList adtAntennaSelectTypeStrings(void) const;
+    QStringList adtTddOperationalModeTypeStrings(void) const;
+    QStringList adtFrequencyModeTypeStrings(void) const;
+    QStringList adtUnitModeTypeStrings(void) const;
+    QStringList adtSymbolRateTypeStrings(void) const;
     //-------------------------------------------------------------------
 
     //------------------- GDT commands ----------------------------------
@@ -178,12 +243,23 @@ class CommtactLinkManagement : public QGCTool
     Q_INVOKABLE void setGDTOperationalFrequencyCommand(uint gdt_operational_frequency);
     //-------------------------------------------------------------------
 
+    //------------------- ADT commands ----------------------------------
+    Q_INVOKABLE void setADTOperationalModeCommand(uint transmitter_operational_mode);
+    Q_INVOKABLE void setADTAntennaSelectCommand(uint adt_antenna_select);
+    Q_INVOKABLE void setADTTddOperationalModeCommand(uint adt_tdd_operational_mode);
+    Q_INVOKABLE void setADTFrequencyModeCommand(uint adt_frequency_mode);
+    Q_INVOKABLE void setADTUnitModeCommand(uint adt_unit_mode);
+    Q_INVOKABLE void setADTSymbolRateCommand(uint adt_symbol_rate);
+    Q_INVOKABLE void setADTAesEncryptionCommand(uint adt_aes_encryption);
+    //-------------------------------------------------------------------
+
   protected:
     CommtactLinkManager *_commtactLinkManager = nullptr;
 
   private:
     QTimer _updateTimer;
 
+    //--------------- GDT fields --------------------
     uint8_t _transmitterOperationalMode;
     uint8_t _gdtAntennaSelect;
     uint8_t _gdtPedestalTrackMode;
@@ -193,16 +269,29 @@ class CommtactLinkManagement : public QGCTool
     uint8_t _gdtSymbolRate;
     uint8_t _gdtAesEncryption;
 
-    uint16_t _gdtLinkTransferedPackets;
+    int8_t _gdtTDDSync;
     int8_t _gdtLinkRSSI;
+    uint16_t _gdtLinkTransferedPackets;
+    uint16_t _gdtLinkErrorPackets;
+    uint16_t _gdtLinkCRCErrorPackets;
 
     uint16_t _gdtOperationFrequency;
+
+    int16_t _gdtCBITPAPowerOutput;
+    int16_t _gdtCBITPAReturnPower;
 
     CommtactLinkProtocol::commtact_gdt_operational_modes_report_t _operational_modes_report;
     CommtactLinkProtocol::commtact_gdt_status_report_t _gdt_status_report;
     CommtactLinkProtocol::commtact_gdt_constant_frequency_report_t _gdt_constant_frequency_report;
+    CommtactLinkProtocol::commtact_gdt_cbit_report_t _gdt_cbit_report;
+    CommtactLinkProtocol::commtact_gdt_mission_adt_status_report_t _gdt_mission_adt_status_report;
+
+    CommtactLinkProtocol::commtact_adt_operational_modes_report_t _adt_operational_modes_report;
+
+    //-----------------------------------------------
 
   signals:
+    //---------------- GDT signals ------------------
     void transmitterOperationalModeChanged();
     void gdtAntennaSelectChanged();
     void gdtPedestalTrackModeChanged();
@@ -212,13 +301,24 @@ class CommtactLinkManagement : public QGCTool
     void gdtSymbolRateChanged();
     void gdtAesEncryptionChanged();
 
-    void gdtLinkTransferedPacketsChanged();
+    void gdtTDDSyncChanged();
     void gdtLinkRSSIChanged();
+    void gdtLinkTransferedPacketsChanged();
+    void gdtLinkErrorPacketsChanged();
+    void gdtLinkCRCErrorPacketsChanged();
 
     void gdtOperationFrequencyChanged();
 
+    void gdtCBITPAPowerOutputChanged();
+    void gdtCBITPAReturnPowerChanged();
+    //-----------------------------------------------
+
+    //---------------- ADT signals ------------------
+
+    //-----------------------------------------------
+
   public slots:
-    void _commtactLinkMessageReceived(CommtactLinkInterface *link, CommtactLinkProtocol::commtact_link_message_t message);
+    void _commtactLinkMessageReceived(CommtactLinkInterface *link, CommtactLinkProtocol::commtact_link_message_t message, int message_size);
 };
 
 #endif // COMMTACT_MANAGEMENT_H

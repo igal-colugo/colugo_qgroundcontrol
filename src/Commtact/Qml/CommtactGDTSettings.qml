@@ -18,36 +18,6 @@ Item {
     anchors.fill: parent
     visible: true
 
-    property int gdtMainRowHeight: (parent.height - (gdtMainGrid.rows * gdtMainGrid.rowSpacing))
-                                   / (gdtMainGrid.rows)
-    property int gdtMainColumnWidth: (parent.width - (gdtMainGrid.columns
-                                                      * gdtMainGrid.columnSpacing))
-                                     / (gdtMainGrid.columns)
-
-    property int gdtSettingsRowHeight: (gdtSettingsGroupBox.height
-                                        - (gdtSettingsGrid.rows * gdtSettingsGrid.rowSpacing))
-                                       / (gdtSettingsGrid.rows)
-    property int gdtSettingsColumnWidth: (gdtSettingsGroupBox.width
-                                          - (gdtSettingsGrid.columns
-                                             * gdtSettingsGrid.columnSpacing))
-                                         / (gdtSettingsGrid.columns)
-
-    property int gdtReportRowHeight: (gdtReportGroupBox.height
-                                      - (gdtReportGrid.rows * gdtReportGrid.rowSpacing))
-                                     / (gdtReportGrid.rows)
-    property int gdtReportColumnWidth: (gdtReportGroupBox.width
-                                        - (gdtReportGrid.columns * gdtReportGrid.columnSpacing))
-                                       / (gdtReportGrid.columns)
-
-    property int gdtStatusReportGridRowHeight: (gdtStatusReportGrid.height
-                                                - (gdtStatusReportGrid.rows
-                                                   * gdtStatusReportGrid.rowSpacing))
-                                               / (gdtStatusReportGrid.rows)
-    property int gdtStatusReportGridColumnWidth: (gdtStatusReportGrid.width
-                                                  - (gdtStatusReportGrid.columns
-                                                     * gdtStatusReportGrid.columnSpacing))
-                                                 / (gdtStatusReportGrid.columns)
-
     GridLayout {
         id: gdtMainGrid
 
@@ -59,13 +29,21 @@ Item {
         rowSpacing: 2
 
         QGCGroupBox {
+
+            property int cellRowHeight: (parent.height - (parent.rows * parent.rowSpacing))
+                                        / (parent.rows)
+            property int cellColumnWidth: (parent.width - (parent.columns * parent.columnSpacing))
+                                          / (parent.columns)
+
             id: gdtSettingsGroupBox
-            height: gdtMainRowHeight
-            width: gdtMainColumnWidth * Layout.columnSpan
+            height: cellRowHeight
+            width: cellColumnWidth * Layout.columnSpan
             Layout.rowSpan: 1
             Layout.columnSpan: 1
-            Layout.preferredHeight: gdtMainRowHeight
-            Layout.preferredWidth: gdtMainColumnWidth * Layout.columnSpan
+            Layout.preferredHeight: cellRowHeight * Layout.rowSpan
+            Layout.preferredWidth: cellColumnWidth * Layout.columnSpan
+            Layout.maximumHeight: cellRowHeight * Layout.rowSpan
+            Layout.maximumWidth: cellColumnWidth * Layout.columnSpan
             Layout.fillWidth: true
             Layout.fillHeight: true
             Layout.alignment: Qt.AlignCenter
@@ -83,27 +61,41 @@ Item {
 
                 QGCLabel {
 
+                    property int cellRowHeight: (parent.height - (parent.rows * parent.rowSpacing))
+                                                / (parent.rows)
+                    property int cellColumnWidth: (parent.width - (parent.columns * parent.columnSpacing)) / (parent.columns)
+
                     height: ScreenTools.defaultFontPixelHeight
 
                     text: "MODE:"
                     font.family: ScreenTools.demiboldFontFamily
                     color: "White"
 
-                    horizontalAlignment: Text.AlignHCenter
+                    horizontalAlignment: Text.AlignLeft
                     verticalAlignment: Text.AlignVCenter
 
                     Layout.alignment: Qt.AlignLeft
                     Layout.columnSpan: 2
                     Layout.fillHeight: false
                     Layout.fillWidth: true
+                    Layout.preferredHeight: cellRowHeight
+                    Layout.preferredWidth: cellColumnWidth * Layout.columnSpan
+                    Layout.maximumHeight: cellRowHeight
+                    Layout.maximumWidth: cellColumnWidth * Layout.columnSpan
                 }
                 QGCComboBox {
+                    property int cellRowHeight: (parent.height - (parent.rows * parent.rowSpacing))
+                                                / (parent.rows)
+                    property int cellColumnWidth: (parent.width - (parent.columns * parent.columnSpacing)) / (parent.columns)
+
                     id: _gdtOperationalMode
                     Layout.rowSpan: 1
                     Layout.columnSpan: 3
 
-                    Layout.preferredHeight: gdtSettingsRowHeight
-                    Layout.preferredWidth: gdtSettingsColumnWidth * Layout.columnSpan
+                    Layout.preferredHeight: cellRowHeight
+                    Layout.preferredWidth: cellColumnWidth * Layout.columnSpan
+                    Layout.maximumHeight: cellRowHeight
+                    Layout.maximumWidth: cellColumnWidth * Layout.columnSpan
                     Layout.fillWidth: false
                     Layout.fillHeight: false
                     Layout.alignment: Qt.AlignCenter
@@ -112,6 +104,9 @@ Item {
                     currentIndex: 0
                 }
                 QGCButton {
+                    property int cellRowHeight: (parent.height - (parent.rows * parent.rowSpacing))
+                                                / (parent.rows)
+                    property int cellColumnWidth: (parent.width - (parent.columns * parent.columnSpacing)) / (parent.columns)
 
                     id: _gdtSetModeButton
 
@@ -121,8 +116,10 @@ Item {
                     Layout.rowSpan: 1
                     Layout.columnSpan: 1
 
-                    Layout.preferredHeight: gdtSettingsRowHeight
-                    Layout.preferredWidth: gdtSettingsColumnWidth * Layout.columnSpan
+                    Layout.preferredHeight: cellRowHeight
+                    Layout.preferredWidth: cellColumnWidth * Layout.columnSpan
+                    Layout.maximumHeight: cellRowHeight
+                    Layout.maximumWidth: cellColumnWidth * Layout.columnSpan
                     Layout.fillWidth: false
                     Layout.fillHeight: false
                     Layout.alignment: Qt.AlignLeft
@@ -154,6 +151,9 @@ Item {
                 }
 
                 QGCLabel {
+                    property int cellRowHeight: (parent.height - (parent.rows * parent.rowSpacing))
+                                                / (parent.rows)
+                    property int cellColumnWidth: (parent.width - (parent.columns * parent.columnSpacing)) / (parent.columns)
 
                     height: ScreenTools.defaultFontPixelHeight
 
@@ -161,21 +161,31 @@ Item {
                     font.family: ScreenTools.demiboldFontFamily
                     color: "White"
 
-                    horizontalAlignment: Text.AlignHCenter
+                    horizontalAlignment: Text.AlignLeft
                     verticalAlignment: Text.AlignVCenter
 
                     Layout.alignment: Qt.AlignLeft
                     Layout.columnSpan: 2
                     Layout.fillHeight: false
                     Layout.fillWidth: true
+                    Layout.preferredHeight: cellRowHeight
+                    Layout.preferredWidth: cellColumnWidth * Layout.columnSpan
+                    Layout.maximumHeight: cellRowHeight
+                    Layout.maximumWidth: cellColumnWidth * Layout.columnSpan
                 }
                 QGCComboBox {
+                    property int cellRowHeight: (parent.height - (parent.rows * parent.rowSpacing))
+                                                / (parent.rows)
+                    property int cellColumnWidth: (parent.width - (parent.columns * parent.columnSpacing)) / (parent.columns)
+
                     id: _gdtAntennaSelect
                     Layout.rowSpan: 1
                     Layout.columnSpan: 3
 
-                    Layout.preferredHeight: gdtSettingsRowHeight
-                    Layout.preferredWidth: gdtSettingsColumnWidth * Layout.columnSpan
+                    Layout.preferredHeight: cellRowHeight
+                    Layout.preferredWidth: cellColumnWidth * Layout.columnSpan
+                    Layout.maximumHeight: cellRowHeight
+                    Layout.maximumWidth: cellColumnWidth * Layout.columnSpan
                     Layout.fillWidth: false
                     Layout.fillHeight: false
                     Layout.alignment: Qt.AlignCenter
@@ -184,6 +194,9 @@ Item {
                     currentIndex: 0
                 }
                 QGCButton {
+                    property int cellRowHeight: (parent.height - (parent.rows * parent.rowSpacing))
+                                                / (parent.rows)
+                    property int cellColumnWidth: (parent.width - (parent.columns * parent.columnSpacing)) / (parent.columns)
 
                     id: _gdtSetAntennaSelectButton
 
@@ -193,8 +206,10 @@ Item {
                     Layout.rowSpan: 1
                     Layout.columnSpan: 1
 
-                    Layout.preferredHeight: gdtSettingsRowHeight
-                    Layout.preferredWidth: gdtSettingsColumnWidth * Layout.columnSpan
+                    Layout.preferredHeight: cellRowHeight
+                    Layout.preferredWidth: cellColumnWidth * Layout.columnSpan
+                    Layout.maximumHeight: cellRowHeight
+                    Layout.maximumWidth: cellColumnWidth * Layout.columnSpan
                     Layout.fillWidth: false
                     Layout.fillHeight: false
                     Layout.alignment: Qt.AlignLeft
@@ -215,27 +230,42 @@ Item {
 
                 QGCLabel {
 
+                    property int cellRowHeight: (parent.height - (parent.rows * parent.rowSpacing))
+                                                / (parent.rows)
+                    property int cellColumnWidth: (parent.width - (parent.columns * parent.columnSpacing)) / (parent.columns)
+
                     height: ScreenTools.defaultFontPixelHeight
 
                     text: "PEDESTAL:"
                     font.family: ScreenTools.demiboldFontFamily
                     color: "White"
 
-                    horizontalAlignment: Text.AlignHCenter
+                    horizontalAlignment: Text.AlignLeft
                     verticalAlignment: Text.AlignVCenter
 
                     Layout.alignment: Qt.AlignLeft
                     Layout.columnSpan: 2
                     Layout.fillHeight: false
                     Layout.fillWidth: true
+                    Layout.preferredHeight: cellRowHeight
+                    Layout.preferredWidth: cellColumnWidth * Layout.columnSpan
+                    Layout.maximumHeight: cellRowHeight
+                    Layout.maximumWidth: cellColumnWidth * Layout.columnSpan
                 }
                 QGCComboBox {
+
+                    property int cellRowHeight: (parent.height - (parent.rows * parent.rowSpacing))
+                                                / (parent.rows)
+                    property int cellColumnWidth: (parent.width - (parent.columns * parent.columnSpacing)) / (parent.columns)
+
                     id: _gdtPedestalTrackMode
                     Layout.rowSpan: 1
                     Layout.columnSpan: 3
 
-                    Layout.preferredHeight: gdtSettingsRowHeight
-                    Layout.preferredWidth: gdtSettingsColumnWidth * Layout.columnSpan
+                    Layout.preferredHeight: cellRowHeight
+                    Layout.preferredWidth: cellColumnWidth * Layout.columnSpan
+                    Layout.maximumHeight: cellRowHeight
+                    Layout.maximumWidth: cellColumnWidth * Layout.columnSpan
                     Layout.fillWidth: false
                     Layout.fillHeight: false
                     Layout.alignment: Qt.AlignCenter
@@ -245,6 +275,10 @@ Item {
                 }
                 QGCButton {
 
+                    property int cellRowHeight: (parent.height - (parent.rows * parent.rowSpacing))
+                                                / (parent.rows)
+                    property int cellColumnWidth: (parent.width - (parent.columns * parent.columnSpacing)) / (parent.columns)
+
                     id: _gdtSetPedestalTrackModeButton
 
                     showBorder: true
@@ -253,8 +287,10 @@ Item {
                     Layout.rowSpan: 1
                     Layout.columnSpan: 1
 
-                    Layout.preferredHeight: gdtSettingsRowHeight
-                    Layout.preferredWidth: gdtSettingsColumnWidth * Layout.columnSpan
+                    Layout.preferredHeight: cellRowHeight
+                    Layout.preferredWidth: cellColumnWidth * Layout.columnSpan
+                    Layout.maximumHeight: cellRowHeight
+                    Layout.maximumWidth: cellColumnWidth * Layout.columnSpan
                     Layout.fillWidth: false
                     Layout.fillHeight: false
                     Layout.alignment: Qt.AlignLeft
@@ -284,27 +320,42 @@ Item {
 
                 QGCLabel {
 
+                    property int cellRowHeight: (parent.height - (parent.rows * parent.rowSpacing))
+                                                / (parent.rows)
+                    property int cellColumnWidth: (parent.width - (parent.columns * parent.columnSpacing)) / (parent.columns)
+
                     height: ScreenTools.defaultFontPixelHeight
 
                     text: "TDD:"
                     font.family: ScreenTools.demiboldFontFamily
                     color: "White"
 
-                    horizontalAlignment: Text.AlignHCenter
+                    horizontalAlignment: Text.AlignLeft
                     verticalAlignment: Text.AlignVCenter
 
                     Layout.alignment: Qt.AlignLeft
                     Layout.columnSpan: 2
                     Layout.fillHeight: false
                     Layout.fillWidth: true
+
+                    Layout.preferredHeight: cellRowHeight
+                    Layout.preferredWidth: cellColumnWidth * Layout.columnSpan
+                    Layout.maximumHeight: cellRowHeight
+                    Layout.maximumWidth: cellColumnWidth * Layout.columnSpan
                 }
                 QGCComboBox {
+                    property int cellRowHeight: (parent.height - (parent.rows * parent.rowSpacing))
+                                                / (parent.rows)
+                    property int cellColumnWidth: (parent.width - (parent.columns * parent.columnSpacing)) / (parent.columns)
+
                     id: _gdtTddOperationalMode
                     Layout.rowSpan: 1
                     Layout.columnSpan: 3
 
-                    Layout.preferredHeight: gdtSettingsRowHeight
-                    Layout.preferredWidth: gdtSettingsColumnWidth * Layout.columnSpan
+                    Layout.preferredHeight: cellRowHeight
+                    Layout.preferredWidth: cellColumnWidth * Layout.columnSpan
+                    Layout.maximumHeight: cellRowHeight
+                    Layout.maximumWidth: cellColumnWidth * Layout.columnSpan
                     Layout.fillWidth: false
                     Layout.fillHeight: false
                     Layout.alignment: Qt.AlignCenter
@@ -313,6 +364,9 @@ Item {
                     currentIndex: 0
                 }
                 QGCButton {
+                    property int cellRowHeight: (parent.height - (parent.rows * parent.rowSpacing))
+                                                / (parent.rows)
+                    property int cellColumnWidth: (parent.width - (parent.columns * parent.columnSpacing)) / (parent.columns)
 
                     id: _gdtSetTddOperationalModeButton
 
@@ -322,8 +376,10 @@ Item {
                     Layout.rowSpan: 1
                     Layout.columnSpan: 1
 
-                    Layout.preferredHeight: gdtSettingsRowHeight
-                    Layout.preferredWidth: gdtSettingsColumnWidth * Layout.columnSpan
+                    Layout.preferredHeight: cellRowHeight
+                    Layout.preferredWidth: cellColumnWidth * Layout.columnSpan
+                    Layout.maximumHeight: cellRowHeight
+                    Layout.maximumWidth: cellColumnWidth * Layout.columnSpan
                     Layout.fillWidth: false
                     Layout.fillHeight: false
                     Layout.alignment: Qt.AlignLeft
@@ -340,6 +396,9 @@ Item {
                 }
 
                 QGCLabel {
+                    property int cellRowHeight: (parent.height - (parent.rows * parent.rowSpacing))
+                                                / (parent.rows)
+                    property int cellColumnWidth: (parent.width - (parent.columns * parent.columnSpacing)) / (parent.columns)
 
                     height: ScreenTools.defaultFontPixelHeight
 
@@ -347,21 +406,32 @@ Item {
                     font.family: ScreenTools.demiboldFontFamily
                     color: "White"
 
-                    horizontalAlignment: Text.AlignHCenter
+                    horizontalAlignment: Text.AlignLeft
                     verticalAlignment: Text.AlignVCenter
 
                     Layout.alignment: Qt.AlignLeft
                     Layout.columnSpan: 2
                     Layout.fillHeight: false
                     Layout.fillWidth: true
+
+                    Layout.preferredHeight: cellRowHeight
+                    Layout.preferredWidth: cellColumnWidth * Layout.columnSpan
+                    Layout.maximumHeight: cellRowHeight
+                    Layout.maximumWidth: cellColumnWidth * Layout.columnSpan
                 }
                 QGCComboBox {
+                    property int cellRowHeight: (parent.height - (parent.rows * parent.rowSpacing))
+                                                / (parent.rows)
+                    property int cellColumnWidth: (parent.width - (parent.columns * parent.columnSpacing)) / (parent.columns)
+
                     id: _gdtFrequencyMode
                     Layout.rowSpan: 1
                     Layout.columnSpan: 3
 
-                    Layout.preferredHeight: gdtSettingsRowHeight
-                    Layout.preferredWidth: gdtSettingsColumnWidth * Layout.columnSpan
+                    Layout.preferredHeight: cellRowHeight
+                    Layout.preferredWidth: cellColumnWidth * Layout.columnSpan
+                    Layout.maximumHeight: cellRowHeight
+                    Layout.maximumWidth: cellColumnWidth * Layout.columnSpan
                     Layout.fillWidth: false
                     Layout.fillHeight: false
                     Layout.alignment: Qt.AlignCenter
@@ -371,6 +441,10 @@ Item {
                 }
                 QGCButton {
 
+                    property int cellRowHeight: (parent.height - (parent.rows * parent.rowSpacing))
+                                                / (parent.rows)
+                    property int cellColumnWidth: (parent.width - (parent.columns * parent.columnSpacing)) / (parent.columns)
+
                     id: _gdtSetFrequencyModeButton
 
                     showBorder: true
@@ -379,8 +453,10 @@ Item {
                     Layout.rowSpan: 1
                     Layout.columnSpan: 1
 
-                    Layout.preferredHeight: gdtSettingsRowHeight
-                    Layout.preferredWidth: gdtSettingsColumnWidth * Layout.columnSpan
+                    Layout.preferredHeight: cellRowHeight
+                    Layout.preferredWidth: cellColumnWidth * Layout.columnSpan
+                    Layout.maximumHeight: cellRowHeight
+                    Layout.maximumWidth: cellColumnWidth * Layout.columnSpan
                     Layout.fillWidth: false
                     Layout.fillHeight: false
                     Layout.alignment: Qt.AlignLeft
@@ -398,27 +474,42 @@ Item {
 
                 QGCLabel {
 
+                    property int cellRowHeight: (parent.height - (parent.rows * parent.rowSpacing))
+                                                / (parent.rows)
+                    property int cellColumnWidth: (parent.width - (parent.columns * parent.columnSpacing)) / (parent.columns)
+
                     height: ScreenTools.defaultFontPixelHeight
 
                     text: "UNIT:"
                     font.family: ScreenTools.demiboldFontFamily
                     color: "White"
 
-                    horizontalAlignment: Text.AlignHCenter
+                    horizontalAlignment: Text.AlignLeft
                     verticalAlignment: Text.AlignVCenter
 
                     Layout.alignment: Qt.AlignLeft
                     Layout.columnSpan: 2
                     Layout.fillHeight: false
                     Layout.fillWidth: true
+
+                    Layout.preferredHeight: cellRowHeight
+                    Layout.preferredWidth: cellColumnWidth * Layout.columnSpan
+                    Layout.maximumHeight: cellRowHeight
+                    Layout.maximumWidth: cellColumnWidth * Layout.columnSpan
                 }
                 QGCComboBox {
+                    property int cellRowHeight: (parent.height - (parent.rows * parent.rowSpacing))
+                                                / (parent.rows)
+                    property int cellColumnWidth: (parent.width - (parent.columns * parent.columnSpacing)) / (parent.columns)
+
                     id: _gdtUnitMode
                     Layout.rowSpan: 1
                     Layout.columnSpan: 3
 
-                    Layout.preferredHeight: gdtSettingsRowHeight
-                    Layout.preferredWidth: gdtSettingsColumnWidth * Layout.columnSpan
+                    Layout.preferredHeight: cellRowHeight
+                    Layout.preferredWidth: cellColumnWidth * Layout.columnSpan
+                    Layout.maximumHeight: cellRowHeight
+                    Layout.maximumWidth: cellColumnWidth * Layout.columnSpan
                     Layout.fillWidth: false
                     Layout.fillHeight: false
                     Layout.alignment: Qt.AlignCenter
@@ -427,6 +518,9 @@ Item {
                     currentIndex: 0
                 }
                 QGCButton {
+                    property int cellRowHeight: (parent.height - (parent.rows * parent.rowSpacing))
+                                                / (parent.rows)
+                    property int cellColumnWidth: (parent.width - (parent.columns * parent.columnSpacing)) / (parent.columns)
 
                     id: _gdtSetUnitModeButton
 
@@ -436,8 +530,10 @@ Item {
                     Layout.rowSpan: 1
                     Layout.columnSpan: 1
 
-                    Layout.preferredHeight: gdtSettingsRowHeight
-                    Layout.preferredWidth: gdtSettingsColumnWidth * Layout.columnSpan
+                    Layout.preferredHeight: cellRowHeight
+                    Layout.preferredWidth: cellColumnWidth * Layout.columnSpan
+                    Layout.maximumHeight: cellRowHeight
+                    Layout.maximumWidth: cellColumnWidth * Layout.columnSpan
                     Layout.fillWidth: false
                     Layout.fillHeight: false
                     Layout.alignment: Qt.AlignLeft
@@ -469,6 +565,9 @@ Item {
                 }
 
                 QGCLabel {
+                    property int cellRowHeight: (parent.height - (parent.rows * parent.rowSpacing))
+                                                / (parent.rows)
+                    property int cellColumnWidth: (parent.width - (parent.columns * parent.columnSpacing)) / (parent.columns)
 
                     height: ScreenTools.defaultFontPixelHeight
 
@@ -476,21 +575,32 @@ Item {
                     font.family: ScreenTools.demiboldFontFamily
                     color: "White"
 
-                    horizontalAlignment: Text.AlignHCenter
+                    horizontalAlignment: Text.AlignLeft
                     verticalAlignment: Text.AlignVCenter
 
                     Layout.alignment: Qt.AlignLeft
                     Layout.columnSpan: 2
                     Layout.fillHeight: false
                     Layout.fillWidth: true
+
+                    Layout.preferredHeight: cellRowHeight
+                    Layout.preferredWidth: cellColumnWidth * Layout.columnSpan
+                    Layout.maximumHeight: cellRowHeight
+                    Layout.maximumWidth: cellColumnWidth * Layout.columnSpan
                 }
                 QGCComboBox {
+                    property int cellRowHeight: (parent.height - (parent.rows * parent.rowSpacing))
+                                                / (parent.rows)
+                    property int cellColumnWidth: (parent.width - (parent.columns * parent.columnSpacing)) / (parent.columns)
+
                     id: _gdtSymbolRate
                     Layout.rowSpan: 1
                     Layout.columnSpan: 3
 
-                    Layout.preferredHeight: gdtSettingsRowHeight
-                    Layout.preferredWidth: gdtSettingsColumnWidth * Layout.columnSpan
+                    Layout.preferredHeight: cellRowHeight
+                    Layout.preferredWidth: cellColumnWidth * Layout.columnSpan
+                    Layout.maximumHeight: cellRowHeight
+                    Layout.maximumWidth: cellColumnWidth * Layout.columnSpan
                     Layout.fillWidth: false
                     Layout.fillHeight: false
                     Layout.alignment: Qt.AlignCenter
@@ -499,6 +609,9 @@ Item {
                     currentIndex: 0
                 }
                 QGCButton {
+                    property int cellRowHeight: (parent.height - (parent.rows * parent.rowSpacing))
+                                                / (parent.rows)
+                    property int cellColumnWidth: (parent.width - (parent.columns * parent.columnSpacing)) / (parent.columns)
 
                     id: _gdtSetSymbolRateButton
 
@@ -508,8 +621,10 @@ Item {
                     Layout.rowSpan: 1
                     Layout.columnSpan: 1
 
-                    Layout.preferredHeight: gdtSettingsRowHeight
-                    Layout.preferredWidth: gdtSettingsColumnWidth * Layout.columnSpan
+                    Layout.preferredHeight: cellRowHeight
+                    Layout.preferredWidth: cellColumnWidth * Layout.columnSpan
+                    Layout.maximumHeight: cellRowHeight
+                    Layout.maximumWidth: cellColumnWidth * Layout.columnSpan
                     Layout.fillWidth: false
                     Layout.fillHeight: false
                     Layout.alignment: Qt.AlignLeft
@@ -528,38 +643,45 @@ Item {
                     }
                 }
 
-                QGCButton {
+                QGCLabel {
+                    property int cellRowHeight: (parent.height - (parent.rows * parent.rowSpacing))
+                                                / (parent.rows)
+                    property int cellColumnWidth: (parent.width - (parent.columns * parent.columnSpacing)) / (parent.columns)
 
-                    id: _gdtClearCBITButton
+                    height: ScreenTools.defaultFontPixelHeight
 
-                    showBorder: true
-                    text: qsTr("CLEAR CBIT")
+                    text: " "
+                    font.family: ScreenTools.demiboldFontFamily
+                    color: "White"
 
-                    Layout.rowSpan: 1
-                    Layout.columnSpan: 6
+                    horizontalAlignment: Text.AlignLeft
+                    verticalAlignment: Text.AlignVCenter
 
-                    Layout.preferredHeight: gdtSettingsRowHeight
-                    Layout.preferredWidth: gdtSettingsColumnWidth * Layout.columnSpan
-                    Layout.fillWidth: false
-                    Layout.fillHeight: false
                     Layout.alignment: Qt.AlignLeft
+                    Layout.columnSpan: 2
+                    Layout.fillHeight: false
+                    Layout.fillWidth: true
 
-                    onClicked: {
-
-                    }
+                    Layout.preferredHeight: cellRowHeight
+                    Layout.preferredWidth: cellColumnWidth * Layout.columnSpan
+                    Layout.maximumHeight: cellRowHeight
+                    Layout.maximumWidth: cellColumnWidth * Layout.columnSpan
                 }
-
                 QGCCheckBox {
+                    property int cellRowHeight: (parent.height - (parent.rows * parent.rowSpacing))
+                                                / (parent.rows)
+                    property int cellColumnWidth: (parent.width - (parent.columns * parent.columnSpacing)) / (parent.columns)
+
                     id: _enableAesEncryption
                     text: qsTr("AES ENCRYPTION")
 
                     Layout.rowSpan: 1
-                    //Layout.column: 7
-                    //Layout.row: 3
-                    Layout.columnSpan: 12
+                    Layout.columnSpan: 4
 
-                    Layout.preferredHeight: gdtSettingsRowHeight
-                    Layout.preferredWidth: gdtSettingsColumnWidth * Layout.columnSpan
+                    Layout.preferredHeight: cellRowHeight
+                    Layout.preferredWidth: cellColumnWidth * Layout.columnSpan
+                    Layout.maximumHeight: cellRowHeight
+                    Layout.maximumWidth: cellColumnWidth * Layout.columnSpan
                     Layout.fillWidth: false
                     Layout.fillHeight: false
                     Layout.alignment: Qt.AlignLeft
@@ -579,13 +701,19 @@ Item {
                 }
 
                 QGCGroupBox {
+                    property int cellRowHeight: (parent.height - (parent.rows * parent.rowSpacing))
+                                                / (parent.rows)
+                    property int cellColumnWidth: (parent.width - (parent.columns * parent.columnSpacing)) / (parent.columns)
+
                     id: gdtSetFrequencyGroupBox
-                    height: gdtSettingsRowHeight * Layout.rowSpan
-                    width: gdtSettingsColumnWidth * Layout.columnSpan
+                    height: cellRowHeight * Layout.rowSpan
+                    width: cellColumnWidth * Layout.columnSpan
                     Layout.rowSpan: 5
                     Layout.columnSpan: 12
-                    Layout.preferredHeight: gdtSettingsRowHeight * Layout.rowSpan
-                    Layout.preferredWidth: gdtSettingsColumnWidth * Layout.columnSpan
+                    Layout.preferredHeight: cellRowHeight * Layout.rowSpan
+                    Layout.preferredWidth: cellColumnWidth * Layout.columnSpan
+                    Layout.maximumHeight: cellRowHeight * Layout.rowSpan
+                    Layout.maximumWidth: cellColumnWidth * Layout.columnSpan
                     Layout.fillWidth: false
                     Layout.fillHeight: false
                     Layout.alignment: Qt.AlignCenter
@@ -602,6 +730,8 @@ Item {
                         rowSpacing: 2
 
                         QGCLabel {
+                            property int cellRowHeight: (parent.height - (parent.rows * parent.rowSpacing)) / (parent.rows)
+                            property int cellColumnWidth: (parent.width - (parent.columns * parent.columnSpacing)) / (parent.columns)
 
                             id: _setFrequencyLabel
 
@@ -616,30 +746,33 @@ Item {
                             Layout.rowSpan: 1
                             Layout.columnSpan: 4
 
-                            Layout.preferredHeight: gdtStatusReportGridRowHeight
-                            Layout.preferredWidth: gdtStatusReportGridColumnWidth
-                                                   * Layout.columnSpan
+                            Layout.preferredHeight: cellRowHeight
+                            Layout.preferredWidth: cellColumnWidth * Layout.columnSpan
+                            Layout.maximumHeight: cellRowHeight
+                            Layout.maximumWidth: cellColumnWidth * Layout.columnSpan
+
                             Layout.fillWidth: false
                             Layout.fillHeight: true
                             Layout.alignment: Qt.AlignLeft
                         }
 
                         QGCTextField {
+                            property int cellRowHeight: (parent.height - (parent.rows * parent.rowSpacing)) / (parent.rows)
+                            property int cellColumnWidth: (parent.width - (parent.columns * parent.columnSpacing)) / (parent.columns)
 
                             id: _setFrequencyField
 
                             Layout.rowSpan: 1
                             Layout.columnSpan: 4
 
-                            Layout.preferredHeight: gdtStatusReportGridRowHeight
-                            Layout.preferredWidth: gdtStatusReportGridColumnWidth
-                                                   * Layout.columnSpan
+                            Layout.preferredHeight: cellRowHeight
+                            Layout.preferredWidth: cellColumnWidth * Layout.columnSpan
+                            Layout.maximumHeight: cellRowHeight
+                            Layout.maximumWidth: cellColumnWidth * Layout.columnSpan
+
                             Layout.fillWidth: false
                             Layout.fillHeight: true
                             Layout.alignment: Qt.AlignLeft
-
-                            height: gdtStatusReportGridRowHeight
-                            width: gdtStatusReportGridColumnWidth * Layout.columnSpan
 
                             maximumLength: 4
                             font.pointSize: ScreenTools.isMobile ? point_size : 9
@@ -647,6 +780,8 @@ Item {
                         }
 
                         QGCButton {
+                            property int cellRowHeight: (parent.height - (parent.rows * parent.rowSpacing)) / (parent.rows)
+                            property int cellColumnWidth: (parent.width - (parent.columns * parent.columnSpacing)) / (parent.columns)
 
                             id: _setFrequencyButton
 
@@ -656,15 +791,14 @@ Item {
                             Layout.rowSpan: 1
                             Layout.columnSpan: 4
 
-                            Layout.preferredHeight: gdtStatusReportGridRowHeight
-                            Layout.preferredWidth: gdtStatusReportGridColumnWidth
-                                                   * Layout.columnSpan
+                            Layout.preferredHeight: cellRowHeight
+                            Layout.preferredWidth: cellColumnWidth * Layout.columnSpan
+                            Layout.maximumHeight: cellRowHeight
+                            Layout.maximumWidth: cellColumnWidth * Layout.columnSpan
+
                             Layout.fillWidth: false
                             Layout.fillHeight: true
                             Layout.alignment: Qt.AlignLeft
-
-                            height: gdtStatusReportGridRowHeight
-                            width: gdtStatusReportGridColumnWidth * Layout.columnSpan
 
                             onClicked: {
                                 if (parseInt(_setFrequencyField.text) >= 2150
@@ -682,13 +816,19 @@ Item {
         }
 
         QGCGroupBox {
+            property int cellRowHeight: (parent.height - (parent.rows * parent.rowSpacing))
+                                        / (parent.rows)
+            property int cellColumnWidth: (parent.width - (parent.columns * parent.columnSpacing))
+                                          / (parent.columns)
             id: gdtReportGroupBox
-            height: gdtMainRowHeight
-            width: gdtMainColumnWidth * Layout.columnSpan
+            height: cellRowHeight
+            width: cellColumnWidth * Layout.columnSpan
             Layout.rowSpan: 1
             Layout.columnSpan: 1
-            Layout.preferredHeight: gdtMainRowHeight
-            Layout.preferredWidth: gdtMainColumnWidth * Layout.columnSpan
+            Layout.preferredHeight: cellRowHeight * Layout.rowSpan
+            Layout.preferredWidth: cellColumnWidth * Layout.columnSpan
+            Layout.maximumHeight: cellRowHeight * Layout.rowSpan
+            Layout.maximumWidth: cellColumnWidth * Layout.columnSpan
             Layout.fillWidth: false
             Layout.fillHeight: false
             Layout.alignment: Qt.AlignCenter
@@ -698,308 +838,412 @@ Item {
                 id: gdtReportGrid
 
                 columns: 12
-                rows: 7
+                rows: 9
                 anchors.fill: parent
                 anchors.margins: 3
                 columnSpacing: 2
                 rowSpacing: 2
 
-                QGCLabel {
-
-                    height: ScreenTools.defaultFontPixelHeight
-
-                    text: {
-                        if (QGroundControl.commtactLinkManagement.transmitterOperationalMode
-                                === 0) {
-                            qsTr("MODE:TX OFF")
-                        } else if (QGroundControl.commtactLinkManagement.transmitterOperationalMode
-                                   === 1) {
-                            qsTr("MODE:TX HIGH")
-                        } else if (QGroundControl.commtactLinkManagement.transmitterOperationalMode
-                                   === 2) {
-                            qsTr("MODE:TX LOW")
-                        } else if (QGroundControl.commtactLinkManagement.transmitterOperationalMode
-                                   === 3) {
-                            qsTr("MODE:IBIT")
-                        } else if (QGroundControl.commtactLinkManagement.transmitterOperationalMode
-                                   === 124) {
-                            qsTr("MODE:24dBm")
-                        } else if (QGroundControl.commtactLinkManagement.transmitterOperationalMode
-                                   === 127) {
-                            qsTr("MODE:27dBm")
-                        } else if (QGroundControl.commtactLinkManagement.transmitterOperationalMode
-                                   === 130) {
-                            qsTr("MODE:30dBm")
-                        } else {
-                            qsTr("MODE:NAN")
-                        }
-                    }
-                    font.family: ScreenTools.demiboldFontFamily
-                    color: {
-                        if (QGroundControl.commtactLinkManagement.transmitterOperationalMode
-                                === 0) {
-                            "Red"
-                        } else if (QGroundControl.commtactLinkManagement.transmitterOperationalMode
-                                   === 1) {
-                            "Green"
-                        } else if (QGroundControl.commtactLinkManagement.transmitterOperationalMode
-                                   === 2) {
-                            "Yellow"
-                        } else if (QGroundControl.commtactLinkManagement.transmitterOperationalMode
-                                   === 3) {
-                            "Green"
-                        } else if (QGroundControl.commtactLinkManagement.transmitterOperationalMode
-                                   === 124) {
-                            "Green"
-                        } else if (QGroundControl.commtactLinkManagement.transmitterOperationalMode
-                                   === 127) {
-                            "Green"
-                        } else if (QGroundControl.commtactLinkManagement.transmitterOperationalMode
-                                   === 130) {
-                            "Green"
-                        } else {
-                            "White"
-                        }
-                    }
-
-                    horizontalAlignment: Text.AlignHCenter
-                    verticalAlignment: Text.AlignVCenter
-
-                    Layout.alignment: Qt.AlignLeft
-                    Layout.columnSpan: 4
-                    Layout.fillHeight: false
-                    Layout.fillWidth: true
-                }
-                QGCLabel {
-
-                    height: ScreenTools.defaultFontPixelHeight
-
-                    text: {
-                        if (QGroundControl.commtactLinkManagement.gdtAntennaSelect === 0) {
-                            qsTr("ANTENNA:OMNI")
-                        } else if (QGroundControl.commtactLinkManagement.gdtAntennaSelect === 1) {
-                            qsTr("ANTENNA:DIRECTIONAL")
-                        } else if (QGroundControl.commtactLinkManagement.gdtAntennaSelect === 22) {
-                            qsTr("ANTENNA:ADVANCED")
-                        } else {
-                            qsTr("ANTENNA:NAN")
-                        }
-                    }
-                    font.family: ScreenTools.demiboldFontFamily
-                    color: "White"
-
-                    horizontalAlignment: Text.AlignHCenter
-                    verticalAlignment: Text.AlignVCenter
-
-                    Layout.alignment: Qt.AlignLeft
-                    Layout.columnSpan: 4
-                    Layout.fillHeight: false
-                    Layout.fillWidth: true
-                }
-                QGCLabel {
-
-                    height: ScreenTools.defaultFontPixelHeight
-
-                    text: {
-                        if (QGroundControl.commtactLinkManagement.gdtPedestalTrackMode === 0) {
-                            qsTr("PEDESTAL:STOP")
-                        } else if (QGroundControl.commtactLinkManagement.gdtPedestalTrackMode
-                                   === 2) {
-                            qsTr("PEDESTAL:RSSI")
-                        } else if (QGroundControl.commtactLinkManagement.gdtPedestalTrackMode
-                                   === 3) {
-                            qsTr("PEDESTAL:GPS")
-                        } else if (QGroundControl.commtactLinkManagement.gdtPedestalTrackMode
-                                   === 4) {
-                            qsTr("PEDESTAL:MANUAL")
-                        } else if (QGroundControl.commtactLinkManagement.gdtPedestalTrackMode
-                                   === 5) {
-                            qsTr("PEDESTAL:AZIMUTH")
-                        } else if (QGroundControl.commtactLinkManagement.gdtPedestalTrackMode
-                                   === 7) {
-                            qsTr("PEDESTAL:STOW")
-                        } else {
-                            qsTr("PEDESTAL:NAN")
-                        }
-                    }
-                    font.family: ScreenTools.demiboldFontFamily
-                    color: "White"
-
-                    horizontalAlignment: Text.AlignHCenter
-                    verticalAlignment: Text.AlignVCenter
-
-                    Layout.alignment: Qt.AlignLeft
-                    Layout.columnSpan: 4
-                    Layout.fillHeight: false
-                    Layout.fillWidth: true
-                }
-                QGCLabel {
-
-                    height: ScreenTools.defaultFontPixelHeight
-
-                    text: {
-                        if (QGroundControl.commtactLinkManagement.gdtTddOperationalMode === 0) {
-                            qsTr("TDD:SLAVE")
-                        } else if (QGroundControl.commtactLinkManagement.gdtTddOperationalMode
-                                   === 1) {
-                            qsTr("TDD:MASTER")
-                        } else {
-                            qsTr("TDD:NAN")
-                        }
-                    }
-                    font.family: ScreenTools.demiboldFontFamily
-                    color: "White"
-
-                    horizontalAlignment: Text.AlignHCenter
-                    verticalAlignment: Text.AlignVCenter
-
-                    Layout.alignment: Qt.AlignLeft
-                    Layout.columnSpan: 4
-                    Layout.fillHeight: false
-                    Layout.fillWidth: true
-                }
-                QGCLabel {
-
-                    height: ScreenTools.defaultFontPixelHeight
-
-                    text: {
-                        if (QGroundControl.commtactLinkManagement.gdtFrequencyMode === 0) {
-                            qsTr("FREQ:FIX")
-                        } else if (QGroundControl.commtactLinkManagement.gdtFrequencyMode === 1) {
-                            qsTr("FREQ:HOPPING")
-                        } else {
-                            qsTr("FREQ:NAN")
-                        }
-                    }
-                    font.family: ScreenTools.demiboldFontFamily
-                    color: "White"
-
-                    horizontalAlignment: Text.AlignHCenter
-                    verticalAlignment: Text.AlignVCenter
-
-                    Layout.alignment: Qt.AlignLeft
-                    Layout.columnSpan: 4
-                    Layout.fillHeight: false
-                    Layout.fillWidth: true
-                }
-                QGCLabel {
-
-                    height: ScreenTools.defaultFontPixelHeight
-
-                    text: {
-                        if (QGroundControl.commtactLinkManagement.gdtUnitMode === 0) {
-                            qsTr("UNIT:NORMAL")
-                        } else if (QGroundControl.commtactLinkManagement.gdtUnitMode === 3) {
-                            qsTr("UNIT:MISSION RELAY")
-                        } else if (QGroundControl.commtactLinkManagement.gdtUnitMode === 4) {
-                            qsTr("UNIT:RELAY")
-                        } else if (QGroundControl.commtactLinkManagement.gdtUnitMode === 5) {
-                            qsTr("UNIT:MISSION")
-                        } else if (QGroundControl.commtactLinkManagement.gdtUnitMode === 6) {
-                            qsTr("UNIT:TRANSIT")
-                        } else if (QGroundControl.commtactLinkManagement.gdtUnitMode === 51) {
-                            qsTr("UNIT:MISSION TMO")
-                        } else if (QGroundControl.commtactLinkManagement.gdtUnitMode === 56) {
-                            qsTr("UNIT:MISSION TRANSIT")
-                        } else {
-                            qsTr("UNIT:NAN")
-                        }
-                    }
-                    font.family: ScreenTools.demiboldFontFamily
-                    color: "White"
-
-                    horizontalAlignment: Text.AlignHCenter
-                    verticalAlignment: Text.AlignVCenter
-
-                    Layout.alignment: Qt.AlignLeft
-                    Layout.columnSpan: 4
-                    Layout.fillHeight: false
-                    Layout.fillWidth: true
-                }
-                QGCLabel {
-
-                    height: ScreenTools.defaultFontPixelHeight
-
-                    text: {
-                        if (QGroundControl.commtactLinkManagement.gdtSymbolRate === 0) {
-                            qsTr("SYMBOL RATE:16MSPS")
-                        } else if (QGroundControl.commtactLinkManagement.gdtSymbolRate === 1) {
-                            qsTr("SYMBOL RATE:8MSPS")
-                        } else if (QGroundControl.commtactLinkManagement.gdtSymbolRate === 2) {
-                            qsTr("SYMBOL RATE:4MSPS")
-                        } else {
-                            qsTr("SYMBOL:NAN")
-                        }
-                    }
-                    font.family: ScreenTools.demiboldFontFamily
-                    color: "White"
-
-                    horizontalAlignment: Text.AlignHCenter
-                    verticalAlignment: Text.AlignVCenter
-
-                    Layout.alignment: Qt.AlignLeft
-                    Layout.columnSpan: 4
-                    Layout.fillHeight: false
-                    Layout.fillWidth: true
-                }
-                QGCLabel {
-
-                    height: ScreenTools.defaultFontPixelHeight
-
-                    text: {
-                        if (QGroundControl.commtactLinkManagement.gdtAesEncryption === 0) {
-                            qsTr("AES ENC:DISABLED")
-                        } else if (QGroundControl.commtactLinkManagement.gdtAesEncryption === 1) {
-                            qsTr("AES ENC:ENABLED")
-                        } else {
-                            qsTr("AES ENC:NAN")
-                        }
-                    }
-                    font.family: ScreenTools.demiboldFontFamily
-                    color: "White"
-
-                    horizontalAlignment: Text.AlignHCenter
-                    verticalAlignment: Text.AlignVCenter
-
-                    Layout.alignment: Qt.AlignLeft
-                    Layout.columnSpan: 4
-                    Layout.fillHeight: false
-                    Layout.fillWidth: true
-                }
-                QGCLabel {
-
-                    height: ScreenTools.defaultFontPixelHeight
-
-                    text: {
-                        if (QGroundControl.commtactLinkManagement.gdtSymbolRate === 0) {
-                            qsTr("SYMBOL RATE:16MSPS")
-                        } else if (QGroundControl.commtactLinkManagement.gdtSymbolRate === 1) {
-                            qsTr("SYMBOL RATE:8MSPS")
-                        } else if (QGroundControl.commtactLinkManagement.gdtSymbolRate === 2) {
-                            qsTr("SYMBOL RATE:4MSPS")
-                        } else {
-                            qsTr("SYMBOL:NAN")
-                        }
-                    }
-                    font.family: ScreenTools.demiboldFontFamily
-                    color: "White"
-
-                    horizontalAlignment: Text.AlignHCenter
-                    verticalAlignment: Text.AlignVCenter
-
-                    Layout.alignment: Qt.AlignLeft
-                    Layout.columnSpan: 4
-                    Layout.fillHeight: false
-                    Layout.fillWidth: true
-                }
                 QGCGroupBox {
-                    id: gdtStatusReportGroupBox
-                    height: gdtReportRowHeight
-                    width: gdtReportColumnWidth * Layout.columnSpan
-                    Layout.rowSpan: 4
+
+                    property int cellRowHeight: (parent.height - (parent.rows * parent.rowSpacing))
+                                                / (parent.rows)
+                    property int cellColumnWidth: (parent.width - (parent.columns * parent.columnSpacing)) / (parent.columns)
+
+                    id: gdtOperationalModesReportGroupBox
+                    height: cellRowHeight * Layout.rowSpan
+                    width: cellColumnWidth * Layout.columnSpan
+
+                    Layout.rowSpan: 3
                     Layout.columnSpan: 12
-                    Layout.preferredHeight: gdtReportRowHeight
-                    Layout.preferredWidth: gdtReportColumnWidth * Layout.columnSpan
+                    Layout.preferredHeight: cellRowHeight * Layout.rowSpan
+                    Layout.preferredWidth: cellColumnWidth * Layout.columnSpan
+                    Layout.maximumHeight: cellRowHeight * Layout.rowSpan
+                    Layout.maximumWidth: cellColumnWidth * Layout.columnSpan
+                    Layout.fillWidth: false
+                    Layout.fillHeight: false
+                    Layout.alignment: Qt.AlignCenter
+                    title: qsTr("OPERATIONAL MODES REPORT")
+
+                    GridLayout {
+                        id: gdtOperationalModesReportGrid
+
+                        columns: 12
+                        rows: 3
+                        anchors.fill: parent
+                        anchors.margins: 3
+                        columnSpacing: 2
+                        rowSpacing: 2
+
+                        QGCLabel {
+
+                            property int cellRowHeight: (parent.height - (parent.rows * parent.rowSpacing)) / (parent.rows)
+                            property int cellColumnWidth: (parent.width - (parent.columns * parent.columnSpacing)) / (parent.columns)
+
+                            height: ScreenTools.defaultFontPixelHeight
+
+                            text: {
+                                if (QGroundControl.commtactLinkManagement.transmitterOperationalMode
+                                        === 0) {
+                                    qsTr("MODE:TX OFF")
+                                } else if (QGroundControl.commtactLinkManagement.transmitterOperationalMode === 1) {
+                                    qsTr("MODE:TX HIGH")
+                                } else if (QGroundControl.commtactLinkManagement.transmitterOperationalMode === 2) {
+                                    qsTr("MODE:TX LOW")
+                                } else if (QGroundControl.commtactLinkManagement.transmitterOperationalMode === 3) {
+                                    qsTr("MODE:IBIT")
+                                } else if (QGroundControl.commtactLinkManagement.transmitterOperationalMode === 124) {
+                                    qsTr("MODE:24dBm")
+                                } else if (QGroundControl.commtactLinkManagement.transmitterOperationalMode === 127) {
+                                    qsTr("MODE:27dBm")
+                                } else if (QGroundControl.commtactLinkManagement.transmitterOperationalMode === 130) {
+                                    qsTr("MODE:30dBm")
+                                } else {
+                                    qsTr("MODE:NAN")
+                                }
+                            }
+                            font.family: ScreenTools.demiboldFontFamily
+                            color: {
+                                if (QGroundControl.commtactLinkManagement.transmitterOperationalMode
+                                        === 0) {
+                                    "Red"
+                                } else if (QGroundControl.commtactLinkManagement.transmitterOperationalMode === 1) {
+                                    "Green"
+                                } else if (QGroundControl.commtactLinkManagement.transmitterOperationalMode === 2) {
+                                    "Yellow"
+                                } else if (QGroundControl.commtactLinkManagement.transmitterOperationalMode === 3) {
+                                    "Green"
+                                } else if (QGroundControl.commtactLinkManagement.transmitterOperationalMode === 124) {
+                                    "Green"
+                                } else if (QGroundControl.commtactLinkManagement.transmitterOperationalMode === 127) {
+                                    "Green"
+                                } else if (QGroundControl.commtactLinkManagement.transmitterOperationalMode === 130) {
+                                    "Green"
+                                } else {
+                                    "White"
+                                }
+                            }
+
+                            horizontalAlignment: Text.AlignLeft
+                            verticalAlignment: Text.AlignVCenter
+
+                            Layout.alignment: Qt.AlignLeft
+                            Layout.columnSpan: 4
+                            Layout.fillHeight: false
+                            Layout.fillWidth: true
+                            Layout.preferredHeight: cellRowHeight
+                            Layout.preferredWidth: cellColumnWidth * Layout.columnSpan
+                            Layout.maximumHeight: cellRowHeight
+                            Layout.maximumWidth: cellColumnWidth * Layout.columnSpan
+                        }
+                        QGCLabel {
+                            property int cellRowHeight: (parent.height - (parent.rows * parent.rowSpacing)) / (parent.rows)
+                            property int cellColumnWidth: (parent.width - (parent.columns * parent.columnSpacing)) / (parent.columns)
+
+                            height: ScreenTools.defaultFontPixelHeight
+
+                            text: {
+                                if (QGroundControl.commtactLinkManagement.gdtAntennaSelect === 0) {
+                                    qsTr("ANTENNA:OMNI")
+                                } else if (QGroundControl.commtactLinkManagement.gdtAntennaSelect
+                                           === 1) {
+                                    qsTr("ANTENNA:DIRECTIONAL")
+                                } else if (QGroundControl.commtactLinkManagement.gdtAntennaSelect
+                                           === 22) {
+                                    qsTr("ANTENNA:ADVANCED")
+                                } else {
+                                    qsTr("ANTENNA:NAN")
+                                }
+                            }
+                            font.family: ScreenTools.demiboldFontFamily
+                            color: "White"
+
+                            horizontalAlignment: Text.AlignLeft
+                            verticalAlignment: Text.AlignVCenter
+
+                            Layout.alignment: Qt.AlignLeft
+                            Layout.columnSpan: 4
+                            Layout.fillHeight: false
+                            Layout.fillWidth: true
+                            Layout.preferredHeight: cellRowHeight
+                            Layout.preferredWidth: cellColumnWidth * Layout.columnSpan
+                            Layout.maximumHeight: cellRowHeight
+                            Layout.maximumWidth: cellColumnWidth * Layout.columnSpan
+                        }
+                        QGCLabel {
+                            property int cellRowHeight: (parent.height - (parent.rows * parent.rowSpacing)) / (parent.rows)
+                            property int cellColumnWidth: (parent.width - (parent.columns * parent.columnSpacing)) / (parent.columns)
+
+                            height: ScreenTools.defaultFontPixelHeight
+
+                            text: {
+                                if (QGroundControl.commtactLinkManagement.gdtPedestalTrackMode
+                                        === 0) {
+                                    qsTr("PEDESTAL:STOP")
+                                } else if (QGroundControl.commtactLinkManagement.gdtPedestalTrackMode === 2) {
+                                    qsTr("PEDESTAL:RSSI")
+                                } else if (QGroundControl.commtactLinkManagement.gdtPedestalTrackMode === 3) {
+                                    qsTr("PEDESTAL:GPS")
+                                } else if (QGroundControl.commtactLinkManagement.gdtPedestalTrackMode === 4) {
+                                    qsTr("PEDESTAL:MANUAL")
+                                } else if (QGroundControl.commtactLinkManagement.gdtPedestalTrackMode === 5) {
+                                    qsTr("PEDESTAL:AZIMUTH")
+                                } else if (QGroundControl.commtactLinkManagement.gdtPedestalTrackMode === 7) {
+                                    qsTr("PEDESTAL:STOW")
+                                } else {
+                                    qsTr("PEDESTAL:NAN")
+                                }
+                            }
+                            font.family: ScreenTools.demiboldFontFamily
+                            color: "White"
+
+                            horizontalAlignment: Text.AlignLeft
+                            verticalAlignment: Text.AlignVCenter
+
+                            Layout.alignment: Qt.AlignLeft
+                            Layout.columnSpan: 4
+                            Layout.fillHeight: false
+                            Layout.fillWidth: true
+                            Layout.preferredHeight: cellRowHeight
+                            Layout.preferredWidth: cellColumnWidth * Layout.columnSpan
+                            Layout.maximumHeight: cellRowHeight
+                            Layout.maximumWidth: cellColumnWidth * Layout.columnSpan
+                        }
+                        QGCLabel {
+                            property int cellRowHeight: (parent.height - (parent.rows * parent.rowSpacing)) / (parent.rows)
+                            property int cellColumnWidth: (parent.width - (parent.columns * parent.columnSpacing)) / (parent.columns)
+
+                            height: ScreenTools.defaultFontPixelHeight
+
+                            text: {
+                                if (QGroundControl.commtactLinkManagement.gdtTddOperationalMode
+                                        === 0) {
+                                    qsTr("TDD:SLAVE")
+                                } else if (QGroundControl.commtactLinkManagement.gdtTddOperationalMode === 1) {
+                                    qsTr("TDD:MASTER")
+                                } else {
+                                    qsTr("TDD:NAN")
+                                }
+                            }
+                            font.family: ScreenTools.demiboldFontFamily
+                            color: "White"
+
+                            horizontalAlignment: Text.AlignLeft
+                            verticalAlignment: Text.AlignVCenter
+
+                            Layout.alignment: Qt.AlignLeft
+                            Layout.columnSpan: 4
+                            Layout.fillHeight: false
+                            Layout.fillWidth: true
+
+                            Layout.preferredHeight: cellRowHeight
+                            Layout.preferredWidth: cellColumnWidth * Layout.columnSpan
+                            Layout.maximumHeight: cellRowHeight
+                            Layout.maximumWidth: cellColumnWidth * Layout.columnSpan
+                        }
+                        QGCLabel {
+
+                            property int cellRowHeight: (parent.height - (parent.rows * parent.rowSpacing)) / (parent.rows)
+                            property int cellColumnWidth: (parent.width - (parent.columns * parent.columnSpacing)) / (parent.columns)
+
+                            height: ScreenTools.defaultFontPixelHeight
+
+                            text: {
+                                if (QGroundControl.commtactLinkManagement.gdtFrequencyMode === 0) {
+                                    qsTr("FREQ:FIX")
+                                } else if (QGroundControl.commtactLinkManagement.gdtFrequencyMode
+                                           === 1) {
+                                    qsTr("FREQ:HOPPING")
+                                } else {
+                                    qsTr("FREQ:NAN")
+                                }
+                            }
+                            font.family: ScreenTools.demiboldFontFamily
+                            color: "White"
+
+                            horizontalAlignment: Text.AlignLeft
+                            verticalAlignment: Text.AlignVCenter
+
+                            Layout.alignment: Qt.AlignLeft
+                            Layout.columnSpan: 4
+                            Layout.fillHeight: false
+                            Layout.fillWidth: true
+
+                            Layout.preferredHeight: cellRowHeight
+                            Layout.preferredWidth: cellColumnWidth * Layout.columnSpan
+                            Layout.maximumHeight: cellRowHeight
+                            Layout.maximumWidth: cellColumnWidth * Layout.columnSpan
+                        }
+                        QGCLabel {
+
+                            property int cellRowHeight: (parent.height - (parent.rows * parent.rowSpacing)) / (parent.rows)
+                            property int cellColumnWidth: (parent.width - (parent.columns * parent.columnSpacing)) / (parent.columns)
+
+                            height: ScreenTools.defaultFontPixelHeight
+
+                            text: {
+                                if (QGroundControl.commtactLinkManagement.gdtUnitMode === 0) {
+                                    qsTr("UNIT:NORMAL")
+                                } else if (QGroundControl.commtactLinkManagement.gdtUnitMode
+                                           === 3) {
+                                    qsTr("UNIT:MISSION RELAY")
+                                } else if (QGroundControl.commtactLinkManagement.gdtUnitMode
+                                           === 4) {
+                                    qsTr("UNIT:RELAY")
+                                } else if (QGroundControl.commtactLinkManagement.gdtUnitMode
+                                           === 5) {
+                                    qsTr("UNIT:MISSION")
+                                } else if (QGroundControl.commtactLinkManagement.gdtUnitMode
+                                           === 6) {
+                                    qsTr("UNIT:TRANSIT")
+                                } else if (QGroundControl.commtactLinkManagement.gdtUnitMode
+                                           === 51) {
+                                    qsTr("UNIT:MISSION TMO")
+                                } else if (QGroundControl.commtactLinkManagement.gdtUnitMode
+                                           === 56) {
+                                    qsTr("UNIT:MISSION TRANSIT")
+                                } else {
+                                    qsTr("UNIT:NAN")
+                                }
+                            }
+                            font.family: ScreenTools.demiboldFontFamily
+                            color: "White"
+
+                            horizontalAlignment: Text.AlignLeft
+                            verticalAlignment: Text.AlignVCenter
+
+                            Layout.alignment: Qt.AlignLeft
+                            Layout.columnSpan: 4
+                            Layout.fillHeight: false
+                            Layout.fillWidth: true
+
+                            Layout.preferredHeight: cellRowHeight
+                            Layout.preferredWidth: cellColumnWidth * Layout.columnSpan
+                            Layout.maximumHeight: cellRowHeight
+                            Layout.maximumWidth: cellColumnWidth * Layout.columnSpan
+                        }
+                        QGCLabel {
+
+                            property int cellRowHeight: (parent.height - (parent.rows * parent.rowSpacing)) / (parent.rows)
+                            property int cellColumnWidth: (parent.width - (parent.columns * parent.columnSpacing)) / (parent.columns)
+
+                            height: ScreenTools.defaultFontPixelHeight
+
+                            text: {
+                                if (QGroundControl.commtactLinkManagement.gdtSymbolRate === 0) {
+                                    qsTr("SYMBOL RATE:16MSPS")
+                                } else if (QGroundControl.commtactLinkManagement.gdtSymbolRate
+                                           === 1) {
+                                    qsTr("SYMBOL RATE:8MSPS")
+                                } else if (QGroundControl.commtactLinkManagement.gdtSymbolRate
+                                           === 2) {
+                                    qsTr("SYMBOL RATE:4MSPS")
+                                } else {
+                                    qsTr("SYMBOL:NAN")
+                                }
+                            }
+                            font.family: ScreenTools.demiboldFontFamily
+                            color: "White"
+
+                            horizontalAlignment: Text.AlignLeft
+                            verticalAlignment: Text.AlignVCenter
+
+                            Layout.alignment: Qt.AlignLeft
+                            Layout.columnSpan: 4
+                            Layout.fillHeight: false
+                            Layout.fillWidth: true
+
+                            Layout.preferredHeight: cellRowHeight
+                            Layout.preferredWidth: cellColumnWidth * Layout.columnSpan
+                            Layout.maximumHeight: cellRowHeight
+                            Layout.maximumWidth: cellColumnWidth * Layout.columnSpan
+                        }
+                        QGCLabel {
+
+                            property int cellRowHeight: (parent.height - (parent.rows * parent.rowSpacing)) / (parent.rows)
+                            property int cellColumnWidth: (parent.width - (parent.columns * parent.columnSpacing)) / (parent.columns)
+
+                            height: ScreenTools.defaultFontPixelHeight
+
+                            text: {
+                                if (QGroundControl.commtactLinkManagement.gdtAesEncryption === 0) {
+                                    qsTr("AES ENC:DISABLED")
+                                } else if (QGroundControl.commtactLinkManagement.gdtAesEncryption
+                                           === 1) {
+                                    qsTr("AES ENC:ENABLED")
+                                } else {
+                                    qsTr("AES ENC:NAN")
+                                }
+                            }
+                            font.family: ScreenTools.demiboldFontFamily
+                            color: "White"
+
+                            horizontalAlignment: Text.AlignLeft
+                            verticalAlignment: Text.AlignVCenter
+
+                            Layout.alignment: Qt.AlignLeft
+                            Layout.columnSpan: 4
+                            Layout.fillHeight: false
+                            Layout.fillWidth: true
+
+                            Layout.preferredHeight: cellRowHeight
+                            Layout.preferredWidth: cellColumnWidth * Layout.columnSpan
+                            Layout.maximumHeight: cellRowHeight
+                            Layout.maximumWidth: cellColumnWidth * Layout.columnSpan
+                        }
+                        QGCLabel {
+
+                            property int cellRowHeight: (parent.height - (parent.rows * parent.rowSpacing)) / (parent.rows)
+                            property int cellColumnWidth: (parent.width - (parent.columns * parent.columnSpacing)) / (parent.columns)
+
+                            height: ScreenTools.defaultFontPixelHeight
+
+                            text: {
+                                if (QGroundControl.commtactLinkManagement.gdtSymbolRate === 0) {
+                                    qsTr("SYMBOL RATE:16MSPS")
+                                } else if (QGroundControl.commtactLinkManagement.gdtSymbolRate
+                                           === 1) {
+                                    qsTr("SYMBOL RATE:8MSPS")
+                                } else if (QGroundControl.commtactLinkManagement.gdtSymbolRate
+                                           === 2) {
+                                    qsTr("SYMBOL RATE:4MSPS")
+                                } else {
+                                    qsTr("SYMBOL:NAN")
+                                }
+                            }
+                            font.family: ScreenTools.demiboldFontFamily
+                            color: "White"
+
+                            horizontalAlignment: Text.AlignLeft
+                            verticalAlignment: Text.AlignVCenter
+
+                            Layout.alignment: Qt.AlignLeft
+                            Layout.columnSpan: 4
+                            Layout.fillHeight: false
+                            Layout.fillWidth: true
+
+                            Layout.preferredHeight: cellRowHeight
+                            Layout.preferredWidth: cellColumnWidth * Layout.columnSpan
+                            Layout.maximumHeight: cellRowHeight
+                            Layout.maximumWidth: cellColumnWidth * Layout.columnSpan
+                        }
+                    }
+                }
+
+                QGCGroupBox {
+                    property int cellRowHeight: (parent.height - (parent.rows * parent.rowSpacing))
+                                                / (parent.rows)
+                    property int cellColumnWidth: (parent.width - (parent.columns * parent.columnSpacing)) / (parent.columns)
+
+                    id: gdtStatusReportGroupBox
+                    height: cellRowHeight * Layout.rowSpan
+                    width: cellColumnWidth * Layout.columnSpan
+                    Layout.rowSpan: 3
+                    Layout.columnSpan: 12
+                    Layout.preferredHeight: cellRowHeight * Layout.rowSpan
+                    Layout.preferredWidth: cellColumnWidth * Layout.columnSpan
+                    Layout.maximumHeight: cellRowHeight * Layout.rowSpan
+                    Layout.maximumWidth: cellColumnWidth * Layout.columnSpan
                     Layout.fillWidth: false
                     Layout.fillHeight: false
                     Layout.alignment: Qt.AlignCenter
@@ -1015,10 +1259,10 @@ Item {
                         columnSpacing: 2
                         rowSpacing: 2
 
-                        property int gdtStatusReportGridRowHeight: (gdtStatusReportGrid.height - (gdtStatusReportGrid.rows * gdtStatusReportGrid.rowSpacing)) / (gdtStatusReportGrid.rows)
-                        property int gdtStatusReportGridColumnWidth: (gdtStatusReportGrid.width - (gdtStatusReportGrid.columns * gdtStatusReportGrid.columnSpacing)) / (gdtStatusReportGrid.columns)
-
                         QGCLabel {
+
+                            property int cellRowHeight: (parent.height - (parent.rows * parent.rowSpacing)) / (parent.rows)
+                            property int cellColumnWidth: (parent.width - (parent.columns * parent.columnSpacing)) / (parent.columns)
 
                             height: ScreenTools.defaultFontPixelHeight
 
@@ -1027,32 +1271,23 @@ Item {
                             font.family: ScreenTools.demiboldFontFamily
                             color: "White"
 
-                            horizontalAlignment: Text.AlignHCenter
+                            horizontalAlignment: Text.AlignLeft
                             verticalAlignment: Text.AlignVCenter
 
                             Layout.alignment: Qt.AlignLeft
                             Layout.columnSpan: 4
                             Layout.fillHeight: false
                             Layout.fillWidth: true
+
+                            Layout.preferredHeight: cellRowHeight
+                            Layout.preferredWidth: cellColumnWidth * Layout.columnSpan
+                            Layout.maximumHeight: cellRowHeight
+                            Layout.maximumWidth: cellColumnWidth * Layout.columnSpan
                         }
                         QGCLabel {
 
-                            height: ScreenTools.defaultFontPixelHeight
-
-                            text: qsTr("LINK PACKETS:")
-                                  + QGroundControl.commtactLinkManagement.gdtLinkTransferedPackets
-                            font.family: ScreenTools.demiboldFontFamily
-                            color: "White"
-
-                            horizontalAlignment: Text.AlignHCenter
-                            verticalAlignment: Text.AlignVCenter
-
-                            Layout.alignment: Qt.AlignLeft
-                            Layout.columnSpan: 4
-                            Layout.fillHeight: false
-                            Layout.fillWidth: true
-                        }
-                        QGCLabel {
+                            property int cellRowHeight: (parent.height - (parent.rows * parent.rowSpacing)) / (parent.rows)
+                            property int cellColumnWidth: (parent.width - (parent.columns * parent.columnSpacing)) / (parent.columns)
 
                             height: ScreenTools.defaultFontPixelHeight
 
@@ -1061,13 +1296,200 @@ Item {
                             font.family: ScreenTools.demiboldFontFamily
                             color: "White"
 
-                            horizontalAlignment: Text.AlignHCenter
+                            horizontalAlignment: Text.AlignLeft
                             verticalAlignment: Text.AlignVCenter
 
                             Layout.alignment: Qt.AlignLeft
                             Layout.columnSpan: 4
                             Layout.fillHeight: false
                             Layout.fillWidth: true
+
+                            Layout.preferredHeight: cellRowHeight
+                            Layout.preferredWidth: cellColumnWidth * Layout.columnSpan
+                            Layout.maximumHeight: cellRowHeight
+                            Layout.maximumWidth: cellColumnWidth * Layout.columnSpan
+                        }
+                        QGCLabel {
+
+                            property int cellRowHeight: (parent.height - (parent.rows * parent.rowSpacing)) / (parent.rows)
+                            property int cellColumnWidth: (parent.width - (parent.columns * parent.columnSpacing)) / (parent.columns)
+
+                            height: ScreenTools.defaultFontPixelHeight
+
+                            text: qsTr("TDD SYNCED:")
+                                  + QGroundControl.commtactLinkManagement.gdtTDDSync
+                            font.family: ScreenTools.demiboldFontFamily
+                            color: "White"
+
+                            horizontalAlignment: Text.AlignLeft
+                            verticalAlignment: Text.AlignVCenter
+
+                            Layout.alignment: Qt.AlignLeft
+                            Layout.columnSpan: 4
+                            Layout.fillHeight: false
+                            Layout.fillWidth: true
+
+                            Layout.preferredHeight: cellRowHeight
+                            Layout.preferredWidth: cellColumnWidth * Layout.columnSpan
+                            Layout.maximumHeight: cellRowHeight
+                            Layout.maximumWidth: cellColumnWidth * Layout.columnSpan
+                        }
+                        QGCLabel {
+
+                            property int cellRowHeight: (parent.height - (parent.rows * parent.rowSpacing)) / (parent.rows)
+                            property int cellColumnWidth: (parent.width - (parent.columns * parent.columnSpacing)) / (parent.columns)
+
+                            height: ScreenTools.defaultFontPixelHeight
+
+                            text: qsTr("TRANSFERED PACKETS:")
+                                  + QGroundControl.commtactLinkManagement.gdtLinkTransferedPackets
+                            font.family: ScreenTools.demiboldFontFamily
+                            color: "White"
+
+                            horizontalAlignment: Text.AlignLeft
+                            verticalAlignment: Text.AlignVCenter
+
+                            Layout.alignment: Qt.AlignLeft
+                            Layout.columnSpan: 4
+                            Layout.fillHeight: false
+                            Layout.fillWidth: true
+
+                            Layout.preferredHeight: cellRowHeight
+                            Layout.preferredWidth: cellColumnWidth * Layout.columnSpan
+                            Layout.maximumHeight: cellRowHeight
+                            Layout.maximumWidth: cellColumnWidth * Layout.columnSpan
+                        }
+                        QGCLabel {
+
+                            property int cellRowHeight: (parent.height - (parent.rows * parent.rowSpacing)) / (parent.rows)
+                            property int cellColumnWidth: (parent.width - (parent.columns * parent.columnSpacing)) / (parent.columns)
+
+                            height: ScreenTools.defaultFontPixelHeight
+
+                            text: qsTr("ERROR PACKETS:")
+                                  + QGroundControl.commtactLinkManagement.gdtLinkErrorPackets
+                            font.family: ScreenTools.demiboldFontFamily
+                            color: "White"
+
+                            horizontalAlignment: Text.AlignLeft
+                            verticalAlignment: Text.AlignVCenter
+
+                            Layout.alignment: Qt.AlignLeft
+                            Layout.columnSpan: 4
+                            Layout.fillHeight: false
+                            Layout.fillWidth: true
+
+                            Layout.preferredHeight: cellRowHeight
+                            Layout.preferredWidth: cellColumnWidth * Layout.columnSpan
+                            Layout.maximumHeight: cellRowHeight
+                            Layout.maximumWidth: cellColumnWidth * Layout.columnSpan
+                        }
+                        QGCLabel {
+
+                            property int cellRowHeight: (parent.height - (parent.rows * parent.rowSpacing)) / (parent.rows)
+                            property int cellColumnWidth: (parent.width - (parent.columns * parent.columnSpacing)) / (parent.columns)
+
+                            height: ScreenTools.defaultFontPixelHeight
+
+                            text: qsTr("CRC ERROR PACKETS:")
+                                  + QGroundControl.commtactLinkManagement.gdtLinkCRCErrorPackets
+                            font.family: ScreenTools.demiboldFontFamily
+                            color: "White"
+
+                            horizontalAlignment: Text.AlignLeft
+                            verticalAlignment: Text.AlignVCenter
+
+                            Layout.alignment: Qt.AlignLeft
+                            Layout.columnSpan: 4
+                            Layout.fillHeight: false
+                            Layout.fillWidth: true
+
+                            Layout.preferredHeight: cellRowHeight
+                            Layout.preferredWidth: cellColumnWidth * Layout.columnSpan
+                            Layout.maximumHeight: cellRowHeight
+                            Layout.maximumWidth: cellColumnWidth * Layout.columnSpan
+                        }
+                    }
+                }
+
+                QGCGroupBox {
+                    property int cellRowHeight: (parent.height - (parent.rows * parent.rowSpacing))
+                                                / (parent.rows)
+                    property int cellColumnWidth: (parent.width - (parent.columns * parent.columnSpacing)) / (parent.columns)
+
+                    id: gdtCBITReportGroupBox
+                    height: cellRowHeight * Layout.rowSpan
+                    width: cellColumnWidth * Layout.columnSpan
+                    Layout.rowSpan: 3
+                    Layout.columnSpan: 12
+                    Layout.preferredHeight: cellRowHeight * Layout.rowSpan
+                    Layout.preferredWidth: cellColumnWidth * Layout.columnSpan
+                    Layout.maximumHeight: cellRowHeight * Layout.rowSpan
+                    Layout.maximumWidth: cellColumnWidth * Layout.columnSpan
+                    Layout.fillWidth: false
+                    Layout.fillHeight: false
+                    Layout.alignment: Qt.AlignCenter
+                    title: qsTr("CBIT REPORT")
+
+                    GridLayout {
+                        id: gdtCBITReportGrid
+
+                        columns: 12
+                        rows: 3
+                        anchors.fill: parent
+                        anchors.margins: 3
+                        columnSpacing: 2
+                        rowSpacing: 2
+
+                        QGCLabel {
+
+                            property int cellRowHeight: (parent.height - (parent.rows * parent.rowSpacing)) / (parent.rows)
+                            property int cellColumnWidth: (parent.width - (parent.columns * parent.columnSpacing)) / (parent.columns)
+
+                            height: ScreenTools.defaultFontPixelHeight
+
+                            text: qsTr("PA POWER OUTPUT:")
+                                  + QGroundControl.commtactLinkManagement.gdtCBITPAPowerOutput
+                            font.family: ScreenTools.demiboldFontFamily
+                            color: "White"
+
+                            horizontalAlignment: Text.AlignLeft
+                            verticalAlignment: Text.AlignVCenter
+
+                            Layout.alignment: Qt.AlignLeft
+                            Layout.columnSpan: 4
+                            Layout.fillHeight: false
+                            Layout.fillWidth: true
+
+                            Layout.preferredHeight: cellRowHeight
+                            Layout.preferredWidth: cellColumnWidth * Layout.columnSpan
+                            Layout.maximumHeight: cellRowHeight
+                            Layout.maximumWidth: cellColumnWidth * Layout.columnSpan
+                        }
+                        QGCLabel {
+
+                            property int cellRowHeight: (parent.height - (parent.rows * parent.rowSpacing)) / (parent.rows)
+                            property int cellColumnWidth: (parent.width - (parent.columns * parent.columnSpacing)) / (parent.columns)
+
+                            height: ScreenTools.defaultFontPixelHeight
+
+                            text: qsTr("PA RETURN POWER:")
+                                  + QGroundControl.commtactLinkManagement.gdtCBITPAReturnPower
+                            font.family: ScreenTools.demiboldFontFamily
+                            color: "White"
+
+                            horizontalAlignment: Text.AlignLeft
+                            verticalAlignment: Text.AlignVCenter
+
+                            Layout.alignment: Qt.AlignLeft
+                            Layout.columnSpan: 4
+                            Layout.fillHeight: false
+                            Layout.fillWidth: true
+
+                            Layout.preferredHeight: cellRowHeight
+                            Layout.preferredWidth: cellColumnWidth * Layout.columnSpan
+                            Layout.maximumHeight: cellRowHeight
+                            Layout.maximumWidth: cellColumnWidth * Layout.columnSpan
                         }
                     }
                 }

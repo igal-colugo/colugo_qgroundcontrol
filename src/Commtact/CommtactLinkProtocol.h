@@ -187,6 +187,118 @@ class CommtactLinkProtocol : public QGCTool
     PACKED_STRUCT(typedef struct __commtact_gdt_constant_frequency { uint16_t gdt_opeartion_frequency; })
     commtact_gdt_constant_frequency_t;
 
+    union gdt_cbit_report_byte_0 {
+        uint8_t byte;
+        struct bit
+        {
+            uint8_t reserved : 1;
+            uint8_t adt_sp4t_failure_gdt_reserved : 1;
+            uint8_t internal_dc_voltage_failure : 1;
+            uint8_t digital_section_failure : 1;
+            uint8_t rf_failure : 1;
+            uint8_t synthesizers_lock_detect : 1;
+            uint8_t pedestal_failure : 1;
+            uint8_t active_antenna_reserved : 1;
+        } bit_t;
+    };
+    union gdt_cbit_report_byte_1 {
+        uint8_t byte;
+        struct bit
+        {
+            uint8_t pa_over_current_failure : 1;
+            uint8_t rx_input_over_power : 1;
+            uint8_t digital_section_over_heat : 1;
+            uint8_t rf_section_over_heat : 1;
+            uint8_t system_startup : 1;
+            uint8_t reserved : 1;
+            uint8_t pa_power_output_low : 1;
+            uint8_t pa_return_power : 1;
+        } bit_t;
+    };
+
+    PACKED_STRUCT(typedef struct __commtact_gdt_cbit_report {
+        gdt_cbit_report_byte_0 byte_0;
+        gdt_cbit_report_byte_1 byte_1;
+        int16_t pa_power_output;
+        int16_t pa_return_power;
+        uint8_t pedestal_failure_status_reserved;
+        uint8_t gps_error;
+        uint16_t ebox_status_reserved;
+    })
+    commtact_gdt_cbit_report_t;
+
+    PACKED_STRUCT(typedef struct __commtact_gdt_mission_adt_status_report {
+        uint8_t tdd_sync;
+        int8_t link_rssi;
+        uint16_t link_transfered_packets;
+        uint16_t link_error_packets;
+        uint16_t link_crc_error_packets;
+        uint8_t adt_cbit_byte_0;
+        uint8_t adt_cbit_byte_1;
+        float_t gps_latitude;
+        float_t gps_longitude;
+        float_t altitude;
+    })
+    commtact_gdt_mission_adt_status_report_t;
+
+    //-------------------- ADT -------------------
+
+    union adt_operational_mode_report_byte_12 {
+        uint8_t byte;
+        struct bit
+        {
+            uint8_t video_rate : 4;
+            uint8_t video_source : 2;
+            uint8_t external_encoder_mode : 2;
+        } bit_t;
+    };
+    union adt_operational_mode_report_byte_13 {
+        uint8_t byte;
+        struct bit
+        {
+            uint8_t reserved : 4;
+            uint8_t symbol_rate : 4;
+        } bit_t;
+    };
+
+    PACKED_STRUCT(typedef struct __commtact_adt_operational_mode {
+        uint8_t transmitter_operational_mode;
+        uint8_t antenna_select;
+        uint8_t reserved_1;
+        uint8_t reserved_2;
+        uint8_t unit_mode;
+        uint8_t adt_frequency_mode;
+        uint8_t video_transmit_enable;
+        uint8_t reserved_3;
+        uint8_t reserved_4;
+        uint8_t tdd_operational_mode;
+        uint8_t aes_encryption_enable;
+        uint8_t telemetry_metadata_separation;
+        adt_operational_mode_report_byte_12 byte_12;
+        adt_operational_mode_report_byte_13 byte_13;
+    })
+    commtact_adt_operational_mode_t;
+
+    PACKED_STRUCT(typedef struct __commtact_adt_operational_modes_report {
+        uint8_t transmitter_operational_mode;
+        uint8_t antenna_select;
+        uint8_t reserved_1;
+        uint8_t reserved_2;
+        uint8_t unit_mode;
+        uint8_t adt_frequency_mode;
+        uint8_t reserved_3;
+        uint8_t video_transmit_enable;
+        uint8_t reserved_4;
+        uint8_t tdd_operational_mode;
+        uint8_t aes_encryption_enable;
+        uint8_t telemetry_metadata_separation;
+        adt_operational_mode_report_byte_12 byte_12;
+        adt_operational_mode_report_byte_13 byte_13;
+    })
+    commtact_adt_operational_modes_report_t;
+
+    //--------------------------------------------
+
     typedef enum
     {
         COMMTACT_LINK_PARSE_STATE_UNINIT = 0,
@@ -229,9 +341,22 @@ class CommtactLinkProtocol : public QGCTool
         GDT_OPERATIONAL_MODES_REPORT = 0X80,
         GDT_STATUS_REPORT = 0X81,
         GDT_MISSION_ADT_STATUS_REPORT = 0X82,
+        GDT_CBIT_REPORT = 0X85,
         GDT_PBIT_REPORT = 0X86,
         GDT_CONSTANT_FREQUENCY_REPORT = 0X88,
     } commtact_link_opcode_t;
+
+    typedef enum
+    {
+        ADT_OPERATIONAL_MODE_SET = 0x01,
+        ADT_CONSTANT_FREQUENCY_SET = 0x02,
+        ADT_VIDEO_SETTINGS = 0x04,
+        ADT_GPS_SET = 0x06,
+        ADT_OPERATIONAL_MODES_REPORT = 0X80,
+        ADT_GPS_REPORT = 0X8B,
+        ADT_VIDEO_SETTINGS_REPORT = 0X84,
+        ADT_CONSTANT_FREQUENCY_REPORT = 0X88,
+    } commtact_link_adt_opcode_t;
 
   public:
     CommtactLinkProtocol(QGCApplication *app, QGCToolbox *toolbox);
@@ -252,6 +377,7 @@ class CommtactLinkProtocol : public QGCTool
     virtual void setToolbox(QGCToolbox *toolbox);
 
     uint16_t commtact_link_msg_get_report_message_pack(CommtactLinkProtocol::commtact_link_message_t *msg, uint8_t required_message);
+
     uint16_t commtact_link_msg_gdt_opeartional_frequency_pack(CommtactLinkProtocol::commtact_link_message_t *msg, uint16_t gdt_operational_frequency);
 
     uint16_t commtact_link_msg_operational_mode_pack(CommtactLinkProtocol::commtact_link_message_t *msg, uint8_t transmitter_operational_mode, uint8_t pedestal_track__mode,
@@ -261,7 +387,17 @@ class CommtactLinkProtocol : public QGCTool
     uint16_t commtact_link_msg_to_send_buffer(uint8_t *buf, const CommtactLinkProtocol::commtact_link_message_t *msg, uint32_t payload_size);
     void commtact_link_msg_operational_modes_report_decode(const commtact_link_message_t *msg, commtact_gdt_operational_modes_report_t *operational_modes_report);
     void commtact_link_msg_gdt_status_report_decode(const commtact_link_message_t *msg, commtact_gdt_status_report_t *gdt_status_report);
+    void commtact_link_msg_gdt_cbit_report_decode(const commtact_link_message_t *msg, commtact_gdt_cbit_report_t *gdt_cbit_report);
     void commtact_link_msg_gdt_constant_frequency_report_decode(const commtact_link_message_t *msg, commtact_gdt_constant_frequency_report_t *gdt_constant_frequency_report);
+    void commtact_link_msg_gdt_mission_adt_status_report_decode(const commtact_link_message_t *msg, commtact_gdt_mission_adt_status_report_t *gdt_mission_adt_status_report);
+
+    //--------------------- ADT ---------------------------------
+    void commtact_link_msg_adt_operational_modes_report_decode(const commtact_link_message_t *msg, commtact_adt_operational_modes_report_t *adt_operational_modes_report);
+    uint16_t commtact_link_msg_adt_operational_mode_pack(CommtactLinkProtocol::commtact_link_message_t *msg, uint8_t transmitter_operational_mode, uint8_t antenna_select, uint8_t reserved_1,
+                                                         uint8_t reserved_2, uint8_t unit_mode, uint8_t adt_frequency_mode, uint8_t video_transmit_enable, uint8_t reserved_3,
+                                                         uint8_t reserved_4, uint8_t tdd_operational_mode, uint8_t aes_encryption_enable, uint8_t telemetry_metadata_separation,
+                                                         uint8_t byte_12, uint8_t byte_13);
+    //-----------------------------------------------------------
 
   public slots:
     /** @brief Receive bytes from a communication interface */
@@ -293,7 +429,7 @@ class CommtactLinkProtocol : public QGCTool
   signals:
 
     /** @brief Message received and directly copied via signal */
-    void messageReceived(CommtactLinkInterface *link, commtact_link_message_t message);
+    void messageReceived(CommtactLinkInterface *link, commtact_link_message_t message, int message_size);
 
     /// Emitted when a temporary telemetry log file is ready for saving
     void saveTelemetryLog(QString tempLogfile);

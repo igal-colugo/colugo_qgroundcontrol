@@ -174,14 +174,15 @@ void CommtactUDPLink::_writeDataGram(const QByteArray data, const CommtactUDPCLi
 
 void CommtactUDPLink::readBytes()
 {
+    QByteArray datagram;
+
     if (!_socket)
     {
         return;
     }
-    QByteArray databuffer;
+
     while (_socket->hasPendingDatagrams())
     {
-        QByteArray datagram;
         datagram.resize(_socket->pendingDatagramSize());
         QHostAddress sender;
         quint16 senderPort;
@@ -192,35 +193,8 @@ void CommtactUDPLink::readBytes()
         {
             break;
         }
-        databuffer.append(datagram);
-        //-- Wait a bit before sending it over
-        if (databuffer.size() > 127)
-        {
-            emit bytesReceived(this, databuffer);
-            databuffer.clear();
-        }
-        // TODO: This doesn't validade the sender. Anything sending UDP packets to this port gets
-        // added to the list and will start receiving datagrams from here. Even a port scanner
-        // would trigger this.
-        // Add host to broadcast list if not yet present, or update its port
-        //        QHostAddress asender = sender;
-        //        if (_isIpLocal(sender))
-        //        {
-        //            asender = QHostAddress(QString("127.0.0.1"));
-        //        }
-        //        QMutexLocker locker(&_sessionTargetsMutex);
-        //        if (!contains_target(_sessionTargets, asender, senderPort))
-        //        {
-        //            qDebug() << "Adding target" << asender << senderPort;
-        //            CommtactUDPCLient *target = new CommtactUDPCLient(asender, senderPort);
-        //            _sessionTargets.append(target);
-        //        }
-        //        locker.unlock();
-    }
-    //-- Send whatever is left
-    if (databuffer.size())
-    {
-        emit bytesReceived(this, databuffer);
+
+        emit bytesReceived(this, datagram);
     }
 }
 

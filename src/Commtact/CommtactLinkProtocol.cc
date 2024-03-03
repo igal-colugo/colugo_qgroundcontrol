@@ -151,22 +151,10 @@ void CommtactLinkProtocol::receiveBytes(CommtactLinkInterface *link, QByteArray 
             // Increase receive counter
             totalReceiveCounter++;
 
-            //            if (_message.message_id == COMMTACT_GLOBAL_STATUS_MSG_ID)
-            //            {
-            //                //_startLogging();
-            //                commtact_global_status_t global_status;
-            //                _commtact_link_msg_global_status_decode(&_message, &global_status);
-            //            }
-
             // The packet is emitted as a whole
             // kind of inefficient, but no issue for a groundstation pc.
             // It buys as reentrancy for the whole code over all threads
-            if (static_cast<uint8_t>(b[6]) == (uint8_t) 0x81)
-            {
-                int debug_1 = 1;
-                debug_1 = debug_1 + 1;
-            }
-            emit messageReceived(link, _message);
+            emit messageReceived(link, _message, recieved_buffer_size);
 
             // Reset message parsing
             memset(&_status, 0, sizeof(_status));
@@ -393,6 +381,7 @@ uint8_t CommtactLinkProtocol::_commtact_link_frame_char_buffer(commtact_link_mes
         //        }
 
         // Successfully got message
+        _COMMTACT_PAYLOAD_NON_CONST(rxmsg)[status->packet_idx] = (char) c; // get last byte of recieved data
         status->packet_idx = 0;
         status->msg_received = COMMTACT_LINK_FRAMING_OK;
         status->parse_state = COMMTACT_LINK_PARSE_STATE_IDLE;
@@ -576,64 +565,71 @@ void CommtactLinkProtocol::commtact_link_msg_operational_modes_report_decode(con
 
 void CommtactLinkProtocol::commtact_link_msg_gdt_status_report_decode(const commtact_link_message_t *msg, commtact_gdt_status_report_t *gdt_status_report)
 {
-    //    uint16_t link_transfered_packets = 0;
-    //    uint16_t link_error_packets = 0;
-    //    uint16_t link_crc_errors_packets = 0;
-    //    uint16_t pedestal_azimuth_pointing = 0;
-    //    int16_t pedestal_elevation_pointing = 0;
-    //    int16_t gdt_base_left_right = 0;
-    //    int16_t gdt_base_back_forward = 0;
-    //    int16_t gdt_base_roll = 0;
-    //    uint16_t range_meter = 0;
-    //    uint32_t range_meter_1m = 0;
-
     memcpy(gdt_status_report, _COMMTACT_PAYLOAD(msg), sizeof(commtact_gdt_status_report_t));
+}
 
-    //    link_transfered_packets = gdt_status_report->link_transfered_packets;
-    //    _swap_bytes(&link_transfered_packets);
-    //    gdt_status_report->link_transfered_packets = link_transfered_packets;
-
-    //    link_error_packets = gdt_status_report->link_error_packets;
-    //    _swap_bytes(&link_error_packets);
-    //    gdt_status_report->link_error_packets = link_error_packets;
-
-    //    link_crc_errors_packets = gdt_status_report->link_crc_errors_packets;
-    //    _swap_bytes(&link_crc_errors_packets);
-    //    gdt_status_report->link_crc_errors_packets = link_crc_errors_packets;
-
-    //    pedestal_azimuth_pointing = gdt_status_report->pedestal_azimuth_pointing;
-    //    _swap_bytes(&pedestal_azimuth_pointing);
-    //    gdt_status_report->pedestal_azimuth_pointing = pedestal_azimuth_pointing;
-
-    //    pedestal_elevation_pointing = (int16_t) gdt_status_report->pedestal_elevation_pointing;
-    //    _swap_bytes((uint16_t *) &pedestal_elevation_pointing);
-    //    gdt_status_report->pedestal_elevation_pointing = (int16_t) pedestal_elevation_pointing;
-
-    //    gdt_base_left_right = (int16_t) gdt_status_report->gdt_base_left_right;
-    //    _swap_bytes((uint16_t *) &gdt_base_left_right);
-    //    gdt_status_report->gdt_base_left_right = (int16_t) gdt_base_left_right;
-
-    //    gdt_base_back_forward = (int16_t) gdt_status_report->gdt_base_back_forward;
-    //    _swap_bytes((uint16_t *) &gdt_base_back_forward);
-    //    gdt_status_report->gdt_base_back_forward = (int16_t) gdt_base_back_forward;
-
-    //    gdt_base_roll = (int16_t) gdt_status_report->gdt_base_roll;
-    //    _swap_bytes((uint16_t *) &gdt_base_roll);
-    //    gdt_status_report->gdt_base_roll = (int16_t) gdt_base_roll;
-
-    //    range_meter = gdt_status_report->range_meter;
-    //    _swap_bytes(&range_meter);
-    //    gdt_status_report->range_meter = range_meter;
-
-    //    range_meter_1m = gdt_status_report->range_meter_1m;
-    //    _swap_bytes(&range_meter_1m);
-    //    gdt_status_report->range_meter_1m = range_meter_1m;
+void CommtactLinkProtocol::commtact_link_msg_gdt_cbit_report_decode(const commtact_link_message_t *msg, commtact_gdt_cbit_report_t *gdt_cbit_report)
+{
+    memcpy(gdt_cbit_report, _COMMTACT_PAYLOAD(msg), sizeof(commtact_gdt_cbit_report_t));
 }
 
 void CommtactLinkProtocol::commtact_link_msg_gdt_constant_frequency_report_decode(const commtact_link_message_t *msg, commtact_gdt_constant_frequency_report_t *gdt_constant_frequency_report)
 {
     memcpy(gdt_constant_frequency_report, _COMMTACT_PAYLOAD(msg), sizeof(commtact_gdt_constant_frequency_report_t));
 }
+
+void CommtactLinkProtocol::commtact_link_msg_gdt_mission_adt_status_report_decode(const commtact_link_message_t *msg, commtact_gdt_mission_adt_status_report_t *gdt_mission_adt_status_report)
+{
+    memcpy(gdt_mission_adt_status_report, _COMMTACT_PAYLOAD(msg), sizeof(commtact_gdt_mission_adt_status_report_t));
+}
+
+void CommtactLinkProtocol::commtact_link_msg_adt_operational_modes_report_decode(const commtact_link_message_t *msg, commtact_adt_operational_modes_report_t *adt_operational_modes_report)
+{
+    memset(adt_operational_modes_report, 0, sizeof(commtact_adt_operational_modes_report_t));
+    memcpy(adt_operational_modes_report, _COMMTACT_PAYLOAD(msg), sizeof(commtact_adt_operational_modes_report_t));
+}
+
+//-------------------------- ADT -----------------------------------
+uint16_t CommtactLinkProtocol::commtact_link_msg_adt_operational_mode_pack(CommtactLinkProtocol::commtact_link_message_t *msg, uint8_t transmitter_operational_mode, uint8_t antenna_select,
+                                                                           uint8_t reserved_1, uint8_t reserved_2, uint8_t unit_mode, uint8_t adt_frequency_mode,
+                                                                           uint8_t video_transmit_enable, uint8_t reserved_3, uint8_t reserved_4, uint8_t tdd_operational_mode,
+                                                                           uint8_t aes_encryption_enable, uint8_t telemetry_metadata_separation, uint8_t byte_12, uint8_t byte_13)
+{
+    CommtactLinkProtocol::commtact_adt_operational_mode_t packet = {};
+
+    msg->time_stamp[0] = 0;
+    msg->time_stamp[1] = 0;
+    msg->time_stamp[2] = 0;
+    msg->time_stamp[3] = 0;
+
+    msg->seq_num[0] = 0;
+    msg->seq_num[1] = 0;
+
+    msg->opcode = ADT_OPERATIONAL_MODE_SET;
+
+    packet.transmitter_operational_mode = transmitter_operational_mode;
+    packet.antenna_select = antenna_select;
+    packet.reserved_1 = reserved_1;
+    packet.reserved_2 = reserved_2;
+    packet.unit_mode = unit_mode;
+    packet.adt_frequency_mode = adt_frequency_mode;
+    packet.video_transmit_enable = video_transmit_enable;
+    packet.reserved_3 = reserved_3;
+    packet.reserved_4 = reserved_4;
+    packet.tdd_operational_mode = tdd_operational_mode;
+    packet.telemetry_metadata_separation = telemetry_metadata_separation;
+    packet.byte_12.byte = byte_12;
+    packet.byte_13.byte = byte_13;
+
+    uint8_t payload[sizeof(commtact_adt_operational_mode_t)] = {};
+
+    memcpy(&payload, &packet, sizeof(commtact_adt_operational_mode_t));
+
+    memcpy(_COMMTACT_PAYLOAD_NON_CONST(msg), &packet, sizeof(packet));
+
+    return sizeof(commtact_adt_operational_mode_t);
+}
+//------------------------------------------------------------------
 
 void CommtactLinkProtocol::_swap_bytes(uint16_t *data)
 {
