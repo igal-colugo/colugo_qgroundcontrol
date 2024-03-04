@@ -366,7 +366,7 @@ void CommtactLinkManagement::setGDTOperationalFrequencyCommand(uint gdt_operatio
 
         CommtactLinkProtocol::commtact_link_message_t message = {};
 
-        uint16_t payload_size = linkProtocol->commtact_link_msg_gdt_opeartional_frequency_pack(&message, gdt_operational_frequency);
+        uint16_t payload_size = linkProtocol->commtact_link_msg_gdt_operational_frequency_pack(&message, gdt_operational_frequency);
 
         uint8_t buffer[7 + payload_size] = {};
         int len = linkProtocol->commtact_link_msg_to_send_buffer(&buffer[0], &message, payload_size);
@@ -424,9 +424,20 @@ QStringList CommtactLinkManagement::adtAntennaSelectTypeStrings(void) const
     static QStringList list;
     if (!list.size())
     {
-        list += tr("OMNI");
-        list += tr("DIRECTIONAL");
-        list += tr("ADVANCED");
+        list += tr("Antenna1");
+        list += tr("Antenna2");
+        list += tr("Auto Select");
+        list += tr("Antenna 2 SP4T-1");
+        list += tr("Antenna 2 SP4T-2");
+        list += tr("Antenna 2 SP4T-3");
+        list += tr("Antenna 2 SP4T-4");
+        list += tr("Antenna 6P no.1");
+        list += tr("Antenna 6P no.2");
+        list += tr("Antenna 6P no.3");
+        list += tr("Antenna 6P no.4");
+        list += tr("Antenna 6P no.5");
+        list += tr("Antenna 6P no.6");
+        list += tr("Advanced");
     }
     return list;
 }
@@ -458,13 +469,9 @@ QStringList CommtactLinkManagement::adtUnitModeTypeStrings(void) const
     static QStringList list;
     if (!list.size())
     {
-        list += tr("NORMAL");
-        list += tr("MISSION RELAY");
-        list += tr("RELAY");
-        list += tr("MISSION");
-        list += tr("TRANSIT");
-        list += tr("MISSION TMO");
-        list += tr("MISSION TRANSIT");
+        list += tr("NORMAL(P2P)");
+        list += tr("TRANSIT(P2MP)");
+        list += tr("NORMAL TMO");
     }
     return list;
 }
@@ -477,6 +484,30 @@ QStringList CommtactLinkManagement::adtSymbolRateTypeStrings(void) const
         list += tr("16MSPS");
         list += tr("8MSPS");
         list += tr("4MSPS");
+    }
+    return list;
+}
+
+QStringList CommtactLinkManagement::adtVideoRateTypeStrings(void) const
+{
+    //-- Must follow same order as enum LinkType in LinkConfiguration.h
+    static QStringList list;
+    if (!list.size())
+    {
+        list += tr("1.8Mbps");
+        list += tr("1.2Mbps");
+        list += tr("900kbps");
+    }
+    return list;
+}
+QStringList CommtactLinkManagement::adtVideoSourceTypeStrings(void) const
+{
+    //-- Must follow same order as enum LinkType in LinkConfiguration.h
+    static QStringList list;
+    if (!list.size())
+    {
+        list += tr("ANALOG VIDEO");
+        list += tr("DIGITAL VIDEO");
     }
     return list;
 }
@@ -597,6 +628,35 @@ void CommtactLinkManagement::setADTFrequencyModeCommand(uint adt_frequency_mode)
         sharedLink->writeBytesThreadSafe((const char *) buffer, len);
     }
 }
+void CommtactLinkManagement::setADTVideoTransmitEnableCommand(uint adt_video_transmit_enable)
+{
+    /* Sending the camera command */
+    WeakCommtactLinkInterfacePtr weakLink = this->_commtactLinkManager->selectedSharedLinkInterfacePointerForLink();
+    if (weakLink.expired())
+    {
+        return;
+    }
+    SharedCommtactLinkInterfacePtr sharedLink = weakLink.lock();
+
+    if (sharedLink != nullptr)
+    {
+        CommtactLinkProtocol *linkProtocol = this->_commtactLinkManager->linkProtocol();
+
+        CommtactLinkProtocol::commtact_link_message_t message = {};
+
+        uint16_t payload_size = linkProtocol->commtact_link_msg_adt_operational_mode_pack(
+            &message, _adt_operational_modes_report.transmitter_operational_mode, _adt_operational_modes_report.antenna_select, _adt_operational_modes_report.reserved_1,
+            _adt_operational_modes_report.reserved_2, _adt_operational_modes_report.unit_mode, _adt_operational_modes_report.adt_frequency_mode, adt_video_transmit_enable,
+            _adt_operational_modes_report.reserved_3, _adt_operational_modes_report.reserved_4, _adt_operational_modes_report.tdd_operational_mode,
+            _adt_operational_modes_report.aes_encryption_enable, _adt_operational_modes_report.telemetry_metadata_separation, _adt_operational_modes_report.byte_12.byte,
+            _adt_operational_modes_report.byte_13.byte);
+
+        uint8_t buffer[7 + payload_size] = {};
+        int len = linkProtocol->commtact_link_msg_to_send_buffer(&buffer[0], &message, payload_size);
+
+        sharedLink->writeBytesThreadSafe((const char *) buffer, len);
+    }
+}
 void CommtactLinkManagement::setADTUnitModeCommand(uint adt_unit_mode)
 {
     /* Sending the camera command */
@@ -687,6 +747,122 @@ void CommtactLinkManagement::setADTAesEncryptionCommand(uint adt_aes_encryption)
         sharedLink->writeBytesThreadSafe((const char *) buffer, len);
     }
 }
+void CommtactLinkManagement::setADTTelemetryMetadataSeparationCommand(uint adt_telemetry_metadata_separation)
+{
+    /* Sending the camera command */
+    WeakCommtactLinkInterfacePtr weakLink = this->_commtactLinkManager->selectedSharedLinkInterfacePointerForLink();
+    if (weakLink.expired())
+    {
+        return;
+    }
+    SharedCommtactLinkInterfacePtr sharedLink = weakLink.lock();
+
+    if (sharedLink != nullptr)
+    {
+        CommtactLinkProtocol *linkProtocol = this->_commtactLinkManager->linkProtocol();
+
+        CommtactLinkProtocol::commtact_link_message_t message = {};
+
+        uint16_t payload_size = linkProtocol->commtact_link_msg_adt_operational_mode_pack(
+            &message, _adt_operational_modes_report.transmitter_operational_mode, _adt_operational_modes_report.antenna_select, _adt_operational_modes_report.reserved_1,
+            _adt_operational_modes_report.reserved_2, _adt_operational_modes_report.unit_mode, _adt_operational_modes_report.adt_frequency_mode,
+            _adt_operational_modes_report.video_transmit_enable, _adt_operational_modes_report.reserved_3, _adt_operational_modes_report.reserved_4,
+            _adt_operational_modes_report.tdd_operational_mode, _adt_operational_modes_report.aes_encryption_enable, adt_telemetry_metadata_separation,
+            _adt_operational_modes_report.byte_12.byte, _adt_operational_modes_report.byte_13.byte);
+
+        uint8_t buffer[7 + payload_size] = {};
+        int len = linkProtocol->commtact_link_msg_to_send_buffer(&buffer[0], &message, payload_size);
+
+        sharedLink->writeBytesThreadSafe((const char *) buffer, len);
+    }
+}
+void CommtactLinkManagement::setADTVideoRateCommand(uint adt_video_rate)
+{
+    /* Sending the camera command */
+    WeakCommtactLinkInterfacePtr weakLink = this->_commtactLinkManager->selectedSharedLinkInterfacePointerForLink();
+    if (weakLink.expired())
+    {
+        return;
+    }
+    SharedCommtactLinkInterfacePtr sharedLink = weakLink.lock();
+
+    if (sharedLink != nullptr)
+    {
+        CommtactLinkProtocol *linkProtocol = this->_commtactLinkManager->linkProtocol();
+
+        CommtactLinkProtocol::commtact_link_message_t message = {};
+
+        _adt_operational_modes_report.byte_12.bit_t.video_rate = adt_video_rate;
+
+        uint16_t payload_size = linkProtocol->commtact_link_msg_adt_operational_mode_pack(
+            &message, _adt_operational_modes_report.transmitter_operational_mode, _adt_operational_modes_report.antenna_select, _adt_operational_modes_report.reserved_1,
+            _adt_operational_modes_report.reserved_2, _adt_operational_modes_report.unit_mode, _adt_operational_modes_report.adt_frequency_mode,
+            _adt_operational_modes_report.video_transmit_enable, _adt_operational_modes_report.reserved_3, _adt_operational_modes_report.reserved_4,
+            _adt_operational_modes_report.tdd_operational_mode, _adt_operational_modes_report.aes_encryption_enable, _adt_operational_modes_report.telemetry_metadata_separation,
+            _adt_operational_modes_report.byte_12.byte, _adt_operational_modes_report.byte_13.byte);
+
+        uint8_t buffer[7 + payload_size] = {};
+        int len = linkProtocol->commtact_link_msg_to_send_buffer(&buffer[0], &message, payload_size);
+
+        sharedLink->writeBytesThreadSafe((const char *) buffer, len);
+    }
+}
+void CommtactLinkManagement::setADTVideoSourceCommand(uint adt_video_source)
+{
+    /* Sending the camera command */
+    WeakCommtactLinkInterfacePtr weakLink = this->_commtactLinkManager->selectedSharedLinkInterfacePointerForLink();
+    if (weakLink.expired())
+    {
+        return;
+    }
+    SharedCommtactLinkInterfacePtr sharedLink = weakLink.lock();
+
+    if (sharedLink != nullptr)
+    {
+        CommtactLinkProtocol *linkProtocol = this->_commtactLinkManager->linkProtocol();
+
+        CommtactLinkProtocol::commtact_link_message_t message = {};
+
+        _adt_operational_modes_report.byte_12.bit_t.video_source = adt_video_source;
+
+        uint16_t payload_size = linkProtocol->commtact_link_msg_adt_operational_mode_pack(
+            &message, _adt_operational_modes_report.transmitter_operational_mode, _adt_operational_modes_report.antenna_select, _adt_operational_modes_report.reserved_1,
+            _adt_operational_modes_report.reserved_2, _adt_operational_modes_report.unit_mode, _adt_operational_modes_report.adt_frequency_mode,
+            _adt_operational_modes_report.video_transmit_enable, _adt_operational_modes_report.reserved_3, _adt_operational_modes_report.reserved_4,
+            _adt_operational_modes_report.tdd_operational_mode, _adt_operational_modes_report.aes_encryption_enable, _adt_operational_modes_report.telemetry_metadata_separation,
+            _adt_operational_modes_report.byte_12.byte, _adt_operational_modes_report.byte_13.byte);
+
+        uint8_t buffer[7 + payload_size] = {};
+        int len = linkProtocol->commtact_link_msg_to_send_buffer(&buffer[0], &message, payload_size);
+
+        sharedLink->writeBytesThreadSafe((const char *) buffer, len);
+    }
+}
+void CommtactLinkManagement::setADTOperationalFrequencyCommand(uint adt_operational_frequency)
+{
+    /* Sending the camera command */
+    WeakCommtactLinkInterfacePtr weakLink = this->_commtactLinkManager->selectedSharedLinkInterfacePointerForLink();
+    if (weakLink.expired())
+    {
+        return;
+    }
+    SharedCommtactLinkInterfacePtr sharedLink = weakLink.lock();
+
+    if (sharedLink != nullptr)
+    {
+        CommtactLinkProtocol *linkProtocol = this->_commtactLinkManager->linkProtocol();
+
+        CommtactLinkProtocol::commtact_link_message_t message = {};
+
+        uint16_t payload_size = linkProtocol->commtact_link_msg_adt_operational_frequency_pack(&message, adt_operational_frequency);
+
+        uint8_t buffer[7 + payload_size] = {};
+        int len = linkProtocol->commtact_link_msg_to_send_buffer(&buffer[0], &message, payload_size);
+
+        sharedLink->writeBytesThreadSafe((const char *) buffer, len);
+    }
+}
+
 //--------------------------------------------------------
 
 bool CommtactLinkManagement::getShouldUiEnabledRescueElement()
@@ -719,27 +895,61 @@ void CommtactLinkManagement::_commtactLinkMessageReceived(CommtactLinkInterface 
         else if (message_size == 21) // ADT message
         {
             linkProtocol->commtact_link_msg_adt_operational_modes_report_decode(&message, &_adt_operational_modes_report);
+
+            setAdtTransmitterOperationalMode(_adt_operational_modes_report.transmitter_operational_mode);
+            setAdtAntennaSelect(_adt_operational_modes_report.antenna_select);
+            setAdtTddOperationalMode(_adt_operational_modes_report.tdd_operational_mode);
+            setAdtFrequencyMode(_adt_operational_modes_report.adt_frequency_mode);
+            setAdtVideoTransmitEnable(_adt_operational_modes_report.video_transmit_enable);
+            setAdtUnitMode(_adt_operational_modes_report.unit_mode);
+            setAdtSymbolRate(_adt_operational_modes_report.byte_13.bit_t.symbol_rate);
+            setAdtAesEncryption(_adt_operational_modes_report.aes_encryption_enable);
+            setAdtTelemetryMetadataSeparation(_adt_operational_modes_report.telemetry_metadata_separation);
+            setAdtVideoRate(_adt_operational_modes_report.byte_12.bit_t.video_rate);
+            setAdtVideoSource(_adt_operational_modes_report.byte_12.bit_t.video_source);
         }
 
         break;
 
     case CommtactLinkProtocol::GDT_STATUS_REPORT:
 
-        linkProtocol->commtact_link_msg_gdt_status_report_decode(&message, &_gdt_status_report);
+        if (message_size == 31) // GDT message
+        {
+            linkProtocol->commtact_link_msg_gdt_status_report_decode(&message, &_gdt_status_report);
 
-        setGdtTDDSync(_gdt_status_report.byte_0.bit_t.tdd_sync);
-        setGdtLinkRSSI(_gdt_status_report.link_rssi);
-        setGdtLinkTransferedPackets(_gdt_status_report.link_transfered_packets);
-        setGdtLinkErrorPackets(_gdt_status_report.link_error_packets);
-        setGdtLinkCRCErrorPackets(_gdt_status_report.link_crc_errors_packets);
+            setGdtTDDSync(_gdt_status_report.byte_0.bit_t.tdd_sync);
+            setGdtLinkRSSI(_gdt_status_report.link_rssi);
+            setGdtLinkTransferedPackets(_gdt_status_report.link_transfered_packets);
+            setGdtLinkErrorPackets(_gdt_status_report.link_error_packets);
+            setGdtLinkCRCErrorPackets(_gdt_status_report.link_crc_errors_packets);
+        }
+        else if (message_size == 23) // ADT message
+        {
+            linkProtocol->commtact_link_msg_adt_status_report_decode(&message, &_adt_status_report);
+
+            setAdtTDDSync(_adt_status_report.primary_tdd_sync);
+            setAdtLinkRSSI(_adt_status_report.link_rssi);
+            setAdtLinkTransferedPackets(_adt_status_report.link_transfered_packets);
+            setAdtLinkErrorPackets(_adt_status_report.link_error_packets);
+            setAdtLinkCRCErrorPackets(_adt_status_report.link_crc_errors_packets);
+        }
 
         break;
 
     case CommtactLinkProtocol::GDT_CONSTANT_FREQUENCY_REPORT:
 
-        linkProtocol->commtact_link_msg_gdt_constant_frequency_report_decode(&message, &_gdt_constant_frequency_report);
+        if (message_size == 9) // GDT message
+        {
+            linkProtocol->commtact_link_msg_gdt_constant_frequency_report_decode(&message, &_gdt_constant_frequency_report);
 
-        setGdtOperationFrequency(_gdt_constant_frequency_report.gdt_operation_frequency);
+            setGdtOperationFrequency(_gdt_constant_frequency_report.gdt_operation_frequency);
+        }
+        else if (message_size == 11) // ADT message
+        {
+            linkProtocol->commtact_link_msg_adt_constant_frequency_report_decode(&message, &_adt_constant_frequency_report);
+
+            setAdtOperationFrequency(_adt_constant_frequency_report.adt_primary_channel_frequency);
+        }
 
         break;
 

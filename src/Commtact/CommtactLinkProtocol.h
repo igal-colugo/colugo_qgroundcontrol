@@ -297,6 +297,32 @@ class CommtactLinkProtocol : public QGCTool
     })
     commtact_adt_operational_modes_report_t;
 
+    PACKED_STRUCT(typedef struct __commtact_adt_constant_frequency {
+        uint16_t adt_main_channel_frequency;
+        uint16_t reserved;
+    })
+    commtact_adt_constant_frequency_t;
+
+    PACKED_STRUCT(typedef struct __commtact_adt_constant_frequency_report {
+        uint16_t adt_primary_channel_frequency;
+        uint16_t reserved;
+    })
+    commtact_adt_constant_frequency_report_t;
+
+    PACKED_STRUCT(typedef struct __commtact_adt_status_report {
+        uint8_t primary_tdd_sync;
+        int8_t link_rssi;
+        uint16_t link_transfered_packets;
+        uint16_t link_error_packets;
+        uint16_t link_crc_errors_packets;
+        uint8_t reserved_1;
+        int8_t reserved_2;
+        uint16_t reserved_3;
+        uint16_t reserved_4;
+        uint16_t reserved_5;
+    })
+    commtact_adt_status_report_t;
+
     //--------------------------------------------
 
     typedef enum
@@ -378,7 +404,7 @@ class CommtactLinkProtocol : public QGCTool
 
     uint16_t commtact_link_msg_get_report_message_pack(CommtactLinkProtocol::commtact_link_message_t *msg, uint8_t required_message);
 
-    uint16_t commtact_link_msg_gdt_opeartional_frequency_pack(CommtactLinkProtocol::commtact_link_message_t *msg, uint16_t gdt_operational_frequency);
+    uint16_t commtact_link_msg_gdt_operational_frequency_pack(CommtactLinkProtocol::commtact_link_message_t *msg, uint16_t gdt_operational_frequency);
 
     uint16_t commtact_link_msg_operational_mode_pack(CommtactLinkProtocol::commtact_link_message_t *msg, uint8_t transmitter_operational_mode, uint8_t pedestal_track__mode,
                                                      uint8_t gdt_antenna_select, uint16_t set_azimuth, int16_t set_elevation, uint8_t frequency_mode, uint8_t reserved_1,
@@ -397,6 +423,9 @@ class CommtactLinkProtocol : public QGCTool
                                                          uint8_t reserved_2, uint8_t unit_mode, uint8_t adt_frequency_mode, uint8_t video_transmit_enable, uint8_t reserved_3,
                                                          uint8_t reserved_4, uint8_t tdd_operational_mode, uint8_t aes_encryption_enable, uint8_t telemetry_metadata_separation,
                                                          uint8_t byte_12, uint8_t byte_13);
+    void commtact_link_msg_adt_constant_frequency_report_decode(const commtact_link_message_t *msg, commtact_adt_constant_frequency_report_t *adt_constant_frequency_report);
+    uint16_t commtact_link_msg_adt_operational_frequency_pack(CommtactLinkProtocol::commtact_link_message_t *msg, uint16_t adt_operational_frequency);
+    void commtact_link_msg_adt_status_report_decode(const commtact_link_message_t *msg, commtact_adt_status_report_t *adt_status_report);
     //-----------------------------------------------------------
 
   public slots:

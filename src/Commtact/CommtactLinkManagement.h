@@ -211,6 +211,223 @@ class CommtactLinkManagement : public QGCTool
         emit gdtCBITPAReturnPowerChanged();
     }
 
+    //---------------------- ADT Properties ---------------------------------
+    Q_PROPERTY(QStringList adtOperationalModeTypeStrings READ adtOperationalModeTypeStrings CONSTANT)
+    Q_PROPERTY(uint adtTransmitterOperationalMode READ getAdtTransmitterOperationalMode WRITE setAdtTransmitterOperationalMode NOTIFY adtTransmitterOperationalModeChanged)
+    uint getAdtTransmitterOperationalMode()
+    {
+        return (uint) _adtTransmitterOperationalMode;
+    }
+    void setAdtTransmitterOperationalMode(const uint &adtTransmitterOperationalMode)
+    {
+        _adtTransmitterOperationalMode = (uint8_t) adtTransmitterOperationalMode;
+        emit adtTransmitterOperationalModeChanged();
+    }
+
+    Q_PROPERTY(QStringList adtAntennaSelectTypeStrings READ adtAntennaSelectTypeStrings CONSTANT)
+    Q_PROPERTY(uint adtAntennaSelect READ getAdtAntennaSelect WRITE setAdtAntennaSelect NOTIFY adtAntennaSelectChanged)
+    uint getAdtAntennaSelect()
+    {
+        return (uint) _adtAntennaSelect;
+    }
+    void setAdtAntennaSelect(const uint &adtAntennaSelect)
+    {
+        _adtAntennaSelect = (uint8_t) adtAntennaSelect;
+        emit adtAntennaSelectChanged();
+    }
+
+    Q_PROPERTY(QStringList adtTddOperationalModeTypeStrings READ adtTddOperationalModeTypeStrings CONSTANT)
+    Q_PROPERTY(uint adtTddOperationalMode READ getAdtTddOperationalMode WRITE setAdtTddOperationalMode NOTIFY adtTddOperationalModeChanged)
+    uint getAdtTddOperationalMode()
+    {
+        return (uint) _adtTddOperationalMode;
+    }
+    void setAdtTddOperationalMode(const uint &adtTddOperationalMode)
+    {
+        _adtTddOperationalMode = (uint8_t) adtTddOperationalMode;
+        emit adtTddOperationalModeChanged();
+    }
+
+    Q_PROPERTY(QStringList adtFrequencyModeTypeStrings READ adtFrequencyModeTypeStrings CONSTANT)
+    Q_PROPERTY(uint adtFrequencyMode READ getAdtFrequencyMode WRITE setAdtFrequencyMode NOTIFY adtFrequencyModeChanged)
+    uint getAdtFrequencyMode()
+    {
+        return (uint) _adtFrequencyMode;
+    }
+    void setAdtFrequencyMode(const uint &adtFrequencyMode)
+    {
+        _adtFrequencyMode = (uint8_t) adtFrequencyMode;
+        emit adtFrequencyModeChanged();
+    }
+
+    Q_PROPERTY(uint adtVideoTransmitEnable READ getAdtVideoTransmitEnable WRITE setAdtVideoTransmitEnable NOTIFY adtVideoTransmitEnableChanged)
+    uint getAdtVideoTransmitEnable()
+    {
+        return (uint) _adtVideoTransmitEnable;
+    }
+    void setAdtVideoTransmitEnable(const uint &adtVideoTransmitEnable)
+    {
+        _adtVideoTransmitEnable = (uint8_t) adtVideoTransmitEnable;
+        emit adtVideoTransmitEnableChanged();
+    }
+
+    Q_PROPERTY(QStringList adtUnitModeTypeStrings READ adtUnitModeTypeStrings CONSTANT)
+    Q_PROPERTY(uint adtUnitMode READ getAdtUnitMode WRITE setAdtUnitMode NOTIFY adtUnitModeChanged)
+    uint getAdtUnitMode()
+    {
+        return (uint) _adtUnitMode;
+    }
+    void setAdtUnitMode(const uint &adtUnitMode)
+    {
+        _adtUnitMode = (uint8_t) adtUnitMode;
+        emit adtUnitModeChanged();
+    }
+
+    Q_PROPERTY(QStringList adtSymbolRateTypeStrings READ adtSymbolRateTypeStrings CONSTANT)
+    Q_PROPERTY(uint adtSymbolRate READ getAdtSymbolRate WRITE setAdtSymbolRate NOTIFY adtSymbolRateChanged)
+    uint getAdtSymbolRate()
+    {
+        return (uint) _adtSymbolRate;
+    }
+    void setAdtSymbolRate(const uint &adtSymbolRate)
+    {
+        _adtSymbolRate = (uint8_t) adtSymbolRate;
+        emit adtSymbolRateChanged();
+    }
+
+    Q_PROPERTY(uint adtAesEncryption READ getAdtAesEncryption WRITE setAdtAesEncryption NOTIFY adtAesEncryptionChanged)
+    uint getAdtAesEncryption()
+    {
+        return (uint) _adtAesEncryption;
+    }
+    void setAdtAesEncryption(const uint &adtAesEncryption)
+    {
+        _adtAesEncryption = (uint8_t) adtAesEncryption;
+        emit adtAesEncryptionChanged();
+    }
+
+    Q_PROPERTY(uint adtTelemetryMetadataSeparation READ getAdtTelemetryMetadataSeparation WRITE setAdtTelemetryMetadataSeparation NOTIFY adtTelemetryMetadataSeparationChanged)
+    uint getAdtTelemetryMetadataSeparation()
+    {
+        return (uint) _adtTelemetryMetadataSeparation;
+    }
+    void setAdtTelemetryMetadataSeparation(const uint &adtTelemetryMetadataSeparation)
+    {
+        _adtTelemetryMetadataSeparation = (uint8_t) adtTelemetryMetadataSeparation;
+        emit adtTelemetryMetadataSeparationChanged();
+    }
+
+    Q_PROPERTY(int adtTDDSync READ getAdtTDDSync WRITE setAdtTDDSync NOTIFY adtTDDSyncChanged)
+    uint getAdtTDDSync()
+    {
+        return (int) _adtTDDSync;
+    }
+    void setAdtTDDSync(const int &adtTDDSync)
+    {
+        _adtTDDSync = (int8_t) adtTDDSync;
+        emit adtTDDSyncChanged();
+    }
+
+    Q_PROPERTY(int adtLinkRSSI READ getAdtLinkRSSI WRITE setAdtLinkRSSI NOTIFY adtLinkRSSIChanged)
+    uint getAdtLinkRSSI()
+    {
+        return (int) _adtLinkRSSI;
+    }
+    void setAdtLinkRSSI(const int &adtLinkRSSI)
+    {
+        _adtLinkRSSI = (int8_t) adtLinkRSSI;
+        emit adtLinkRSSIChanged();
+    }
+
+    Q_PROPERTY(uint adtLinkTransferedPackets READ getAdtLinkTransferedPackets WRITE setAdtLinkTransferedPackets NOTIFY adtLinkTransferedPacketsChanged)
+    uint getAdtLinkTransferedPackets()
+    {
+        return (uint) _adtLinkTransferedPackets;
+    }
+    void setAdtLinkTransferedPackets(const uint16_t &adtLinkTransferedPackets)
+    {
+        _adtLinkTransferedPackets = (uint16_t) adtLinkTransferedPackets;
+        emit adtLinkTransferedPacketsChanged();
+    }
+
+    Q_PROPERTY(uint adtLinkErrorPackets READ getAdtLinkErrorPackets WRITE setAdtLinkErrorPackets NOTIFY adtLinkErrorPacketsChanged)
+    uint getAdtLinkErrorPackets()
+    {
+        return (uint) _adtLinkErrorPackets;
+    }
+    void setAdtLinkErrorPackets(const uint16_t &adtLinkErrorPackets)
+    {
+        _adtLinkErrorPackets = (uint16_t) adtLinkErrorPackets;
+        emit adtLinkErrorPacketsChanged();
+    }
+
+    Q_PROPERTY(uint adtLinkCRCErrorPackets READ getAdtLinkCRCErrorPackets WRITE setAdtLinkCRCErrorPackets NOTIFY adtLinkCRCErrorPacketsChanged)
+    uint getAdtLinkCRCErrorPackets()
+    {
+        return (uint) _adtLinkCRCErrorPackets;
+    }
+    void setAdtLinkCRCErrorPackets(const uint16_t &adtLinkCRCErrorPackets)
+    {
+        _adtLinkCRCErrorPackets = (uint16_t) adtLinkCRCErrorPackets;
+        emit adtLinkCRCErrorPacketsChanged();
+    }
+
+    Q_PROPERTY(int adtOperationFrequency READ getAdtOperationFrequency WRITE setAdtOperationFrequency NOTIFY adtOperationFrequencyChanged)
+    uint getAdtOperationFrequency()
+    {
+        return (int) _adtOperationFrequency;
+    }
+    void setAdtOperationFrequency(const int &adtOperationFrequency)
+    {
+        _adtOperationFrequency = (uint16_t) adtOperationFrequency;
+        emit adtOperationFrequencyChanged();
+    }
+
+    Q_PROPERTY(int adtCBITPAPowerOutput READ getAdtCBITPAPowerOutput WRITE setAdtCBITPAPowerOutput NOTIFY adtCBITPAPowerOutputChanged)
+    int getAdtCBITPAPowerOutput()
+    {
+        return (int) _adtCBITPAPowerOutput;
+    }
+    void setAdtCBITPAPowerOutput(const int &adtCBITPAPowerOutput)
+    {
+        _adtCBITPAPowerOutput = (int16_t) adtCBITPAPowerOutput;
+        emit adtCBITPAPowerOutputChanged();
+    }
+
+    Q_PROPERTY(int adtCBITPAReturnPower READ getAdtCBITPAReturnPower WRITE setAdtCBITPAReturnPower NOTIFY adtCBITPAReturnPowerChanged)
+    int getAdtCBITPAReturnPower()
+    {
+        return (int) _adtCBITPAReturnPower;
+    }
+    void setAdtCBITPAReturnPower(const int &adtCBITPAReturnPower)
+    {
+        _adtCBITPAReturnPower = (int16_t) adtCBITPAReturnPower;
+        emit adtCBITPAReturnPowerChanged();
+    }
+
+    Q_PROPERTY(QStringList adtVideoRateTypeStrings READ adtVideoRateTypeStrings CONSTANT)
+    Q_PROPERTY(int adtVideoRate READ getAdtVideoRate WRITE setAdtVideoRate NOTIFY adtVideoRateChanged)
+    int getAdtVideoRate()
+    {
+        return (int) _adtVideoRate;
+    }
+    void setAdtVideoRate(const int &adtVideoRate)
+    {
+        _adtVideoRate = (int16_t) adtVideoRate;
+        emit adtVideoRateChanged();
+    }
+    Q_PROPERTY(QStringList adtVideoSourceTypeStrings READ adtVideoSourceTypeStrings CONSTANT)
+    Q_PROPERTY(int adtVideoSource READ getAdtVideoSource WRITE setAdtVideoSource NOTIFY adtVideoSourceChanged)
+    int getAdtVideoSource()
+    {
+        return (int) _adtVideoSource;
+    }
+    void setAdtVideoSource(const int &adtVideoSource)
+    {
+        _adtVideoSource = (int16_t) adtVideoSource;
+        emit adtVideoSourceChanged();
+    }
+    //---------------------------------------------------------------
     //------------------- GDT commands ----------------------------------
     QStringList operationalModeTypeStrings(void) const;
     QStringList gdtAntennaSelectTypeStrings(void) const;
@@ -228,6 +445,8 @@ class CommtactLinkManagement : public QGCTool
     QStringList adtFrequencyModeTypeStrings(void) const;
     QStringList adtUnitModeTypeStrings(void) const;
     QStringList adtSymbolRateTypeStrings(void) const;
+    QStringList adtVideoRateTypeStrings(void) const;
+    QStringList adtVideoSourceTypeStrings(void) const;
     //-------------------------------------------------------------------
 
     //------------------- GDT commands ----------------------------------
@@ -248,9 +467,14 @@ class CommtactLinkManagement : public QGCTool
     Q_INVOKABLE void setADTAntennaSelectCommand(uint adt_antenna_select);
     Q_INVOKABLE void setADTTddOperationalModeCommand(uint adt_tdd_operational_mode);
     Q_INVOKABLE void setADTFrequencyModeCommand(uint adt_frequency_mode);
+    Q_INVOKABLE void setADTVideoTransmitEnableCommand(uint adt_video_transmit_enable);
     Q_INVOKABLE void setADTUnitModeCommand(uint adt_unit_mode);
     Q_INVOKABLE void setADTSymbolRateCommand(uint adt_symbol_rate);
     Q_INVOKABLE void setADTAesEncryptionCommand(uint adt_aes_encryption);
+    Q_INVOKABLE void setADTTelemetryMetadataSeparationCommand(uint adt_telemetry_metadata_separation);
+    Q_INVOKABLE void setADTOperationalFrequencyCommand(uint adt_operational_frequency);
+    Q_INVOKABLE void setADTVideoRateCommand(uint adt_video_rate);
+    Q_INVOKABLE void setADTVideoSourceCommand(uint adt_video_source);
     //-------------------------------------------------------------------
 
   protected:
@@ -286,7 +510,34 @@ class CommtactLinkManagement : public QGCTool
     CommtactLinkProtocol::commtact_gdt_cbit_report_t _gdt_cbit_report;
     CommtactLinkProtocol::commtact_gdt_mission_adt_status_report_t _gdt_mission_adt_status_report;
 
+    //--------------- Adt fields --------------------
+    uint8_t _adtTransmitterOperationalMode;
+    uint8_t _adtAntennaSelect;
+    uint8_t _adtTddOperationalMode;
+    uint8_t _adtFrequencyMode;
+    uint8_t _adtVideoTransmitEnable;
+    uint8_t _adtUnitMode;
+    uint8_t _adtSymbolRate;
+    uint8_t _adtAesEncryption;
+    uint8_t _adtTelemetryMetadataSeparation;
+
+    int8_t _adtTDDSync;
+    int8_t _adtLinkRSSI;
+    uint16_t _adtLinkTransferedPackets;
+    uint16_t _adtLinkErrorPackets;
+    uint16_t _adtLinkCRCErrorPackets;
+
+    uint16_t _adtOperationFrequency;
+
+    int16_t _adtCBITPAPowerOutput;
+    int16_t _adtCBITPAReturnPower;
+
+    uint8_t _adtVideoRate;
+    uint8_t _adtVideoSource;
+
     CommtactLinkProtocol::commtact_adt_operational_modes_report_t _adt_operational_modes_report;
+    CommtactLinkProtocol::commtact_adt_constant_frequency_report_t _adt_constant_frequency_report;
+    CommtactLinkProtocol::commtact_adt_status_report_t _adt_status_report;
 
     //-----------------------------------------------
 
@@ -314,7 +565,29 @@ class CommtactLinkManagement : public QGCTool
     //-----------------------------------------------
 
     //---------------- ADT signals ------------------
+    void adtTransmitterOperationalModeChanged();
+    void adtAntennaSelectChanged();
+    void adtTddOperationalModeChanged();
+    void adtFrequencyModeChanged();
+    void adtVideoTransmitEnableChanged();
+    void adtUnitModeChanged();
+    void adtSymbolRateChanged();
+    void adtAesEncryptionChanged();
+    void adtTelemetryMetadataSeparationChanged();
 
+    void adtTDDSyncChanged();
+    void adtLinkRSSIChanged();
+    void adtLinkTransferedPacketsChanged();
+    void adtLinkErrorPacketsChanged();
+    void adtLinkCRCErrorPacketsChanged();
+
+    void adtOperationFrequencyChanged();
+
+    void adtCBITPAPowerOutputChanged();
+    void adtCBITPAReturnPowerChanged();
+
+    void adtVideoRateChanged();
+    void adtVideoSourceChanged();
     //-----------------------------------------------
 
   public slots:

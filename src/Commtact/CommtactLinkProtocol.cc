@@ -479,7 +479,8 @@ uint16_t CommtactLinkProtocol::commtact_link_msg_get_report_message_pack(Commtac
     return sizeof(commtact_gdt_get_report_t);
 }
 
-uint16_t CommtactLinkProtocol::commtact_link_msg_gdt_opeartional_frequency_pack(CommtactLinkProtocol::commtact_link_message_t *msg, uint16_t gdt_operational_frequency)
+//-------------------------- GDT -----------------------------------
+uint16_t CommtactLinkProtocol::commtact_link_msg_gdt_operational_frequency_pack(CommtactLinkProtocol::commtact_link_message_t *msg, uint16_t gdt_operational_frequency)
 {
     CommtactLinkProtocol::commtact_gdt_constant_frequency_t packet = {};
 
@@ -617,6 +618,7 @@ uint16_t CommtactLinkProtocol::commtact_link_msg_adt_operational_mode_pack(Commt
     packet.reserved_3 = reserved_3;
     packet.reserved_4 = reserved_4;
     packet.tdd_operational_mode = tdd_operational_mode;
+    packet.aes_encryption_enable = aes_encryption_enable;
     packet.telemetry_metadata_separation = telemetry_metadata_separation;
     packet.byte_12.byte = byte_12;
     packet.byte_13.byte = byte_13;
@@ -628,6 +630,39 @@ uint16_t CommtactLinkProtocol::commtact_link_msg_adt_operational_mode_pack(Commt
     memcpy(_COMMTACT_PAYLOAD_NON_CONST(msg), &packet, sizeof(packet));
 
     return sizeof(commtact_adt_operational_mode_t);
+}
+void CommtactLinkProtocol::commtact_link_msg_adt_constant_frequency_report_decode(const commtact_link_message_t *msg, commtact_adt_constant_frequency_report_t *adt_constant_frequency_report)
+{
+    memcpy(adt_constant_frequency_report, _COMMTACT_PAYLOAD(msg), sizeof(commtact_adt_constant_frequency_report_t));
+}
+uint16_t CommtactLinkProtocol::commtact_link_msg_adt_operational_frequency_pack(CommtactLinkProtocol::commtact_link_message_t *msg, uint16_t adt_operational_frequency)
+{
+    CommtactLinkProtocol::commtact_adt_constant_frequency_t packet = {};
+
+    msg->time_stamp[0] = 0;
+    msg->time_stamp[1] = 0;
+    msg->time_stamp[2] = 0;
+    msg->time_stamp[3] = 0;
+
+    msg->seq_num[0] = 0;
+    msg->seq_num[1] = 0;
+
+    msg->opcode = ADT_CONSTANT_FREQUENCY_SET;
+
+    packet.adt_main_channel_frequency = adt_operational_frequency;
+    packet.reserved = 0;
+
+    uint8_t payload[sizeof(commtact_adt_constant_frequency_t)] = {};
+
+    memcpy(&payload, &packet, sizeof(commtact_adt_constant_frequency_t));
+
+    memcpy(_COMMTACT_PAYLOAD_NON_CONST(msg), &packet, sizeof(packet));
+
+    return sizeof(commtact_adt_constant_frequency_t);
+}
+void CommtactLinkProtocol::commtact_link_msg_adt_status_report_decode(const commtact_link_message_t *msg, commtact_adt_status_report_t *adt_status_report)
+{
+    memcpy(adt_status_report, _COMMTACT_PAYLOAD(msg), sizeof(commtact_adt_status_report_t));
 }
 //------------------------------------------------------------------
 
