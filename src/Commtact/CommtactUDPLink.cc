@@ -175,6 +175,7 @@ void CommtactUDPLink::_writeDataGram(const QByteArray data, const CommtactUDPCLi
 void CommtactUDPLink::readBytes()
 {
     QByteArray datagram;
+    static int counter = 0;
 
     if (!_socket)
     {
@@ -192,6 +193,13 @@ void CommtactUDPLink::readBytes()
         if (slen == -1)
         {
             break;
+        }
+
+        counter++;
+        if (counter > 50) // log every 50 recieved message
+        {
+            counter = 0;
+            qDebug() << "Recieved " << datagram.size() << " bytes:" << sender.toString() << ":" << senderPort;
         }
 
         emit bytesReceived(this, datagram);
