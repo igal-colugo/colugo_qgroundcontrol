@@ -48,6 +48,11 @@ Item {
             Layout.fillHeight: true
             Layout.alignment: Qt.AlignCenter
             title: qsTr("GDT SETTINGS")
+            label: Text {
+                color: "#ffe4c4"
+                text: gdtSettingsGroupBox.title
+            }
+
 
             GridLayout {
                 id: gdtSettingsGrid
@@ -718,6 +723,10 @@ Item {
                     Layout.fillHeight: false
                     Layout.alignment: Qt.AlignCenter
                     title: qsTr("SET FREQUENCY")
+                    label: Text {
+                        color: "#ffe4c4"
+                        text: gdtSetFrequencyGroupBox.title
+                    }
 
                     GridLayout {
                         id: gdtFrequencyGrid
@@ -833,6 +842,10 @@ Item {
             Layout.fillHeight: false
             Layout.alignment: Qt.AlignCenter
             title: qsTr("GDT REPORT")
+            label: Text {
+                color: "#ffe4c4"
+                text: gdtReportGroupBox.title
+            }
 
             GridLayout {
                 id: gdtReportGrid
@@ -864,6 +877,10 @@ Item {
                     Layout.fillHeight: false
                     Layout.alignment: Qt.AlignCenter
                     title: qsTr("OPERATIONAL MODES REPORT")
+                    label: Text {
+                        color: "#ffe4c4"
+                        text: gdtOperationalModesReportGroupBox.title
+                    }
 
                     GridLayout {
                         id: gdtOperationalModesReportGrid
@@ -1248,6 +1265,10 @@ Item {
                     Layout.fillHeight: false
                     Layout.alignment: Qt.AlignCenter
                     title: qsTr("STATUS REPORT")
+                    label: Text {
+                        color: "#ffe4c4"
+                        text: gdtStatusReportGroupBox.title
+                    }
 
                     GridLayout {
                         id: gdtStatusReportGrid
@@ -1430,6 +1451,10 @@ Item {
                     Layout.fillHeight: false
                     Layout.alignment: Qt.AlignCenter
                     title: qsTr("CBIT REPORT")
+                    label: Text {
+                        color: "#ffe4c4"
+                        text: gdtCBITReportGroupBox.title
+                    }
 
                     GridLayout {
                         id: gdtCBITReportGrid

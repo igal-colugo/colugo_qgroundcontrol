@@ -44,6 +44,10 @@ Item {
             Layout.fillHeight: true
             Layout.alignment: Qt.AlignCenter
             title: qsTr("GDT ETHERNET SETTINGS")
+            label: Text {
+                color: "#ffe4c4"
+                text: gdtEthernetSettingsGroupBox.title
+            }
 
             GridLayout {
                 id: gdtEthernetSettingsGrid
@@ -56,6 +60,7 @@ Item {
                 rowSpacing: 2
             }
         }
+
         QGCGroupBox {
             property int cellRowHeight: (parent.height - (parent.rows * parent.rowSpacing))
                                         / (parent.rows)
@@ -72,6 +77,10 @@ Item {
             Layout.fillHeight: false
             Layout.alignment: Qt.AlignCenter
             title: qsTr("ADT ETHERNET SETTINGS")
+            label: Text {
+                color: "#ffe4c4"
+                text: adtEthernetSettingsGroupBox.title
+            }
 
             GridLayout {
                 id: adtEthernetSettingsGrid

@@ -48,6 +48,10 @@ Item {
             Layout.fillHeight: true
             Layout.alignment: Qt.AlignCenter
             title: qsTr("ADT SETTINGS")
+            label: Text {
+                color: "#ffe4c4"
+                text: adtSettingsGroupBox.title
+            }
 
             GridLayout {
                 id: adtSettingsGrid
@@ -126,9 +130,7 @@ Item {
 
                     onClicked: {
                         if (_adtOperationalMode.currentIndex === 0) {
-
-                            QGroundControl.commtactLinkManagement.setADTOperationalModeCommand(
-                                        0)
+                            setModeDialog.visible = true
                         } else if (_adtOperationalMode.currentIndex === 1) {
                             QGroundControl.commtactLinkManagement.setADTOperationalModeCommand(
                                         2)
@@ -148,6 +150,22 @@ Item {
                             QGroundControl.commtactLinkManagement.setADTOperationalModeCommand(
                                         130)
                         }
+                    }
+
+                    MessageDialog {
+                        id: setModeDialog
+                        visible: false
+                        icon: StandardIcon.Warning
+                        standardButtons: StandardButton.Yes | StandardButton.No
+                        title: qsTr("Set ADT turn off")
+                        text: qsTr("Turn off ADT.Is this really what you want?")
+
+                        onYes: {
+                            QGroundControl.commtactLinkManagement.setADTOperationalModeCommand(
+                                        0)
+                            deleteDialog.visible = false
+                        }
+                        onNo: deleteDialog.visible = false
                     }
                 }
 
@@ -690,6 +708,10 @@ Item {
                     Layout.fillHeight: false
                     Layout.alignment: Qt.AlignCenter
                     title: qsTr("SET FREQUENCY")
+                    label: Text {
+                        color: "#ffe4c4"
+                        text: adtSetFrequencyGroupBox.title
+                    }
 
                     GridLayout {
                         id: adtFrequencyGrid
@@ -802,6 +824,10 @@ Item {
                     Layout.fillHeight: false
                     Layout.alignment: Qt.AlignCenter
                     title: qsTr("VIDEO SETTINGS")
+                    label: Text {
+                        color: "#ffe4c4"
+                        text: adtSetVideoGroupBox.title
+                    }
 
                     GridLayout {
                         id: adtVideoGrid
@@ -990,6 +1016,10 @@ Item {
             Layout.fillHeight: false
             Layout.alignment: Qt.AlignCenter
             title: qsTr("ADT REPORT")
+            label: Text {
+                color: "#ffe4c4"
+                text: adtReportGroupBox.title
+            }
 
             GridLayout {
                 id: adtReportGrid
@@ -1021,6 +1051,10 @@ Item {
                     Layout.fillHeight: false
                     Layout.alignment: Qt.AlignCenter
                     title: qsTr("OPERATIONAL MODES REPORT")
+                    label: Text {
+                        color: "#ffe4c4"
+                        text: adtOperationalModesReportGroupBox.title
+                    }
 
                     GridLayout {
                         id: adtOperationalModesReportGrid
@@ -1538,6 +1572,10 @@ Item {
                     Layout.fillHeight: false
                     Layout.alignment: Qt.AlignCenter
                     title: qsTr("STATUS REPORT")
+                    label: Text {
+                        color: "#ffe4c4"
+                        text: adtStatusReportGroupBox.title
+                    }
 
                     GridLayout {
                         id: adtStatusReportGrid
@@ -1720,6 +1758,10 @@ Item {
                     Layout.fillHeight: false
                     Layout.alignment: Qt.AlignCenter
                     title: qsTr("CBIT REPORT")
+                    label: Text {
+                        color: "#ffe4c4"
+                        text: gdtCBITReportGroupBox.title
+                    }
 
                     GridLayout {
                         id: gdtCBITReportGrid
