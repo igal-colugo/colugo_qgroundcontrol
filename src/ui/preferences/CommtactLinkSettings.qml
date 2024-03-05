@@ -80,7 +80,7 @@ Rectangle {
         id: adtGdtSettingsLoader
         source: pages[settingsBar.currentIndex]
         width: parent.width
-        height: (parent.height - settingsBar.height - buttonRow.height) / 2
+        height: ((parent.height - settingsBar.height - buttonRow.height) / 3) * 2
         anchors.top: settingsBar.bottom
         anchors.topMargin: ScreenTools.defaultFontPixelWidth
     }
@@ -89,7 +89,7 @@ Rectangle {
     Rectangle {
         id: _links
         width: parent.width
-        height: (parent.height - settingsBar.height - buttonRow.height) / 2
+        height: (parent.height - settingsBar.height - buttonRow.height) / 3
         color: qgcPal.window
         anchors.top: adtGdtSettingsLoader.bottom
 
@@ -100,8 +100,13 @@ Rectangle {
             flickableDirection: Flickable.VerticalFlick
 
             QGCGroupBox {
+                id: linksGroupBox
                 anchors.fill: parent
                 title: qsTr("LINKS")
+                label: Text {
+                    color: "#808080"
+                    text: linksGroupBox.title
+                }
 
                 Column {
                     id: settingsColumn
@@ -170,15 +175,20 @@ Rectangle {
             onClicked: _linkRoot.openCommSettings(null)
         }
         QGCButton {
+            id: connectButton
             text: qsTr("Connect")
             enabled: _currentSelection && !_currentSelection.link
             onClicked: QGroundControl.commtactLinkManager.createConnectedLink(
                            _currentSelection)
         }
         QGCButton {
+            id: disconnectButton
             text: qsTr("Disconnect")
             enabled: _currentSelection && _currentSelection.link
-            onClicked: _currentSelection.link.disconnect()
+            onClicked: {
+                _currentSelection.link.disconnect()
+                _currentSelection = null
+            }
         }
     }
 

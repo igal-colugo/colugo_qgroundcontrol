@@ -49,7 +49,7 @@ Item {
             Layout.alignment: Qt.AlignCenter
             title: qsTr("ADT SETTINGS")
             label: Text {
-                color: "#ffe4c4"
+                color: "#808080"
                 text: adtSettingsGroupBox.title
             }
 
@@ -73,7 +73,6 @@ Item {
 
                     text: "MODE:"
                     font.family: ScreenTools.demiboldFontFamily
-                    color: "White"
 
                     horizontalAlignment: Text.AlignLeft
                     verticalAlignment: Text.AlignVCenter
@@ -178,7 +177,6 @@ Item {
 
                     text: "ANTENNA:"
                     font.family: ScreenTools.demiboldFontFamily
-                    color: "White"
 
                     horizontalAlignment: Text.AlignLeft
                     verticalAlignment: Text.AlignVCenter
@@ -289,7 +287,6 @@ Item {
 
                     text: "SYMB RATE:"
                     font.family: ScreenTools.demiboldFontFamily
-                    color: "White"
 
                     horizontalAlignment: Text.AlignLeft
                     verticalAlignment: Text.AlignVCenter
@@ -369,7 +366,6 @@ Item {
 
                     text: "TDD:"
                     font.family: ScreenTools.demiboldFontFamily
-                    color: "White"
 
                     horizontalAlignment: Text.AlignLeft
                     verticalAlignment: Text.AlignVCenter
@@ -445,7 +441,6 @@ Item {
 
                     text: "FREQ:"
                     font.family: ScreenTools.demiboldFontFamily
-                    color: "White"
 
                     horizontalAlignment: Text.AlignLeft
                     verticalAlignment: Text.AlignVCenter
@@ -523,7 +518,6 @@ Item {
 
                     text: "UNIT:"
                     font.family: ScreenTools.demiboldFontFamily
-                    color: "White"
 
                     horizontalAlignment: Text.AlignLeft
                     verticalAlignment: Text.AlignVCenter
@@ -690,122 +684,86 @@ Item {
                     }
                 }
 
-                QGCGroupBox {
+                QGCLabel {
                     property int cellRowHeight: (parent.height - (parent.rows * parent.rowSpacing))
                                                 / (parent.rows)
                     property int cellColumnWidth: (parent.width - (parent.columns * parent.columnSpacing)) / (parent.columns)
 
-                    id: adtSetFrequencyGroupBox
-                    height: cellRowHeight * Layout.rowSpan
-                    width: cellColumnWidth * Layout.columnSpan
-                    Layout.rowSpan: 2
-                    Layout.columnSpan: 12
+                    id: _setFrequencyLabel
+
+                    height: ScreenTools.defaultFontPixelHeight
+
+                    text: qsTr("FREQUENCY:")
+
+                    horizontalAlignment: Text.AlignHCenter
+                    verticalAlignment: Text.AlignVCenter
+
+                    Layout.rowSpan: 1
+                    Layout.columnSpan: 4
+
                     Layout.preferredHeight: cellRowHeight * Layout.rowSpan
                     Layout.preferredWidth: cellColumnWidth * Layout.columnSpan
                     Layout.maximumHeight: cellRowHeight * Layout.rowSpan
                     Layout.maximumWidth: cellColumnWidth * Layout.columnSpan
+
                     Layout.fillWidth: false
-                    Layout.fillHeight: false
-                    Layout.alignment: Qt.AlignCenter
-                    title: qsTr("SET FREQUENCY")
-                    label: Text {
-                        color: "#ffe4c4"
-                        text: adtSetFrequencyGroupBox.title
-                    }
+                    Layout.fillHeight: true
+                    Layout.alignment: Qt.AlignLeft
+                }
+                QGCTextField {
+                    property int cellRowHeight: (parent.height - (parent.rows * parent.rowSpacing))
+                                                / (parent.rows)
+                    property int cellColumnWidth: (parent.width - (parent.columns * parent.columnSpacing)) / (parent.columns)
 
-                    GridLayout {
-                        id: adtFrequencyGrid
+                    id: _setFrequencyField
 
-                        columns: 12
-                        rows: 3
-                        anchors.fill: parent
-                        anchors.margins: 3
-                        columnSpacing: 2
-                        rowSpacing: 2
+                    Layout.rowSpan: 1
+                    Layout.columnSpan: 4
 
-                        QGCLabel {
-                            property int cellRowHeight: (parent.height - (parent.rows * parent.rowSpacing)) / (parent.rows)
-                            property int cellColumnWidth: (parent.width - (parent.columns * parent.columnSpacing)) / (parent.columns)
+                    Layout.preferredHeight: cellRowHeight * Layout.rowSpan
+                    Layout.preferredWidth: cellColumnWidth * Layout.columnSpan
+                    Layout.maximumHeight: cellRowHeight * Layout.rowSpan
+                    Layout.maximumWidth: cellColumnWidth * Layout.columnSpan
 
-                            id: _setFrequencyLabel
+                    Layout.fillWidth: false
+                    Layout.fillHeight: true
+                    Layout.alignment: Qt.AlignLeft
 
-                            height: ScreenTools.defaultFontPixelHeight
+                    maximumLength: 4
+                    font.pointSize: ScreenTools.isMobile ? point_size : 9
+                    text: qsTr("2200")
+                }
+                QGCButton {
+                    property int cellRowHeight: (parent.height - (parent.rows * parent.rowSpacing))
+                                                / (parent.rows)
+                    property int cellColumnWidth: (parent.width - (parent.columns * parent.columnSpacing)) / (parent.columns)
 
-                            text: qsTr("FREQUENCY:")
-                            color: "White"
+                    id: _setFrequencyButton
 
-                            horizontalAlignment: Text.AlignHCenter
-                            verticalAlignment: Text.AlignVCenter
+                    showBorder: true
+                    text: qsTr("SET")
 
-                            Layout.rowSpan: 3
-                            Layout.columnSpan: 4
+                    Layout.rowSpan: 1
+                    Layout.columnSpan: 4
 
-                            Layout.preferredHeight: cellRowHeight * Layout.rowSpan
-                            Layout.preferredWidth: cellColumnWidth * Layout.columnSpan
-                            Layout.maximumHeight: cellRowHeight * Layout.rowSpan
-                            Layout.maximumWidth: cellColumnWidth * Layout.columnSpan
+                    Layout.preferredHeight: cellRowHeight * Layout.rowSpan
+                    Layout.preferredWidth: cellColumnWidth * Layout.columnSpan
+                    Layout.maximumHeight: cellRowHeight * Layout.rowSpan
+                    Layout.maximumWidth: cellColumnWidth * Layout.columnSpan
 
-                            Layout.fillWidth: false
-                            Layout.fillHeight: true
-                            Layout.alignment: Qt.AlignLeft
-                        }
+                    Layout.fillWidth: false
+                    Layout.fillHeight: true
+                    Layout.alignment: Qt.AlignLeft
 
-                        QGCTextField {
-                            property int cellRowHeight: (parent.height - (parent.rows * parent.rowSpacing)) / (parent.rows)
-                            property int cellColumnWidth: (parent.width - (parent.columns * parent.columnSpacing)) / (parent.columns)
-
-                            id: _setFrequencyField
-
-                            Layout.rowSpan: 3
-                            Layout.columnSpan: 4
-
-                            Layout.preferredHeight: cellRowHeight * Layout.rowSpan
-                            Layout.preferredWidth: cellColumnWidth * Layout.columnSpan
-                            Layout.maximumHeight: cellRowHeight * Layout.rowSpan
-                            Layout.maximumWidth: cellColumnWidth * Layout.columnSpan
-
-                            Layout.fillWidth: false
-                            Layout.fillHeight: true
-                            Layout.alignment: Qt.AlignLeft
-
-                            maximumLength: 4
-                            font.pointSize: ScreenTools.isMobile ? point_size : 9
-                            text: qsTr("2200")
-                        }
-
-                        QGCButton {
-                            property int cellRowHeight: (parent.height - (parent.rows * parent.rowSpacing)) / (parent.rows)
-                            property int cellColumnWidth: (parent.width - (parent.columns * parent.columnSpacing)) / (parent.columns)
-
-                            id: _setFrequencyButton
-
-                            showBorder: true
-                            text: qsTr("SET")
-
-                            Layout.rowSpan: 3
-                            Layout.columnSpan: 4
-
-                            Layout.preferredHeight: cellRowHeight * Layout.rowSpan
-                            Layout.preferredWidth: cellColumnWidth * Layout.columnSpan
-                            Layout.maximumHeight: cellRowHeight * Layout.rowSpan
-                            Layout.maximumWidth: cellColumnWidth * Layout.columnSpan
-
-                            Layout.fillWidth: false
-                            Layout.fillHeight: true
-                            Layout.alignment: Qt.AlignLeft
-
-                            onClicked: {
-                                if (parseInt(_setFrequencyField.text) >= 2150
-                                        && parseInt(
-                                            _setFrequencyField.text) <= 2400) {
-                                    QGroundControl.commtactLinkManagement.setADTOperationalFrequencyCommand(
-                                                parseInt(
-                                                    _setFrequencyField.text))
-                                }
-                            }
+                    onClicked: {
+                        if (parseInt(_setFrequencyField.text) >= 2150
+                                && parseInt(_setFrequencyField.text) <= 2400) {
+                            QGroundControl.commtactLinkManagement.setADTOperationalFrequencyCommand(
+                                        parseInt(_setFrequencyField.text))
                         }
                     }
                 }
+
                 QGCGroupBox {
                     property int cellRowHeight: (parent.height - (parent.rows * parent.rowSpacing))
                                                 / (parent.rows)
@@ -814,7 +772,7 @@ Item {
                     id: adtSetVideoGroupBox
                     height: cellRowHeight * Layout.rowSpan
                     width: cellColumnWidth * Layout.columnSpan
-                    Layout.rowSpan: 4
+                    Layout.rowSpan: 5
                     Layout.columnSpan: 12
                     Layout.preferredHeight: cellRowHeight * Layout.rowSpan
                     Layout.preferredWidth: cellColumnWidth * Layout.columnSpan
@@ -825,7 +783,7 @@ Item {
                     Layout.alignment: Qt.AlignCenter
                     title: qsTr("VIDEO SETTINGS")
                     label: Text {
-                        color: "#ffe4c4"
+                        color: "#808080"
                         text: adtSetVideoGroupBox.title
                     }
 
@@ -848,7 +806,6 @@ Item {
                             height: ScreenTools.defaultFontPixelHeight
 
                             text: qsTr("VIDEO RATE:")
-                            color: "White"
 
                             horizontalAlignment: Text.AlignLeft
                             verticalAlignment: Text.AlignVCenter
@@ -927,7 +884,6 @@ Item {
                             height: ScreenTools.defaultFontPixelHeight
 
                             text: qsTr("VIDEO SOURCE:")
-                            color: "White"
 
                             horizontalAlignment: Text.AlignLeft
                             verticalAlignment: Text.AlignVCenter
@@ -1017,7 +973,7 @@ Item {
             Layout.alignment: Qt.AlignCenter
             title: qsTr("ADT REPORT")
             label: Text {
-                color: "#ffe4c4"
+                color: "#808080"
                 text: adtReportGroupBox.title
             }
 
@@ -1052,7 +1008,7 @@ Item {
                     Layout.alignment: Qt.AlignCenter
                     title: qsTr("OPERATIONAL MODES REPORT")
                     label: Text {
-                        color: "#ffe4c4"
+                        color: "#808080"
                         text: adtOperationalModesReportGroupBox.title
                     }
 
@@ -1199,7 +1155,6 @@ Item {
                                 }
                             }
                             font.family: ScreenTools.demiboldFontFamily
-                            color: "White"
 
                             horizontalAlignment: Text.AlignLeft
                             verticalAlignment: Text.AlignVCenter
@@ -1221,7 +1176,6 @@ Item {
 
                             text: qsTr(" ")
                             font.family: ScreenTools.demiboldFontFamily
-                            color: "White"
 
                             horizontalAlignment: Text.AlignLeft
                             verticalAlignment: Text.AlignVCenter
@@ -1252,7 +1206,6 @@ Item {
                                 }
                             }
                             font.family: ScreenTools.demiboldFontFamily
-                            color: "White"
 
                             horizontalAlignment: Text.AlignLeft
                             verticalAlignment: Text.AlignVCenter
@@ -1285,7 +1238,6 @@ Item {
                                 }
                             }
                             font.family: ScreenTools.demiboldFontFamily
-                            color: "White"
 
                             horizontalAlignment: Text.AlignLeft
                             verticalAlignment: Text.AlignVCenter
@@ -1333,7 +1285,6 @@ Item {
                                 }
                             }
                             font.family: ScreenTools.demiboldFontFamily
-                            color: "White"
 
                             horizontalAlignment: Text.AlignLeft
                             verticalAlignment: Text.AlignVCenter
@@ -1369,7 +1320,6 @@ Item {
                                 }
                             }
                             font.family: ScreenTools.demiboldFontFamily
-                            color: "White"
 
                             horizontalAlignment: Text.AlignLeft
                             verticalAlignment: Text.AlignVCenter
@@ -1402,7 +1352,6 @@ Item {
                                 }
                             }
                             font.family: ScreenTools.demiboldFontFamily
-                            color: "White"
 
                             horizontalAlignment: Text.AlignLeft
                             verticalAlignment: Text.AlignVCenter
@@ -1435,7 +1384,6 @@ Item {
                                 }
                             }
                             font.family: ScreenTools.demiboldFontFamily
-                            color: "White"
 
                             horizontalAlignment: Text.AlignLeft
                             verticalAlignment: Text.AlignVCenter
@@ -1471,7 +1419,6 @@ Item {
                                 }
                             }
                             font.family: ScreenTools.demiboldFontFamily
-                            color: "White"
 
                             horizontalAlignment: Text.AlignLeft
                             verticalAlignment: Text.AlignVCenter
@@ -1504,7 +1451,6 @@ Item {
                                 }
                             }
                             font.family: ScreenTools.demiboldFontFamily
-                            color: "White"
 
                             horizontalAlignment: Text.AlignLeft
                             verticalAlignment: Text.AlignVCenter
@@ -1536,7 +1482,6 @@ Item {
                                 }
                             }
                             font.family: ScreenTools.demiboldFontFamily
-                            color: "White"
 
                             horizontalAlignment: Text.AlignLeft
                             verticalAlignment: Text.AlignVCenter
@@ -1573,7 +1518,7 @@ Item {
                     Layout.alignment: Qt.AlignCenter
                     title: qsTr("STATUS REPORT")
                     label: Text {
-                        color: "#ffe4c4"
+                        color: "#808080"
                         text: adtStatusReportGroupBox.title
                     }
 
@@ -1597,7 +1542,6 @@ Item {
                             text: qsTr("LINK RSSI:")
                                   + QGroundControl.commtactLinkManagement.adtLinkRSSI
                             font.family: ScreenTools.demiboldFontFamily
-                            color: "White"
 
                             horizontalAlignment: Text.AlignLeft
                             verticalAlignment: Text.AlignVCenter
@@ -1622,7 +1566,6 @@ Item {
                             text: qsTr("FREQUENCY:")
                                   + QGroundControl.commtactLinkManagement.adtOperationFrequency
                             font.family: ScreenTools.demiboldFontFamily
-                            color: "White"
 
                             horizontalAlignment: Text.AlignLeft
                             verticalAlignment: Text.AlignVCenter
@@ -1647,7 +1590,6 @@ Item {
                             text: qsTr("TDD SYNCED:")
                                   + QGroundControl.commtactLinkManagement.adtTDDSync
                             font.family: ScreenTools.demiboldFontFamily
-                            color: "White"
 
                             horizontalAlignment: Text.AlignLeft
                             verticalAlignment: Text.AlignVCenter
@@ -1669,10 +1611,9 @@ Item {
 
                             height: ScreenTools.defaultFontPixelHeight
 
-                            text: qsTr("TRANSFERED PACKETS:")
+                            text: qsTr("TRANSFERED:")
                                   + QGroundControl.commtactLinkManagement.adtLinkTransferedPackets
                             font.family: ScreenTools.demiboldFontFamily
-                            color: "White"
 
                             horizontalAlignment: Text.AlignLeft
                             verticalAlignment: Text.AlignVCenter
@@ -1694,10 +1635,9 @@ Item {
 
                             height: ScreenTools.defaultFontPixelHeight
 
-                            text: qsTr("ERROR PACKETS:")
+                            text: qsTr("ERROR:")
                                   + QGroundControl.commtactLinkManagement.adtLinkErrorPackets
                             font.family: ScreenTools.demiboldFontFamily
-                            color: "White"
 
                             horizontalAlignment: Text.AlignLeft
                             verticalAlignment: Text.AlignVCenter
@@ -1719,10 +1659,9 @@ Item {
 
                             height: ScreenTools.defaultFontPixelHeight
 
-                            text: qsTr("CRC ERROR PACKETS:")
+                            text: qsTr("CRC ERROR:")
                                   + QGroundControl.commtactLinkManagement.adtLinkCRCErrorPackets
                             font.family: ScreenTools.demiboldFontFamily
-                            color: "White"
 
                             horizontalAlignment: Text.AlignLeft
                             verticalAlignment: Text.AlignVCenter
@@ -1759,7 +1698,7 @@ Item {
                     Layout.alignment: Qt.AlignCenter
                     title: qsTr("CBIT REPORT")
                     label: Text {
-                        color: "#ffe4c4"
+                        color: "#808080"
                         text: gdtCBITReportGroupBox.title
                     }
 
@@ -1783,7 +1722,6 @@ Item {
                             text: qsTr("PA POWER OUTPUT:")
                                   + QGroundControl.commtactLinkManagement.gdtCBITPAPowerOutput
                             font.family: ScreenTools.demiboldFontFamily
-                            color: "White"
 
                             horizontalAlignment: Text.AlignLeft
                             verticalAlignment: Text.AlignVCenter
@@ -1808,7 +1746,6 @@ Item {
                             text: qsTr("PA RETURN POWER:")
                                   + QGroundControl.commtactLinkManagement.gdtCBITPAReturnPower
                             font.family: ScreenTools.demiboldFontFamily
-                            color: "White"
 
                             horizontalAlignment: Text.AlignLeft
                             verticalAlignment: Text.AlignVCenter

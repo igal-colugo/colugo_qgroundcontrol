@@ -152,7 +152,7 @@ void CommtactLinkManagement::setGDTOperationalModeCommand(uint transmitter_opera
             _operational_modes_report.azimuth_position, _operational_modes_report.elevation_position, _operational_modes_report.frequency_mode, 0,
             _operational_modes_report.tdd_operational_mode, _operational_modes_report.aes_encryption, 0, _operational_modes_report.byte_20.byte, _operational_modes_report.unit_mode);
 
-        uint8_t buffer[7 + payload_size] = {};
+        uint8_t buffer[sizeof(CommtactLinkProtocol::commtact_link_message_header_t) + payload_size] = {};
         int len = linkProtocol->commtact_link_msg_to_send_buffer(&buffer[0], &message, payload_size);
 
         sharedLink->writeBytesThreadSafe((const char *) buffer, len);
@@ -179,7 +179,7 @@ void CommtactLinkManagement::setGDTAntennaSelectCommand(uint gdt_antenna_select)
             _operational_modes_report.azimuth_position, _operational_modes_report.elevation_position, _operational_modes_report.frequency_mode, 0,
             _operational_modes_report.tdd_operational_mode, _operational_modes_report.aes_encryption, 0, _operational_modes_report.byte_20.byte, _operational_modes_report.unit_mode);
 
-        uint8_t buffer[7 + payload_size] = {};
+        uint8_t buffer[sizeof(CommtactLinkProtocol::commtact_link_message_header_t) + payload_size] = {};
         int len = linkProtocol->commtact_link_msg_to_send_buffer(&buffer[0], &message, payload_size);
 
         sharedLink->writeBytesThreadSafe((const char *) buffer, len);
@@ -206,7 +206,7 @@ void CommtactLinkManagement::setGDTPedestalTrackModeCommand(uint gdt_pedestal_tr
             _operational_modes_report.azimuth_position, _operational_modes_report.elevation_position, _operational_modes_report.frequency_mode, 0,
             _operational_modes_report.tdd_operational_mode, _operational_modes_report.aes_encryption, 0, _operational_modes_report.byte_20.byte, _operational_modes_report.unit_mode);
 
-        uint8_t buffer[7 + payload_size] = {};
+        uint8_t buffer[sizeof(CommtactLinkProtocol::commtact_link_message_header_t) + payload_size] = {};
         int len = linkProtocol->commtact_link_msg_to_send_buffer(&buffer[0], &message, payload_size);
 
         sharedLink->writeBytesThreadSafe((const char *) buffer, len);
@@ -233,7 +233,7 @@ void CommtactLinkManagement::setGDTTddOperationalModeCommand(uint gdt_tdd_operat
             _operational_modes_report.azimuth_position, _operational_modes_report.elevation_position, _operational_modes_report.frequency_mode, 0, gdt_tdd_operational_mode,
             _operational_modes_report.aes_encryption, 0, _operational_modes_report.byte_20.byte, _operational_modes_report.unit_mode);
 
-        uint8_t buffer[7 + payload_size] = {};
+        uint8_t buffer[sizeof(CommtactLinkProtocol::commtact_link_message_header_t) + payload_size] = {};
         int len = linkProtocol->commtact_link_msg_to_send_buffer(&buffer[0], &message, payload_size);
 
         sharedLink->writeBytesThreadSafe((const char *) buffer, len);
@@ -260,7 +260,7 @@ void CommtactLinkManagement::setGDTFrequencyModeCommand(uint gdt_frequency_mode)
             _operational_modes_report.azimuth_position, _operational_modes_report.elevation_position, gdt_frequency_mode, 0, _operational_modes_report.tdd_operational_mode,
             _operational_modes_report.aes_encryption, 0, _operational_modes_report.byte_20.byte, _operational_modes_report.unit_mode);
 
-        uint8_t buffer[7 + payload_size] = {};
+        uint8_t buffer[sizeof(CommtactLinkProtocol::commtact_link_message_header_t) + payload_size] = {};
         int len = linkProtocol->commtact_link_msg_to_send_buffer(&buffer[0], &message, payload_size);
 
         sharedLink->writeBytesThreadSafe((const char *) buffer, len);
@@ -287,7 +287,7 @@ void CommtactLinkManagement::setGDTUnitModeCommand(uint gdt_unit_mode)
             _operational_modes_report.azimuth_position, _operational_modes_report.elevation_position, _operational_modes_report.frequency_mode, 0,
             _operational_modes_report.tdd_operational_mode, _operational_modes_report.aes_encryption, 0, _operational_modes_report.byte_20.byte, gdt_unit_mode);
 
-        uint8_t buffer[7 + payload_size] = {};
+        uint8_t buffer[sizeof(CommtactLinkProtocol::commtact_link_message_header_t) + payload_size] = {};
         int len = linkProtocol->commtact_link_msg_to_send_buffer(&buffer[0], &message, payload_size);
 
         sharedLink->writeBytesThreadSafe((const char *) buffer, len);
@@ -317,7 +317,7 @@ void CommtactLinkManagement::setGDTSymbolRateCommand(uint gdt_symbol_rate)
             _operational_modes_report.azimuth_position, _operational_modes_report.elevation_position, _operational_modes_report.frequency_mode, 0,
             _operational_modes_report.tdd_operational_mode, _operational_modes_report.aes_encryption, 0, byte_20.byte, _operational_modes_report.unit_mode);
 
-        uint8_t buffer[7 + payload_size] = {};
+        uint8_t buffer[sizeof(CommtactLinkProtocol::commtact_link_message_header_t) + payload_size] = {};
         int len = linkProtocol->commtact_link_msg_to_send_buffer(&buffer[0], &message, payload_size);
 
         sharedLink->writeBytesThreadSafe((const char *) buffer, len);
@@ -344,7 +344,7 @@ void CommtactLinkManagement::setGDTAesEncryptionCommand(uint gdt_aes_encryption)
             _operational_modes_report.azimuth_position, _operational_modes_report.elevation_position, _operational_modes_report.frequency_mode, 0,
             _operational_modes_report.tdd_operational_mode, gdt_aes_encryption, 0, _operational_modes_report.byte_20.byte, _operational_modes_report.unit_mode);
 
-        uint8_t buffer[7 + payload_size] = {};
+        uint8_t buffer[sizeof(CommtactLinkProtocol::commtact_link_message_header_t) + payload_size] = {};
         int len = linkProtocol->commtact_link_msg_to_send_buffer(&buffer[0], &message, payload_size);
 
         sharedLink->writeBytesThreadSafe((const char *) buffer, len);
@@ -368,7 +368,7 @@ void CommtactLinkManagement::setGDTOperationalFrequencyCommand(uint gdt_operatio
 
         uint16_t payload_size = linkProtocol->commtact_link_msg_gdt_operational_frequency_pack(&message, gdt_operational_frequency);
 
-        uint8_t buffer[7 + payload_size] = {};
+        uint8_t buffer[sizeof(CommtactLinkProtocol::commtact_link_message_header_t) + payload_size] = {};
         int len = linkProtocol->commtact_link_msg_to_send_buffer(&buffer[0], &message, payload_size);
 
         sharedLink->writeBytesThreadSafe((const char *) buffer, len);
@@ -393,7 +393,7 @@ void CommtactLinkManagement::getGDTRequiredMessageCommand(uint gdt_required_mess
 
         uint16_t payload_size = linkProtocol->commtact_link_msg_get_report_message_pack(&message, gdt_required_message);
 
-        uint8_t buffer[7 + payload_size] = {};
+        uint8_t buffer[sizeof(CommtactLinkProtocol::commtact_link_message_header_t) + payload_size] = {};
         int len = linkProtocol->commtact_link_msg_to_send_buffer(&buffer[0], &message, payload_size);
 
         sharedLink->writeBytesThreadSafe((const char *) buffer, len);
@@ -535,7 +535,7 @@ void CommtactLinkManagement::setADTOperationalModeCommand(uint transmitter_opera
             _adt_operational_modes_report.aes_encryption_enable, _adt_operational_modes_report.telemetry_metadata_separation, _adt_operational_modes_report.byte_12.byte,
             _adt_operational_modes_report.byte_13.byte);
 
-        uint8_t buffer[7 + payload_size] = {};
+        uint8_t buffer[sizeof(CommtactLinkProtocol::commtact_link_message_header_t) + payload_size] = {};
         int len = linkProtocol->commtact_link_msg_to_send_buffer(&buffer[0], &message, payload_size);
 
         sharedLink->writeBytesThreadSafe((const char *) buffer, len);
@@ -564,7 +564,7 @@ void CommtactLinkManagement::setADTAntennaSelectCommand(uint adt_antenna_select)
             _adt_operational_modes_report.aes_encryption_enable, _adt_operational_modes_report.telemetry_metadata_separation, _adt_operational_modes_report.byte_12.byte,
             _adt_operational_modes_report.byte_13.byte);
 
-        uint8_t buffer[7 + payload_size] = {};
+        uint8_t buffer[sizeof(CommtactLinkProtocol::commtact_link_message_header_t) + payload_size] = {};
         int len = linkProtocol->commtact_link_msg_to_send_buffer(&buffer[0], &message, payload_size);
 
         sharedLink->writeBytesThreadSafe((const char *) buffer, len);
@@ -593,7 +593,7 @@ void CommtactLinkManagement::setADTTddOperationalModeCommand(uint adt_tdd_operat
             _adt_operational_modes_report.aes_encryption_enable, _adt_operational_modes_report.telemetry_metadata_separation, _adt_operational_modes_report.byte_12.byte,
             _adt_operational_modes_report.byte_13.byte);
 
-        uint8_t buffer[7 + payload_size] = {};
+        uint8_t buffer[sizeof(CommtactLinkProtocol::commtact_link_message_header_t) + payload_size] = {};
         int len = linkProtocol->commtact_link_msg_to_send_buffer(&buffer[0], &message, payload_size);
 
         sharedLink->writeBytesThreadSafe((const char *) buffer, len);
@@ -622,7 +622,7 @@ void CommtactLinkManagement::setADTFrequencyModeCommand(uint adt_frequency_mode)
             _adt_operational_modes_report.aes_encryption_enable, _adt_operational_modes_report.telemetry_metadata_separation, _adt_operational_modes_report.byte_12.byte,
             _adt_operational_modes_report.byte_13.byte);
 
-        uint8_t buffer[7 + payload_size] = {};
+        uint8_t buffer[sizeof(CommtactLinkProtocol::commtact_link_message_header_t) + payload_size] = {};
         int len = linkProtocol->commtact_link_msg_to_send_buffer(&buffer[0], &message, payload_size);
 
         sharedLink->writeBytesThreadSafe((const char *) buffer, len);
@@ -651,7 +651,7 @@ void CommtactLinkManagement::setADTVideoTransmitEnableCommand(uint adt_video_tra
             _adt_operational_modes_report.aes_encryption_enable, _adt_operational_modes_report.telemetry_metadata_separation, _adt_operational_modes_report.byte_12.byte,
             _adt_operational_modes_report.byte_13.byte);
 
-        uint8_t buffer[7 + payload_size] = {};
+        uint8_t buffer[sizeof(CommtactLinkProtocol::commtact_link_message_header_t) + payload_size] = {};
         int len = linkProtocol->commtact_link_msg_to_send_buffer(&buffer[0], &message, payload_size);
 
         sharedLink->writeBytesThreadSafe((const char *) buffer, len);
@@ -680,7 +680,7 @@ void CommtactLinkManagement::setADTUnitModeCommand(uint adt_unit_mode)
             _adt_operational_modes_report.aes_encryption_enable, _adt_operational_modes_report.telemetry_metadata_separation, _adt_operational_modes_report.byte_12.byte,
             _adt_operational_modes_report.byte_13.byte);
 
-        uint8_t buffer[7 + payload_size] = {};
+        uint8_t buffer[sizeof(CommtactLinkProtocol::commtact_link_message_header_t) + payload_size] = {};
         int len = linkProtocol->commtact_link_msg_to_send_buffer(&buffer[0], &message, payload_size);
 
         sharedLink->writeBytesThreadSafe((const char *) buffer, len);
@@ -712,7 +712,7 @@ void CommtactLinkManagement::setADTSymbolRateCommand(uint adt_symbol_rate)
             _adt_operational_modes_report.tdd_operational_mode, _adt_operational_modes_report.aes_encryption_enable, _adt_operational_modes_report.telemetry_metadata_separation,
             _adt_operational_modes_report.byte_12.byte, byte_13.byte);
 
-        uint8_t buffer[7 + payload_size] = {};
+        uint8_t buffer[sizeof(CommtactLinkProtocol::commtact_link_message_header_t) + payload_size] = {};
         int len = linkProtocol->commtact_link_msg_to_send_buffer(&buffer[0], &message, payload_size);
 
         sharedLink->writeBytesThreadSafe((const char *) buffer, len);
@@ -741,7 +741,7 @@ void CommtactLinkManagement::setADTAesEncryptionCommand(uint adt_aes_encryption)
             _adt_operational_modes_report.tdd_operational_mode, adt_aes_encryption, _adt_operational_modes_report.telemetry_metadata_separation, _adt_operational_modes_report.byte_12.byte,
             _adt_operational_modes_report.byte_13.byte);
 
-        uint8_t buffer[7 + payload_size] = {};
+        uint8_t buffer[sizeof(CommtactLinkProtocol::commtact_link_message_header_t) + payload_size] = {};
         int len = linkProtocol->commtact_link_msg_to_send_buffer(&buffer[0], &message, payload_size);
 
         sharedLink->writeBytesThreadSafe((const char *) buffer, len);
@@ -770,7 +770,7 @@ void CommtactLinkManagement::setADTTelemetryMetadataSeparationCommand(uint adt_t
             _adt_operational_modes_report.tdd_operational_mode, _adt_operational_modes_report.aes_encryption_enable, adt_telemetry_metadata_separation,
             _adt_operational_modes_report.byte_12.byte, _adt_operational_modes_report.byte_13.byte);
 
-        uint8_t buffer[7 + payload_size] = {};
+        uint8_t buffer[sizeof(CommtactLinkProtocol::commtact_link_message_header_t) + payload_size] = {};
         int len = linkProtocol->commtact_link_msg_to_send_buffer(&buffer[0], &message, payload_size);
 
         sharedLink->writeBytesThreadSafe((const char *) buffer, len);
@@ -801,7 +801,7 @@ void CommtactLinkManagement::setADTVideoRateCommand(uint adt_video_rate)
             _adt_operational_modes_report.tdd_operational_mode, _adt_operational_modes_report.aes_encryption_enable, _adt_operational_modes_report.telemetry_metadata_separation,
             _adt_operational_modes_report.byte_12.byte, _adt_operational_modes_report.byte_13.byte);
 
-        uint8_t buffer[7 + payload_size] = {};
+        uint8_t buffer[sizeof(CommtactLinkProtocol::commtact_link_message_header_t) + payload_size] = {};
         int len = linkProtocol->commtact_link_msg_to_send_buffer(&buffer[0], &message, payload_size);
 
         sharedLink->writeBytesThreadSafe((const char *) buffer, len);
@@ -832,7 +832,7 @@ void CommtactLinkManagement::setADTVideoSourceCommand(uint adt_video_source)
             _adt_operational_modes_report.tdd_operational_mode, _adt_operational_modes_report.aes_encryption_enable, _adt_operational_modes_report.telemetry_metadata_separation,
             _adt_operational_modes_report.byte_12.byte, _adt_operational_modes_report.byte_13.byte);
 
-        uint8_t buffer[7 + payload_size] = {};
+        uint8_t buffer[sizeof(CommtactLinkProtocol::commtact_link_message_header_t) + payload_size] = {};
         int len = linkProtocol->commtact_link_msg_to_send_buffer(&buffer[0], &message, payload_size);
 
         sharedLink->writeBytesThreadSafe((const char *) buffer, len);
@@ -856,7 +856,7 @@ void CommtactLinkManagement::setADTOperationalFrequencyCommand(uint adt_operatio
 
         uint16_t payload_size = linkProtocol->commtact_link_msg_adt_operational_frequency_pack(&message, adt_operational_frequency);
 
-        uint8_t buffer[7 + payload_size] = {};
+        uint8_t buffer[sizeof(CommtactLinkProtocol::commtact_link_message_header_t) + payload_size] = {};
         int len = linkProtocol->commtact_link_msg_to_send_buffer(&buffer[0], &message, payload_size);
 
         sharedLink->writeBytesThreadSafe((const char *) buffer, len);
@@ -879,7 +879,7 @@ void CommtactLinkManagement::_commtactLinkMessageReceived(CommtactLinkInterface 
     {
     case CommtactLinkProtocol::GDT_OPERATIONAL_MODES_REPORT:
 
-        if (message_size == 29) // GDT message
+        if (message_size == sizeof(CommtactLinkProtocol::commtact_gdt_operational_modes_report_t) + sizeof(CommtactLinkProtocol::commtact_link_message_header_t)) // GDT message
         {
             linkProtocol->commtact_link_msg_operational_modes_report_decode(&message, &_operational_modes_report);
 
@@ -892,7 +892,7 @@ void CommtactLinkManagement::_commtactLinkMessageReceived(CommtactLinkInterface 
             setGdtSymbolRate(_operational_modes_report.byte_20.bit_t.symbol_rate);
             setGdtAesEncryption(_operational_modes_report.aes_encryption);
         }
-        else if (message_size == 21) // ADT message
+        else if (message_size == sizeof(CommtactLinkProtocol::commtact_adt_operational_modes_report_t) + sizeof(CommtactLinkProtocol::commtact_link_message_header_t)) // ADT message
         {
             linkProtocol->commtact_link_msg_adt_operational_modes_report_decode(&message, &_adt_operational_modes_report);
 
@@ -913,7 +913,7 @@ void CommtactLinkManagement::_commtactLinkMessageReceived(CommtactLinkInterface 
 
     case CommtactLinkProtocol::GDT_STATUS_REPORT:
 
-        if (message_size == 31) // GDT message
+        if (message_size == sizeof(CommtactLinkProtocol::commtact_gdt_status_report_t) + sizeof(CommtactLinkProtocol::commtact_link_message_header_t)) // GDT message
         {
             linkProtocol->commtact_link_msg_gdt_status_report_decode(&message, &_gdt_status_report);
 
@@ -923,7 +923,7 @@ void CommtactLinkManagement::_commtactLinkMessageReceived(CommtactLinkInterface 
             setGdtLinkErrorPackets(_gdt_status_report.link_error_packets);
             setGdtLinkCRCErrorPackets(_gdt_status_report.link_crc_errors_packets);
         }
-        else if (message_size == 23) // ADT message
+        else if (message_size == sizeof(CommtactLinkProtocol::commtact_adt_status_report_t) + sizeof(CommtactLinkProtocol::commtact_link_message_header_t)) // ADT message
         {
             linkProtocol->commtact_link_msg_adt_status_report_decode(&message, &_adt_status_report);
 
@@ -938,13 +938,13 @@ void CommtactLinkManagement::_commtactLinkMessageReceived(CommtactLinkInterface 
 
     case CommtactLinkProtocol::GDT_CONSTANT_FREQUENCY_REPORT:
 
-        if (message_size == 9) // GDT message
+        if (message_size == sizeof(CommtactLinkProtocol::commtact_gdt_constant_frequency_report_t) + sizeof(CommtactLinkProtocol::commtact_link_message_header_t)) // GDT message
         {
             linkProtocol->commtact_link_msg_gdt_constant_frequency_report_decode(&message, &_gdt_constant_frequency_report);
 
             setGdtOperationFrequency(_gdt_constant_frequency_report.gdt_operation_frequency);
         }
-        else if (message_size == 11) // ADT message
+        else if (message_size == sizeof(CommtactLinkProtocol::commtact_adt_constant_frequency_report_t) + sizeof(CommtactLinkProtocol::commtact_link_message_header_t)) // ADT message
         {
             linkProtocol->commtact_link_msg_adt_constant_frequency_report_decode(&message, &_adt_constant_frequency_report);
 

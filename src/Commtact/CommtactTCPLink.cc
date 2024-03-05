@@ -157,8 +157,7 @@ bool CommtactTCPLink::isConnected() const
     return _socketIsConnected;
 }
 
-//--------------------------------------------------------------------------
-//-- TCPConfiguration
+//---------------------- TCPConfiguration ----------------------------------
 
 static bool is_ip(const QString &address)
 {

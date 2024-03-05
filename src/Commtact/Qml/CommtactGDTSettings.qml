@@ -49,10 +49,9 @@ Item {
             Layout.alignment: Qt.AlignCenter
             title: qsTr("GDT SETTINGS")
             label: Text {
-                color: "#ffe4c4"
+                color: "#808080"
                 text: gdtSettingsGroupBox.title
             }
-
 
             GridLayout {
                 id: gdtSettingsGrid
@@ -74,7 +73,6 @@ Item {
 
                     text: "MODE:"
                     font.family: ScreenTools.demiboldFontFamily
-                    color: "White"
 
                     horizontalAlignment: Text.AlignLeft
                     verticalAlignment: Text.AlignVCenter
@@ -164,7 +162,6 @@ Item {
 
                     text: "ANTENNA:"
                     font.family: ScreenTools.demiboldFontFamily
-                    color: "White"
 
                     horizontalAlignment: Text.AlignLeft
                     verticalAlignment: Text.AlignVCenter
@@ -243,7 +240,6 @@ Item {
 
                     text: "PEDESTAL:"
                     font.family: ScreenTools.demiboldFontFamily
-                    color: "White"
 
                     horizontalAlignment: Text.AlignLeft
                     verticalAlignment: Text.AlignVCenter
@@ -333,7 +329,6 @@ Item {
 
                     text: "TDD:"
                     font.family: ScreenTools.demiboldFontFamily
-                    color: "White"
 
                     horizontalAlignment: Text.AlignLeft
                     verticalAlignment: Text.AlignVCenter
@@ -409,7 +404,6 @@ Item {
 
                     text: "FREQ:"
                     font.family: ScreenTools.demiboldFontFamily
-                    color: "White"
 
                     horizontalAlignment: Text.AlignLeft
                     verticalAlignment: Text.AlignVCenter
@@ -487,7 +481,6 @@ Item {
 
                     text: "UNIT:"
                     font.family: ScreenTools.demiboldFontFamily
-                    color: "White"
 
                     horizontalAlignment: Text.AlignLeft
                     verticalAlignment: Text.AlignVCenter
@@ -578,7 +571,6 @@ Item {
 
                     text: "SYMB RATE:"
                     font.family: ScreenTools.demiboldFontFamily
-                    color: "White"
 
                     horizontalAlignment: Text.AlignLeft
                     verticalAlignment: Text.AlignVCenter
@@ -657,7 +649,6 @@ Item {
 
                     text: " "
                     font.family: ScreenTools.demiboldFontFamily
-                    color: "White"
 
                     horizontalAlignment: Text.AlignLeft
                     verticalAlignment: Text.AlignVCenter
@@ -724,7 +715,7 @@ Item {
                     Layout.alignment: Qt.AlignCenter
                     title: qsTr("SET FREQUENCY")
                     label: Text {
-                        color: "#ffe4c4"
+                        color: "#808080"
                         text: gdtSetFrequencyGroupBox.title
                     }
 
@@ -747,7 +738,6 @@ Item {
                             height: ScreenTools.defaultFontPixelHeight
 
                             text: qsTr("FREQUENCY:")
-                            color: "White"
 
                             horizontalAlignment: Text.AlignHCenter
                             verticalAlignment: Text.AlignVCenter
@@ -755,13 +745,13 @@ Item {
                             Layout.rowSpan: 1
                             Layout.columnSpan: 4
 
-                            Layout.preferredHeight: cellRowHeight
+                            Layout.preferredHeight: cellRowHeight * Layout.rowSpan
                             Layout.preferredWidth: cellColumnWidth * Layout.columnSpan
-                            Layout.maximumHeight: cellRowHeight
+                            Layout.maximumHeight: cellRowHeight * Layout.rowSpan
                             Layout.maximumWidth: cellColumnWidth * Layout.columnSpan
 
                             Layout.fillWidth: false
-                            Layout.fillHeight: true
+                            Layout.fillHeight: false
                             Layout.alignment: Qt.AlignLeft
                         }
 
@@ -774,13 +764,13 @@ Item {
                             Layout.rowSpan: 1
                             Layout.columnSpan: 4
 
-                            Layout.preferredHeight: cellRowHeight
+                            Layout.preferredHeight: cellRowHeight * Layout.rowSpan
                             Layout.preferredWidth: cellColumnWidth * Layout.columnSpan
-                            Layout.maximumHeight: cellRowHeight
+                            Layout.maximumHeight: cellRowHeight * Layout.rowSpan
                             Layout.maximumWidth: cellColumnWidth * Layout.columnSpan
 
                             Layout.fillWidth: false
-                            Layout.fillHeight: true
+                            Layout.fillHeight: false
                             Layout.alignment: Qt.AlignLeft
 
                             maximumLength: 4
@@ -800,13 +790,13 @@ Item {
                             Layout.rowSpan: 1
                             Layout.columnSpan: 4
 
-                            Layout.preferredHeight: cellRowHeight
+                            Layout.preferredHeight: cellRowHeight * Layout.rowSpan
                             Layout.preferredWidth: cellColumnWidth * Layout.columnSpan
-                            Layout.maximumHeight: cellRowHeight
+                            Layout.maximumHeight: cellRowHeight * Layout.rowSpan
                             Layout.maximumWidth: cellColumnWidth * Layout.columnSpan
 
                             Layout.fillWidth: false
-                            Layout.fillHeight: true
+                            Layout.fillHeight: false
                             Layout.alignment: Qt.AlignLeft
 
                             onClicked: {
@@ -843,7 +833,7 @@ Item {
             Layout.alignment: Qt.AlignCenter
             title: qsTr("GDT REPORT")
             label: Text {
-                color: "#ffe4c4"
+                color: "#808080"
                 text: gdtReportGroupBox.title
             }
 
@@ -878,7 +868,7 @@ Item {
                     Layout.alignment: Qt.AlignCenter
                     title: qsTr("OPERATIONAL MODES REPORT")
                     label: Text {
-                        color: "#ffe4c4"
+                        color: "#808080"
                         text: gdtOperationalModesReportGroupBox.title
                     }
 
@@ -973,7 +963,6 @@ Item {
                                 }
                             }
                             font.family: ScreenTools.demiboldFontFamily
-                            color: "White"
 
                             horizontalAlignment: Text.AlignLeft
                             verticalAlignment: Text.AlignVCenter
@@ -1012,7 +1001,6 @@ Item {
                                 }
                             }
                             font.family: ScreenTools.demiboldFontFamily
-                            color: "White"
 
                             horizontalAlignment: Text.AlignLeft
                             verticalAlignment: Text.AlignVCenter
@@ -1043,7 +1031,6 @@ Item {
                                 }
                             }
                             font.family: ScreenTools.demiboldFontFamily
-                            color: "White"
 
                             horizontalAlignment: Text.AlignLeft
                             verticalAlignment: Text.AlignVCenter
@@ -1076,7 +1063,6 @@ Item {
                                 }
                             }
                             font.family: ScreenTools.demiboldFontFamily
-                            color: "White"
 
                             horizontalAlignment: Text.AlignLeft
                             verticalAlignment: Text.AlignVCenter
@@ -1124,7 +1110,6 @@ Item {
                                 }
                             }
                             font.family: ScreenTools.demiboldFontFamily
-                            color: "White"
 
                             horizontalAlignment: Text.AlignLeft
                             verticalAlignment: Text.AlignVCenter
@@ -1160,7 +1145,6 @@ Item {
                                 }
                             }
                             font.family: ScreenTools.demiboldFontFamily
-                            color: "White"
 
                             horizontalAlignment: Text.AlignLeft
                             verticalAlignment: Text.AlignVCenter
@@ -1193,7 +1177,6 @@ Item {
                                 }
                             }
                             font.family: ScreenTools.demiboldFontFamily
-                            color: "White"
 
                             horizontalAlignment: Text.AlignLeft
                             verticalAlignment: Text.AlignVCenter
@@ -1229,7 +1212,6 @@ Item {
                                 }
                             }
                             font.family: ScreenTools.demiboldFontFamily
-                            color: "White"
 
                             horizontalAlignment: Text.AlignLeft
                             verticalAlignment: Text.AlignVCenter
@@ -1266,7 +1248,7 @@ Item {
                     Layout.alignment: Qt.AlignCenter
                     title: qsTr("STATUS REPORT")
                     label: Text {
-                        color: "#ffe4c4"
+                        color: "#808080"
                         text: gdtStatusReportGroupBox.title
                     }
 
@@ -1290,7 +1272,6 @@ Item {
                             text: qsTr("LINK RSSI:")
                                   + QGroundControl.commtactLinkManagement.gdtLinkRSSI
                             font.family: ScreenTools.demiboldFontFamily
-                            color: "White"
 
                             horizontalAlignment: Text.AlignLeft
                             verticalAlignment: Text.AlignVCenter
@@ -1315,7 +1296,6 @@ Item {
                             text: qsTr("FREQUENCY:")
                                   + QGroundControl.commtactLinkManagement.gdtOperationFrequency
                             font.family: ScreenTools.demiboldFontFamily
-                            color: "White"
 
                             horizontalAlignment: Text.AlignLeft
                             verticalAlignment: Text.AlignVCenter
@@ -1340,7 +1320,6 @@ Item {
                             text: qsTr("TDD SYNCED:")
                                   + QGroundControl.commtactLinkManagement.gdtTDDSync
                             font.family: ScreenTools.demiboldFontFamily
-                            color: "White"
 
                             horizontalAlignment: Text.AlignLeft
                             verticalAlignment: Text.AlignVCenter
@@ -1362,10 +1341,9 @@ Item {
 
                             height: ScreenTools.defaultFontPixelHeight
 
-                            text: qsTr("TRANSFERED PACKETS:")
+                            text: qsTr("TRANSFERED:")
                                   + QGroundControl.commtactLinkManagement.gdtLinkTransferedPackets
                             font.family: ScreenTools.demiboldFontFamily
-                            color: "White"
 
                             horizontalAlignment: Text.AlignLeft
                             verticalAlignment: Text.AlignVCenter
@@ -1387,10 +1365,9 @@ Item {
 
                             height: ScreenTools.defaultFontPixelHeight
 
-                            text: qsTr("ERROR PACKETS:")
+                            text: qsTr("ERROR:")
                                   + QGroundControl.commtactLinkManagement.gdtLinkErrorPackets
                             font.family: ScreenTools.demiboldFontFamily
-                            color: "White"
 
                             horizontalAlignment: Text.AlignLeft
                             verticalAlignment: Text.AlignVCenter
@@ -1412,10 +1389,9 @@ Item {
 
                             height: ScreenTools.defaultFontPixelHeight
 
-                            text: qsTr("CRC ERROR PACKETS:")
+                            text: qsTr("CRC ERROR:")
                                   + QGroundControl.commtactLinkManagement.gdtLinkCRCErrorPackets
                             font.family: ScreenTools.demiboldFontFamily
-                            color: "White"
 
                             horizontalAlignment: Text.AlignLeft
                             verticalAlignment: Text.AlignVCenter
@@ -1452,7 +1428,7 @@ Item {
                     Layout.alignment: Qt.AlignCenter
                     title: qsTr("CBIT REPORT")
                     label: Text {
-                        color: "#ffe4c4"
+                        color: "#808080"
                         text: gdtCBITReportGroupBox.title
                     }
 
@@ -1476,7 +1452,6 @@ Item {
                             text: qsTr("PA POWER OUTPUT:")
                                   + QGroundControl.commtactLinkManagement.gdtCBITPAPowerOutput
                             font.family: ScreenTools.demiboldFontFamily
-                            color: "White"
 
                             horizontalAlignment: Text.AlignLeft
                             verticalAlignment: Text.AlignVCenter
@@ -1501,7 +1476,6 @@ Item {
                             text: qsTr("PA RETURN POWER:")
                                   + QGroundControl.commtactLinkManagement.gdtCBITPAReturnPower
                             font.family: ScreenTools.demiboldFontFamily
-                            color: "White"
 
                             horizontalAlignment: Text.AlignLeft
                             verticalAlignment: Text.AlignVCenter

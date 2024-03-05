@@ -40,7 +40,6 @@ class AutoConnectSettings;
 /// The Link Manager organizes the physical Links. It can manage arbitrary
 /// links and takes care of connecting them as well assigning the correct
 /// protocol instance to transport the link data into the application.
-
 class CommtactLinkManager : public QGCTool
 {
     Q_OBJECT

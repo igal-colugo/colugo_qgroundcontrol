@@ -45,7 +45,7 @@ Item {
             Layout.alignment: Qt.AlignCenter
             title: qsTr("GDT ETHERNET SETTINGS")
             label: Text {
-                color: "#ffe4c4"
+                color: "#808080"
                 text: gdtEthernetSettingsGroupBox.title
             }
 
@@ -78,7 +78,7 @@ Item {
             Layout.alignment: Qt.AlignCenter
             title: qsTr("ADT ETHERNET SETTINGS")
             label: Text {
-                color: "#ffe4c4"
+                color: "#808080"
                 text: adtEthernetSettingsGroupBox.title
             }
 

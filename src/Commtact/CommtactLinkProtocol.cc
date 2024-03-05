@@ -30,6 +30,7 @@ QGC_LOGGING_CATEGORY(CommtactLinkProtocolLog, "CommtactLinkProtocolLog")
 const char *CommtactLinkProtocol::_tempLogFileTemplate = "FlightDataXXXXXX"; ///< Template for temporary log file
 const char *CommtactLinkProtocol::_logFileExtension = "commtact_link";       ///< Extension for log files
 
+//-------------------------- Constructor -----------------------------------
 /**
  * The default constructor will create a new MAVLink object sending heartbeats at
  * the MAVLINK_HEARTBEAT_DEFAULT_RATE to all connected links.
@@ -52,6 +53,7 @@ CommtactLinkProtocol::~CommtactLinkProtocol()
     _closeLogFile();
 }
 
+//-------------------------- Methods -----------------------------------
 void CommtactLinkProtocol::setToolbox(QGCToolbox *toolbox)
 {
     QGCTool::setToolbox(toolbox);
@@ -290,26 +292,6 @@ uint8_t CommtactLinkProtocol::_commtact_link_parse_char(uint8_t c, int buffer_si
 {
     uint8_t msg_received = _commtact_link_frame_char(c, buffer_size, r_message, r_mavlink_status);
 
-    //    if (msg_received == COMMTACT_LINK_FRAMING_BAD_CRC || msg_received == COMMTACT_LINK_PARSE_STATE_GOT_BAD_TERMINATOR || msg_received == COMMTACT_LINK_PARSE_STATE_GOT_BAD_HEADER_CRC)
-    //    {
-    //        commtact_link_message_t *rxmsg = r_message;
-    //        commtact_link_status_t *status = r_mavlink_status;
-
-    //        _commtact_parse_error(status);
-
-    //        status->msg_received = COMMTACT_LINK_FRAMING_INCOMPLETE;
-    //        status->parse_state = COMMTACT_LINK_PARSE_STATE_IDLE;
-    //        if (c == COMMTACT_LINK_STX_1)
-    //        {
-    //            status->parse_state = COMMTACT_LINK_PARSE_STATE_GOT_STX_1;
-    //            rxmsg->length = 0;
-    //            _commtact_link_start_header_checksum(rxmsg);
-    //            _commtact_link_start_checksum(rxmsg);
-    //        }
-
-    //        return 0;
-    //    }
-
     return msg_received;
 }
 
@@ -365,7 +347,7 @@ uint8_t CommtactLinkProtocol::_commtact_link_frame_char_buffer(commtact_link_mes
 
         _COMMTACT_PAYLOAD_NON_CONST(rxmsg)[status->packet_idx++] = (char) c;
 
-        if (status->packet_idx == buffer_size - 7 - 1)
+        if (status->packet_idx == buffer_size - sizeof(commtact_link_message_header_t) - 1)
         {
             status->parse_state = COMMTACT_LINK_PARSE_STATE_GOT_DATA;
         }
@@ -373,12 +355,6 @@ uint8_t CommtactLinkProtocol::_commtact_link_frame_char_buffer(commtact_link_mes
         break;
 
     case COMMTACT_LINK_PARSE_STATE_GOT_DATA:
-
-        // zero-fill the packet to cope with short incoming packets
-        //        if (status->packet_idx < rxmsg->length)
-        //        {
-        //            memset(&_COMMTACT_PAYLOAD_NON_CONST(rxmsg)[status->packet_idx], 0, buffer_size - status->packet_idx);
-        //        }
 
         // Successfully got message
         _COMMTACT_PAYLOAD_NON_CONST(rxmsg)[status->packet_idx] = (char) c; // get last byte of recieved data
@@ -479,6 +455,19 @@ uint16_t CommtactLinkProtocol::commtact_link_msg_get_report_message_pack(Commtac
     return sizeof(commtact_gdt_get_report_t);
 }
 
+uint16_t CommtactLinkProtocol::commtact_link_msg_to_send_buffer(uint8_t *buf, const CommtactLinkProtocol::commtact_link_message_t *msg, uint32_t payload_size)
+{
+    buf[0] = msg->time_stamp[0];
+    buf[1] = msg->time_stamp[1];
+    buf[2] = msg->time_stamp[2];
+    buf[3] = msg->time_stamp[3];
+    buf[4] = msg->seq_num[0];
+    buf[5] = msg->seq_num[1];
+    buf[6] = msg->opcode;
+    memcpy(&buf[7], _COMMTACT_PAYLOAD(msg), payload_size);
+
+    return sizeof(commtact_link_message_header_t) + payload_size;
+}
 //-------------------------- GDT -----------------------------------
 uint16_t CommtactLinkProtocol::commtact_link_msg_gdt_operational_frequency_pack(CommtactLinkProtocol::commtact_link_message_t *msg, uint16_t gdt_operational_frequency)
 {
@@ -542,20 +531,6 @@ uint16_t CommtactLinkProtocol::commtact_link_msg_operational_mode_pack(CommtactL
     memcpy(_COMMTACT_PAYLOAD_NON_CONST(msg), &packet, sizeof(packet));
 
     return sizeof(commtact_gdt_operational_mode_t);
-}
-
-uint16_t CommtactLinkProtocol::commtact_link_msg_to_send_buffer(uint8_t *buf, const CommtactLinkProtocol::commtact_link_message_t *msg, uint32_t payload_size)
-{
-    buf[0] = msg->time_stamp[0];
-    buf[1] = msg->time_stamp[1];
-    buf[2] = msg->time_stamp[2];
-    buf[3] = msg->time_stamp[3];
-    buf[4] = msg->seq_num[0];
-    buf[5] = msg->seq_num[1];
-    buf[6] = msg->opcode;
-    memcpy(&buf[7], _COMMTACT_PAYLOAD(msg), payload_size);
-
-    return 7 + payload_size;
 }
 
 void CommtactLinkProtocol::commtact_link_msg_operational_modes_report_decode(const commtact_link_message_t *msg, commtact_gdt_operational_modes_report_t *operational_modes_report)
@@ -666,6 +641,7 @@ void CommtactLinkProtocol::commtact_link_msg_adt_status_report_decode(const comm
 }
 //------------------------------------------------------------------
 
+//-------------------------- Helpers -------------------------------
 void CommtactLinkProtocol::_swap_bytes(uint16_t *data)
 {
     uint16_t temp = 0;
