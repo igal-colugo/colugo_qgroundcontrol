@@ -224,6 +224,11 @@ void MAVLinkProtocol::receiveBytes(LinkInterface *link, QByteArray b)
             uint8_t expectedSeq = lastSeq + 1;
             // Increase receive counter
             totalReceiveCounter[mavlinkChannel]++;
+            if (totalReceiveCounter[mavlinkChannel] >= ULONG_MAX - 1)
+            {
+                totalReceiveCounter[mavlinkChannel] = 0;
+                totalLossCounter[mavlinkChannel] = 0;
+            }
             // Determine what the next expected sequence number is, accounting for
             // never having seen a message for this system/component pair.
             if (firstMessage[_message.sysid][_message.compid])
@@ -249,6 +254,11 @@ void MAVLinkProtocol::receiveBytes(LinkInterface *link, QByteArray b)
                 }
                 // Log how many were lost
                 totalLossCounter[mavlinkChannel] += static_cast<uint64_t>(lostMessages);
+                if (totalLossCounter[mavlinkChannel] >= ULONG_MAX - 1)
+                {
+                    totalReceiveCounter[mavlinkChannel] = 0;
+                    totalLossCounter[mavlinkChannel] = 0;
+                }
             }
 
             // And update the last sequence number for this system/component pair

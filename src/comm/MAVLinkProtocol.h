@@ -9,18 +9,19 @@
 
 #pragma once
 
-#include <QObject>
+#include <QByteArray>
+#include <QFile>
+#include <QLoggingCategory>
+#include <QMap>
 #include <QMutex>
+#include <QObject>
 #include <QString>
 #include <QTimer>
-#include <QFile>
-#include <QMap>
-#include <QByteArray>
-#include <QLoggingCategory>
+#include <limits.h>
 
 #include "LinkInterface.h"
-#include "QGCMAVLink.h"
 #include "QGC.h"
+#include "QGCMAVLink.h"
 #include "QGCTemporaryFile.h"
 #include "QGCToolbox.h"
 
@@ -40,8 +41,8 @@ class MAVLinkProtocol : public QGCTool
 {
     Q_OBJECT
 
-public:
-    MAVLinkProtocol(QGCApplication* app, QGCToolbox* toolbox);
+  public:
+    MAVLinkProtocol(QGCApplication *app, QGCToolbox *toolbox);
     ~MAVLinkProtocol();
 
     /** @brief Get the human-friendly name of this protocol */
@@ -52,15 +53,18 @@ public:
     int getComponentId();
 
     /** @brief Get protocol version check state */
-    bool versionCheckEnabled() const {
+    bool versionCheckEnabled() const
+    {
         return m_enable_version_check;
     }
     /** @brief Get the protocol version */
-    int getVersion() {
+    int getVersion()
+    {
         return MAVLINK_VERSION;
     }
     /** @brief Get the currently configured protocol version */
-    unsigned getCurrentVersion() const{
+    unsigned getCurrentVersion() const
+    {
         return _current_version;
     }
     /**
@@ -77,12 +81,12 @@ public:
     // Override from QGCTool
     virtual void setToolbox(QGCToolbox *toolbox);
 
-public slots:
+  public slots:
     /** @brief Receive bytes from a communication interface */
-    void receiveBytes(LinkInterface* link, QByteArray b);
+    void receiveBytes(LinkInterface *link, QByteArray b);
 
     /** @brief Log bytes sent from a communication interface */
-    void logSentBytes(LinkInterface* link, QByteArray b);
+    void logSentBytes(LinkInterface *link, QByteArray b);
 
     /** @brief Set the system id of this application */
     void setSystemId(int id);
@@ -101,32 +105,32 @@ public slots:
     /// Checks for lost log files
     void checkForLostLogFiles(void);
 
-protected:
-    bool        m_enable_version_check;                         ///< Enable checking of version match of MAV and QGC
-    uint8_t     lastIndex[256][256];                            ///< Store the last received sequence ID for each system/componenet pair
-    uint8_t     firstMessage[256][256];                         ///< First message flag
-    uint64_t    totalReceiveCounter[MAVLINK_COMM_NUM_BUFFERS];  ///< The total number of successfully received messages
-    uint64_t    totalLossCounter[MAVLINK_COMM_NUM_BUFFERS];     ///< Total messages lost during transmission.
-    float       runningLossPercent[MAVLINK_COMM_NUM_BUFFERS];   ///< Loss rate
+  protected:
+    bool m_enable_version_check;                            ///< Enable checking of version match of MAV and QGC
+    uint8_t lastIndex[256][256];                            ///< Store the last received sequence ID for each system/componenet pair
+    uint8_t firstMessage[256][256];                         ///< First message flag
+    uint64_t totalReceiveCounter[MAVLINK_COMM_NUM_BUFFERS]; ///< The total number of successfully received messages
+    uint64_t totalLossCounter[MAVLINK_COMM_NUM_BUFFERS];    ///< Total messages lost during transmission.
+    float runningLossPercent[MAVLINK_COMM_NUM_BUFFERS];     ///< Loss rate
 
     mavlink_message_t _message;
     mavlink_status_t _status;
 
-    bool        versionMismatchIgnore;
-    int         systemId;
-    unsigned    _current_version;
-    int         _radio_version_mismatch_count;
+    bool versionMismatchIgnore;
+    int systemId;
+    unsigned _current_version;
+    int _radio_version_mismatch_count;
 
-signals:
+  signals:
     /// Heartbeat received on link
-    void vehicleHeartbeatInfo(LinkInterface* link, int vehicleId, int componentId, int vehicleFirmwareType, int vehicleType);
+    void vehicleHeartbeatInfo(LinkInterface *link, int vehicleId, int componentId, int vehicleFirmwareType, int vehicleType);
 
     /** @brief Message received and directly copied via signal */
-    void messageReceived(LinkInterface* link, mavlink_message_t message);
+    void messageReceived(LinkInterface *link, mavlink_message_t message);
     /** @brief Emitted if version check is enabled / disabled */
     void versionCheckChanged(bool enabled);
     /** @brief Emitted if a message from the protocol should reach the user */
-    void protocolStatusMessage(const QString& title, const QString& message);
+    void protocolStatusMessage(const QString &title, const QString &message);
     /** @brief Emitted if a new system ID was set */
     void systemIdChanged(int systemId);
 
@@ -143,8 +147,7 @@ signals:
      * @param noise background noise level
      * @param remnoise remote background noise level
      */
-    void radioStatusChanged(LinkInterface* link, unsigned rxerrors, unsigned fixed, int rssi, int remrssi,
-    unsigned txbuf, unsigned noise, unsigned remnoise);
+    void radioStatusChanged(LinkInterface *link, unsigned rxerrors, unsigned fixed, int rssi, int remrssi, unsigned txbuf, unsigned noise, unsigned remnoise);
 
     /// Emitted when a temporary telemetry log file is ready for saving
     void saveTelemetryLog(QString tempLogfile);
@@ -152,23 +155,22 @@ signals:
     /// Emitted when a telemetry log is started to save.
     void checkTelemetrySavePath(void);
 
-private slots:
+  private slots:
     void _vehicleCountChanged(void);
 
-private:
+  private:
     bool _closeLogFile(void);
     void _startLogging(void);
     void _stopLogging(void);
 
-    bool _logSuspendError;      ///< true: Logging suspended due to error
-    bool _logSuspendReplay;     ///< true: Logging suspended due to replay
-    bool _vehicleWasArmed;      ///< true: Vehicle was armed during log sequence
+    bool _logSuspendError;  ///< true: Logging suspended due to error
+    bool _logSuspendReplay; ///< true: Logging suspended due to replay
+    bool _vehicleWasArmed;  ///< true: Vehicle was armed during log sequence
 
-    QGCTemporaryFile    _tempLogFile;            ///< File to log to
-    static const char*  _tempLogFileTemplate;    ///< Template for temporary log file
-    static const char*  _logFileExtension;       ///< Extension for log files
+    QGCTemporaryFile _tempLogFile;           ///< File to log to
+    static const char *_tempLogFileTemplate; ///< Template for temporary log file
+    static const char *_logFileExtension;    ///< Extension for log files
 
-    LinkManager*            _linkMgr;
-    MultiVehicleManager*    _multiVehicleManager;
+    LinkManager *_linkMgr;
+    MultiVehicleManager *_multiVehicleManager;
 };
-
