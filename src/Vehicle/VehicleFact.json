@@ -81,6 +81,13 @@
     "units":            "m"
 },
 {
+    "name":             "altitudeMonotonic",
+    "shortDesc": "Alt (Mon)",
+    "type":             "double",
+    "decimalPlaces":    3,
+    "units":            "m"
+},
+{
     "name":             "flightDistance",
     "shortDesc": "Flight Distance",
     "type":             "double",

@@ -14,4 +14,5 @@ add_custom_target(UiPreferencesQml
 		UdpSettings.qml
 		NextVisionLinkSettings.qml
 		EpsilonLinkSettings.qml
+		CommtactLinkSettings.qml
 )

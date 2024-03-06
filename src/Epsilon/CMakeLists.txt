@@ -2,8 +2,8 @@
 set(EXTRA_SRC)
 
 add_library(Epsilon
-      	EpsilonExt_CameraManagement.cc
-      	EpsilonExt_CameraManagement.h
+      	EpsilonCameraManagement.cc
+      	EpsilonCameraManagement.h
 	EpsilonLinkConfiguration.cc
 	EpsilonLinkConfiguration.h
 	EpsilonLinkInterface.cc

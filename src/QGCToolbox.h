@@ -21,11 +21,14 @@ class FollowMe;
 class LinkManager;
 class NextVisionLinkManager;
 class EpsilonLinkManager;
+class CommtactLinkManager;
 class CameraManagement;
 class EpsilonCameraManagement;
+class CommtactLinkManagement;
 class MAVLinkProtocol;
 class NextVisionMAVLinkProtocol;
 class EpsilonLinkProtocol;
+class CommtactLinkProtocol;
 class MissionCommandTree;
 class MultiVehicleManager;
 class QGCMapEngineManager;
@@ -81,6 +84,14 @@ class QGCToolbox : public QObject
     {
         return _epsilonLinkManager;
     }
+    CommtactLinkManager *commtactLinkManager()
+    {
+        return _commtactLinkManager;
+    }
+    CommtactLinkManagement *commtactLinkManagement()
+    {
+        return _commtactLinkManagement;
+    }
     MAVLinkProtocol *mavlinkProtocol()
     {
         return _mavlinkProtocol;
@@ -92,6 +103,10 @@ class QGCToolbox : public QObject
     EpsilonLinkProtocol *epsilonLinkProtocol()
     {
         return _epsilonLinkProtocol;
+    }
+    CommtactLinkProtocol *commtactLinkProtocol()
+    {
+        return _commtactLinkProtocol;
     }
     MissionCommandTree *missionCommandTree()
     {
@@ -185,9 +200,12 @@ class QGCToolbox : public QObject
     LinkManager *_linkManager = nullptr;
     NextVisionLinkManager *_nextVisionLinkManager = nullptr;
     EpsilonLinkManager *_epsilonLinkManager = nullptr;
+    CommtactLinkManager *_commtactLinkManager = nullptr;
+    CommtactLinkManagement *_commtactLinkManagement = nullptr;
     MAVLinkProtocol *_mavlinkProtocol = nullptr;
     NextVisionMAVLinkProtocol *_nextVisionMavlinkProtocol = nullptr;
     EpsilonLinkProtocol *_epsilonLinkProtocol = nullptr;
+    CommtactLinkProtocol *_commtactLinkProtocol = nullptr;
     MissionCommandTree *_missionCommandTree = nullptr;
     MultiVehicleManager *_multiVehicleManager = nullptr;
     QGCMapEngineManager *_mapEngineManager = nullptr;

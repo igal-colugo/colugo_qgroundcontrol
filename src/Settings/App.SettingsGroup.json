@@ -400,6 +400,13 @@
     "default":     -1
 },
 {
+    "name":             "enableCommtact",
+    "shortDesc": "Enable Commtact Module Support",
+    "longDesc":  "Enable Commtact Module Support",
+    "type":             "int32",
+    "default":     -1
+},
+{
     "name":             "enableAsio",
     "shortDesc": "Enable Asio Obox Module Support",
     "longDesc":  "Enable Asio Obox Module Support",

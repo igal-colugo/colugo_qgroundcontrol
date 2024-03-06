@@ -16,6 +16,13 @@
     "decimalPlaces":    7
 },
 {
+    "name":             "alt",
+    "shortDesc": "Altitude",
+    "type":             "double",
+    "decimalPlaces":    7,
+    "units":            "m"
+},
+{
     "name":             "mgrs",
     "shortDesc": "MGRS Position",
     "type":             "string"
