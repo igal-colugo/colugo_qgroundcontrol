@@ -134,6 +134,9 @@ Item {
 
                             //maximumLength: 4
                             font.pointSize: ScreenTools.isMobile ? point_size : 9
+                            validator: RegExpValidator {
+                                regExp: /^(?:(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.){3}(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)(?:\:?)(?:[0-9][0-9][0-9][0-9][0-9]?)$/
+                            }
                             text: qsTr("127.0.0.1:3000")
                         }
                         QGCButton {
@@ -208,6 +211,9 @@ Item {
 
                             //maximumLength: 4
                             font.pointSize: ScreenTools.isMobile ? point_size : 9
+                            validator: RegExpValidator {
+                                regExp: /^(?:(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.){3}(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)$/
+                            }
                             text: qsTr("255.255.255.0")
                         }
                         QGCButton {
@@ -282,6 +288,9 @@ Item {
 
                             //maximumLength: 4
                             font.pointSize: ScreenTools.isMobile ? point_size : 9
+                            validator: RegExpValidator {
+                                regExp: /^(?:(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.){3}(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)$/
+                            }
                             text: qsTr("127.0.0.1")
                         }
                         QGCButton {
@@ -356,6 +365,9 @@ Item {
 
                             //maximumLength: 4
                             font.pointSize: ScreenTools.isMobile ? point_size : 9
+                            validator: RegExpValidator {
+                                regExp: /^(?:(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.){3}(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)(?:\:?)(?:[0-9][0-9][0-9][0-9][0-9]?)$/
+                            }
                             text: qsTr("127.0.0.1:3001")
                         }
                         QGCButton {
@@ -430,6 +442,9 @@ Item {
 
                             //maximumLength: 4
                             font.pointSize: ScreenTools.isMobile ? point_size : 9
+                            validator: RegExpValidator {
+                                regExp: /^(?:[0-9][0-9][0-9][0-9][0-9]?)$/
+                            }
                             text: qsTr("56000")
                         }
                         QGCButton {
@@ -774,6 +789,9 @@ Item {
 
                             //maximumLength: 4
                             font.pointSize: ScreenTools.isMobile ? point_size : 9
+                            validator: RegExpValidator {
+                                regExp: /^(?:(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.){3}(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)(?:\:?)(?:[0-9][0-9][0-9][0-9][0-9]?)$/
+                            }
                             text: qsTr("127.0.0.1:52000")
                         }
                         QGCButton {
@@ -848,6 +866,9 @@ Item {
 
                             //maximumLength: 4
                             font.pointSize: ScreenTools.isMobile ? point_size : 9
+                            validator: RegExpValidator {
+                                regExp: /^(?:(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.){3}(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)$/
+                            }
                             text: qsTr("255.255.255.0")
                         }
                         QGCButton {
@@ -922,6 +943,9 @@ Item {
 
                             //maximumLength: 4
                             font.pointSize: ScreenTools.isMobile ? point_size : 9
+                            validator: RegExpValidator {
+                                regExp: /^(?:(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.){3}(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)$/
+                            }
                             text: qsTr("127.0.0.1")
                         }
                         QGCButton {
@@ -996,6 +1020,9 @@ Item {
 
                             //maximumLength: 4
                             font.pointSize: ScreenTools.isMobile ? point_size : 9
+                            validator: RegExpValidator {
+                                regExp: /^(?:(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.){3}(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)(?:\:?)(?:[0-9][0-9][0-9][0-9][0-9]?)$/
+                            }
                             text: qsTr("127.0.0.1:52001")
                         }
                         QGCButton {
@@ -1070,6 +1097,9 @@ Item {
 
                             //maximumLength: 4
                             font.pointSize: ScreenTools.isMobile ? point_size : 9
+                            validator: RegExpValidator {
+                                regExp: /^(?:[0-9][0-9][0-9][0-9][0-9]?)$/
+                            }
                             text: qsTr("57000")
                         }
                         QGCButton {
