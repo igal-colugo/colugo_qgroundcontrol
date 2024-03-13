@@ -428,7 +428,171 @@ class CommtactLinkManagement : public QGCTool
         emit adtVideoSourceChanged();
     }
     //---------------------------------------------------------------
-    //------------------- GDT commands ----------------------------------
+
+    //------------------- Common Properties -------------------------
+    Q_PROPERTY(uint commonICDIPAddressInt READ getCommonICDIPAddressInt WRITE setCommonICDIPAddressInt NOTIFY commonICDIPAddressIntChanged)
+    uint getCommonICDIPAddressInt()
+    {
+        return (uint) _commonICDIPAddressInt;
+    }
+    void setCommonICDIPAddressInt(const uint &commonICDIPAddressInt)
+    {
+        _commonICDIPAddressInt = (uint) commonICDIPAddressInt;
+
+        unsigned char *pointer_to_ip_address = (unsigned char *) &_commonICDIPAddressInt;
+
+        QString commonICDIPAddress = QString::number((uint) * (pointer_to_ip_address + 3)) + "." + QString::number((uint) * (pointer_to_ip_address + 2)) + "." +
+                                     QString::number((uint) * (pointer_to_ip_address + 1)) + "." + QString::number((uint) * (pointer_to_ip_address + 0));
+
+        setCommonICDIPAddress(commonICDIPAddress);
+
+        emit commonICDIPAddressIntChanged();
+    }
+
+    Q_PROPERTY(QString commonICDIPAddress READ getCommonICDIPAddress WRITE setCommonICDIPAddress NOTIFY commonICDIPAddressChanged)
+    QString getCommonICDIPAddress()
+    {
+        return _commonICDIPAddress;
+    }
+    void setCommonICDIPAddress(const QString &commonICDIPAddress)
+    {
+        _commonICDIPAddress = commonICDIPAddress;
+
+        emit commonICDIPAddressChanged();
+    }
+
+    Q_PROPERTY(uint commonICDPort READ getCommonICDPort WRITE setCommonICDPort NOTIFY commonICDPortChanged)
+    uint getCommonICDPort()
+    {
+        return _commonICDPort;
+    }
+    void setCommonICDPort(const uint &commonICDPort)
+    {
+        _commonICDPort = commonICDPort;
+
+        emit commonICDPortChanged();
+    }
+
+    Q_PROPERTY(uint commonICDSubnetMaskInt READ getCommonICDSubnetMaskInt WRITE setCommonICDSubnetMaskInt NOTIFY commonICDSubnetMaskIntChanged)
+    uint getCommonICDSubnetMaskInt()
+    {
+        return (uint) _commonICDSubnetMaskInt;
+    }
+    void setCommonICDSubnetMaskInt(const uint &commonICDSubnetMaskInt)
+    {
+        _commonICDSubnetMaskInt = (uint) commonICDSubnetMaskInt;
+
+        unsigned char *pointer_to_ip_address = (unsigned char *) &_commonICDSubnetMaskInt;
+
+        QString commonICDSubnetMask = QString::number((uint) * (pointer_to_ip_address + 3)) + "." + QString::number((uint) * (pointer_to_ip_address + 2)) + "." +
+                                      QString::number((uint) * (pointer_to_ip_address + 1)) + "." + QString::number((uint) * (pointer_to_ip_address + 0));
+
+        setCommonICDSubnetMask(commonICDSubnetMask);
+
+        emit commonICDSubnetMaskIntChanged();
+    }
+
+    Q_PROPERTY(QString commonICDSubnetMask READ getCommonICDSubnetMask WRITE setCommonICDSubnetMask NOTIFY commonICDSubnetMaskChanged)
+    QString getCommonICDSubnetMask()
+    {
+        return _commonICDSubnetMask;
+    }
+    void setCommonICDSubnetMask(const QString &commonICDSubnetMask)
+    {
+        _commonICDSubnetMask = commonICDSubnetMask;
+
+        emit commonICDSubnetMaskChanged();
+    }
+
+    Q_PROPERTY(uint commonICDDefaultGatewayInt READ getCommonICDDefaultGatewayInt WRITE setCommonICDDefaultGatewayInt NOTIFY commonICDDefaultGatewayIntChanged)
+    uint getCommonICDDefaultGatewayInt()
+    {
+        return (uint) _commonICDDefaultGatewayInt;
+    }
+    void setCommonICDDefaultGatewayInt(const uint &commonICDDefaultGatewayInt)
+    {
+        _commonICDDefaultGatewayInt = (uint) commonICDDefaultGatewayInt;
+
+        unsigned char *pointer_to_ip_address = (unsigned char *) &_commonICDDefaultGatewayInt;
+
+        QString commonICDDefaultGateway = QString::number((uint) * (pointer_to_ip_address + 3)) + "." + QString::number((uint) * (pointer_to_ip_address + 2)) + "." +
+                                          QString::number((uint) * (pointer_to_ip_address + 1)) + "." + QString::number((uint) * (pointer_to_ip_address + 0));
+
+        setCommonICDDefaultGateway(commonICDDefaultGateway);
+
+        emit commonICDDefaultGatewayIntChanged();
+    }
+
+    Q_PROPERTY(QString commonICDDefaultGateway READ getCommonICDDefaultGateway WRITE setCommonICDDefaultGateway NOTIFY commonICDDefaultGatewayChanged)
+    QString getCommonICDDefaultGateway()
+    {
+        return _commonICDDefaultGateway;
+    }
+    void setCommonICDDefaultGateway(const QString &commonICDDefaultGateway)
+    {
+        _commonICDDefaultGateway = commonICDDefaultGateway;
+
+        emit commonICDDefaultGatewayChanged();
+    }
+
+    Q_PROPERTY(uint commonICDHostIPAddressInt READ getCommonICDHostIPAddressInt WRITE setCommonICDHostIPAddressInt NOTIFY commonICDHostIPAddressIntChanged)
+    uint getCommonICDHostIPAddressInt()
+    {
+        return (uint) _commonICDHostIPAddressInt;
+    }
+    void setCommonICDHostIPAddressInt(const uint &commonICDHostIPAddressInt)
+    {
+        _commonICDHostIPAddressInt = (uint) commonICDHostIPAddressInt;
+
+        unsigned char *pointer_to_ip_address = (unsigned char *) &_commonICDHostIPAddressInt;
+
+        QString commonICDHostIPAddress = QString::number((uint) * (pointer_to_ip_address + 3)) + "." + QString::number((uint) * (pointer_to_ip_address + 2)) + "." +
+                                         QString::number((uint) * (pointer_to_ip_address + 1)) + "." + QString::number((uint) * (pointer_to_ip_address + 0));
+
+        setCommonICDHostIPAddress(commonICDHostIPAddress);
+
+        emit commonICDHostIPAddressIntChanged();
+    }
+
+    Q_PROPERTY(QString commonICDHostIPAddress READ getCommonICDHostIPAddress WRITE setCommonICDHostIPAddress NOTIFY commonICDHostIPAddressChanged)
+    QString getCommonICDHostIPAddress()
+    {
+        return _commonICDHostIPAddress;
+    }
+    void setCommonICDHostIPAddress(const QString &commonICDHostIPAddress)
+    {
+        _commonICDHostIPAddress = commonICDHostIPAddress;
+
+        emit commonICDHostIPAddressChanged();
+    }
+
+    Q_PROPERTY(uint commonICDHostPort READ getCommonICDHostPort WRITE setCommonICDHostPort NOTIFY commonICDHostPortChanged)
+    uint getCommonICDHostPort()
+    {
+        return _commonICDHostPort;
+    }
+    void setCommonICDHostPort(const uint &commonICDHostPort)
+    {
+        _commonICDHostPort = commonICDHostPort;
+
+        emit commonICDHostPortChanged();
+    }
+
+    Q_PROPERTY(uint commonICDDiscoveryPort READ getCommonICDDiscoveryPort WRITE setCommonICDDiscoveryPort NOTIFY commonICDDiscoveryPortChanged)
+    uint getCommonICDDiscoveryPort()
+    {
+        return _commonICDDiscoveryPort;
+    }
+    void setCommonICDDiscoveryPort(const uint &commonICDDiscoveryPort)
+    {
+        _commonICDDiscoveryPort = commonICDDiscoveryPort;
+
+        emit commonICDDiscoveryPortChanged();
+    }
+
+    //---------------------------------------------------------------
+
+    //------------------- GDT commands ------------------------------
     QStringList operationalModeTypeStrings(void) const;
     QStringList gdtAntennaSelectTypeStrings(void) const;
     QStringList gdtPedestalTrackModeTypeStrings(void) const;
@@ -477,6 +641,16 @@ class CommtactLinkManagement : public QGCTool
     Q_INVOKABLE void setADTVideoSourceCommand(uint adt_video_source);
     //-------------------------------------------------------------------
 
+    //----------------- COMMON commands ---------------------------------
+
+    Q_INVOKABLE void setCommonEthernetICDIPAddressCommand(QString icd_ip_address_port_string);
+    Q_INVOKABLE void setCommonEthernetICDSubnetMaskCommand(QString icd_subnet_mask_string);
+    Q_INVOKABLE void setCommonEthernetICDDefaultGatewayCommand(QString icd_default_gateway_string);
+    Q_INVOKABLE void setCommonEthernetICDHostIPCommand(QString icd_host_ip_port_string);
+    Q_INVOKABLE void setCommonEthernetICDDiscoveryPortCommand(uint icd_discovery_port);
+
+    //-------------------------------------------------------------------
+
   protected:
     CommtactLinkManager *_commtactLinkManager = nullptr;
 
@@ -484,61 +658,76 @@ class CommtactLinkManagement : public QGCTool
     QTimer _updateTimer;
 
     //--------------- GDT fields --------------------
-    uint8_t _transmitterOperationalMode;
-    uint8_t _gdtAntennaSelect;
-    uint8_t _gdtPedestalTrackMode;
-    uint8_t _gdtTddOperationalMode;
-    uint8_t _gdtFrequencyMode;
-    uint8_t _gdtUnitMode;
-    uint8_t _gdtSymbolRate;
-    uint8_t _gdtAesEncryption;
+    uint8_t _transmitterOperationalMode = 0;
+    uint8_t _gdtAntennaSelect = 0;
+    uint8_t _gdtPedestalTrackMode = 0;
+    uint8_t _gdtTddOperationalMode = 0;
+    uint8_t _gdtFrequencyMode = 0;
+    uint8_t _gdtUnitMode = 0;
+    uint8_t _gdtSymbolRate = 0;
+    uint8_t _gdtAesEncryption = 0;
 
-    int8_t _gdtTDDSync;
-    int8_t _gdtLinkRSSI;
-    uint16_t _gdtLinkTransferedPackets;
-    uint16_t _gdtLinkErrorPackets;
-    uint16_t _gdtLinkCRCErrorPackets;
+    int8_t _gdtTDDSync = 0;
+    int8_t _gdtLinkRSSI = 0;
+    uint16_t _gdtLinkTransferedPackets = 0;
+    uint16_t _gdtLinkErrorPackets = 0;
+    uint16_t _gdtLinkCRCErrorPackets = 0;
 
-    uint16_t _gdtOperationFrequency;
+    uint16_t _gdtOperationFrequency = 0;
 
-    int16_t _gdtCBITPAPowerOutput;
-    int16_t _gdtCBITPAReturnPower;
+    int16_t _gdtCBITPAPowerOutput = 0;
+    int16_t _gdtCBITPAReturnPower = 0;
 
     CommtactLinkProtocol::commtact_gdt_operational_modes_report_t _operational_modes_report;
     CommtactLinkProtocol::commtact_gdt_status_report_t _gdt_status_report;
     CommtactLinkProtocol::commtact_gdt_constant_frequency_report_t _gdt_constant_frequency_report;
     CommtactLinkProtocol::commtact_gdt_cbit_report_t _gdt_cbit_report;
     CommtactLinkProtocol::commtact_gdt_mission_adt_status_report_t _gdt_mission_adt_status_report;
+    CommtactLinkProtocol::commtact_basic_ethernet_settings_report_t _common_ethernet_settings_report;
 
-    //--------------- Adt fields --------------------
-    uint8_t _adtTransmitterOperationalMode;
-    uint8_t _adtAntennaSelect;
-    uint8_t _adtTddOperationalMode;
-    uint8_t _adtFrequencyMode;
-    uint8_t _adtVideoTransmitEnable;
-    uint8_t _adtUnitMode;
-    uint8_t _adtSymbolRate;
-    uint8_t _adtAesEncryption;
-    uint8_t _adtTelemetryMetadataSeparation;
+    //--------------- ADT fields --------------------
+    uint8_t _adtTransmitterOperationalMode = 0;
+    uint8_t _adtAntennaSelect = 0;
+    uint8_t _adtTddOperationalMode = 0;
+    uint8_t _adtFrequencyMode = 0;
+    uint8_t _adtVideoTransmitEnable = 0;
+    uint8_t _adtUnitMode = 0;
+    uint8_t _adtSymbolRate = 0;
+    uint8_t _adtAesEncryption = 0;
+    uint8_t _adtTelemetryMetadataSeparation = 0;
 
-    int8_t _adtTDDSync;
-    int8_t _adtLinkRSSI;
-    uint16_t _adtLinkTransferedPackets;
-    uint16_t _adtLinkErrorPackets;
-    uint16_t _adtLinkCRCErrorPackets;
+    int8_t _adtTDDSync = 0;
+    int8_t _adtLinkRSSI = 0;
+    uint16_t _adtLinkTransferedPackets = 0;
+    uint16_t _adtLinkErrorPackets = 0;
+    uint16_t _adtLinkCRCErrorPackets = 0;
 
-    uint16_t _adtOperationFrequency;
+    uint16_t _adtOperationFrequency = 0;
 
-    int16_t _adtCBITPAPowerOutput;
-    int16_t _adtCBITPAReturnPower;
+    int16_t _adtCBITPAPowerOutput = 0;
+    int16_t _adtCBITPAReturnPower = 0;
 
-    uint8_t _adtVideoRate;
-    uint8_t _adtVideoSource;
+    uint8_t _adtVideoRate = 0;
+    uint8_t _adtVideoSource = 0;
 
     CommtactLinkProtocol::commtact_adt_operational_modes_report_t _adt_operational_modes_report;
     CommtactLinkProtocol::commtact_adt_constant_frequency_report_t _adt_constant_frequency_report;
     CommtactLinkProtocol::commtact_adt_status_report_t _adt_status_report;
 
+    //-----------------------------------------------
+
+    //--------------- Common fields -----------------
+    uint _commonICDIPAddressInt = 0;
+    QString _commonICDIPAddress = "127.0.0.1";
+    uint _commonICDPort = 0;
+    uint _commonICDSubnetMaskInt = 0;
+    QString _commonICDSubnetMask = "255.255.255.0";
+    uint _commonICDDefaultGatewayInt = 0;
+    QString _commonICDDefaultGateway = "127.0.0.1";
+    uint _commonICDHostIPAddressInt = 0;
+    QString _commonICDHostIPAddress = "127.0.0.1";
+    uint _commonICDHostPort = 0;
+    uint _commonICDDiscoveryPort = 0;
     //-----------------------------------------------
 
   signals:
@@ -588,6 +777,20 @@ class CommtactLinkManagement : public QGCTool
 
     void adtVideoRateChanged();
     void adtVideoSourceChanged();
+    //-----------------------------------------------
+
+    //---------------- Common signals ---------------
+    void commonICDIPAddressChanged();
+    void commonICDIPAddressIntChanged();
+    void commonICDPortChanged();
+    void commonICDSubnetMaskChanged();
+    void commonICDSubnetMaskIntChanged();
+    void commonICDDefaultGatewayChanged();
+    void commonICDDefaultGatewayIntChanged();
+    void commonICDHostIPAddressChanged();
+    void commonICDHostIPAddressIntChanged();
+    void commonICDHostPortChanged();
+    void commonICDDiscoveryPortChanged();
     //-----------------------------------------------
 
   public slots:

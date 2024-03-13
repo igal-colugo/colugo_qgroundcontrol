@@ -43,7 +43,7 @@ Item {
             Layout.fillWidth: true
             Layout.fillHeight: true
             Layout.alignment: Qt.AlignCenter
-            title: qsTr("GDT ETHERNET SETTINGS")
+            title: qsTr("GDT")
             label: Text {
                 color: "#808080"
                 text: gdtEthernetSettingsGroupBox.title
@@ -52,12 +52,619 @@ Item {
             GridLayout {
                 id: gdtEthernetSettingsGrid
 
-                columns: 12
-                rows: 7
+                columns: 1
+                rows: 2
                 anchors.fill: parent
                 anchors.margins: 3
                 columnSpacing: 2
                 rowSpacing: 2
+
+                QGCGroupBox {
+                    property int cellRowHeight: (parent.height - (parent.rows * parent.rowSpacing))
+                                                / (parent.rows)
+                    property int cellColumnWidth: (parent.width - (parent.columns * parent.columnSpacing)) / (parent.columns)
+                    id: gdtEthernetSetGroupBox
+                    height: cellRowHeight * Layout.rowSpan
+                    width: cellColumnWidth * Layout.columnSpan
+                    Layout.rowSpan: 1
+                    Layout.columnSpan: 1
+                    Layout.preferredHeight: cellRowHeight * Layout.rowSpan
+                    Layout.preferredWidth: cellColumnWidth * Layout.columnSpan
+                    Layout.fillWidth: true
+                    Layout.fillHeight: true
+                    Layout.alignment: Qt.AlignCenter
+                    title: qsTr("SETTINGS")
+                    label: Text {
+                        color: "#808080"
+                        text: gdtEthernetSetGroupBox.title
+                    }
+
+                    GridLayout {
+                        id: gdtEthernetSetGrid
+
+                        columns: 12
+                        rows: 5
+                        anchors.fill: parent
+                        anchors.margins: 3
+                        columnSpacing: 2
+                        rowSpacing: 2
+
+                        QGCLabel {
+                            property int cellRowHeight: (parent.height - (parent.rows * parent.rowSpacing)) / (parent.rows)
+                            property int cellColumnWidth: (parent.width - (parent.columns * parent.columnSpacing)) / (parent.columns)
+
+                            id: _setEthernetIPPortLabel
+
+                            height: ScreenTools.defaultFontPixelHeight
+
+                            text: qsTr("ICD IP(x.x.x.x:port):")
+
+                            horizontalAlignment: Text.AlignLeft
+                            verticalAlignment: Text.AlignVCenter
+
+                            Layout.rowSpan: 1
+                            Layout.columnSpan: 4
+
+                            Layout.preferredHeight: cellRowHeight * Layout.rowSpan
+                            Layout.preferredWidth: cellColumnWidth * Layout.columnSpan
+                            Layout.maximumHeight: cellRowHeight * Layout.rowSpan
+                            Layout.maximumWidth: cellColumnWidth * Layout.columnSpan
+
+                            Layout.fillWidth: false
+                            Layout.fillHeight: false
+                            Layout.alignment: Qt.AlignLeft
+                        }
+                        QGCTextField {
+                            property int cellRowHeight: (parent.height - (parent.rows * parent.rowSpacing)) / (parent.rows)
+                            property int cellColumnWidth: (parent.width - (parent.columns * parent.columnSpacing)) / (parent.columns)
+
+                            id: _setEthernetIPPortField
+
+                            Layout.rowSpan: 1
+                            Layout.columnSpan: 4
+
+                            Layout.preferredHeight: cellRowHeight * Layout.rowSpan
+                            Layout.preferredWidth: cellColumnWidth * Layout.columnSpan
+                            Layout.maximumHeight: cellRowHeight * Layout.rowSpan
+                            Layout.maximumWidth: cellColumnWidth * Layout.columnSpan
+
+                            Layout.fillWidth: false
+                            Layout.fillHeight: false
+                            Layout.alignment: Qt.AlignLeft
+
+                            //maximumLength: 4
+                            font.pointSize: ScreenTools.isMobile ? point_size : 9
+                            text: qsTr("127.0.0.1:3000")
+                        }
+                        QGCButton {
+                            property int cellRowHeight: (parent.height - (parent.rows * parent.rowSpacing)) / (parent.rows)
+                            property int cellColumnWidth: (parent.width - (parent.columns * parent.columnSpacing)) / (parent.columns)
+
+                            id: _setEthernetIPPortButton
+
+                            showBorder: true
+                            text: qsTr("SET")
+
+                            Layout.rowSpan: 1
+                            Layout.columnSpan: 4
+
+                            Layout.preferredHeight: cellRowHeight * Layout.rowSpan
+                            Layout.preferredWidth: cellColumnWidth * Layout.columnSpan
+                            Layout.maximumHeight: cellRowHeight * Layout.rowSpan
+                            Layout.maximumWidth: cellColumnWidth * Layout.columnSpan
+
+                            Layout.fillWidth: false
+                            Layout.fillHeight: false
+                            Layout.alignment: Qt.AlignLeft
+
+                            onClicked: {
+                                QGroundControl.commtactLinkManagement.setCommonEthernetICDIPAddressCommand(
+                                            _setEthernetIPPortField.text)
+                            }
+                        }
+
+                        QGCLabel {
+                            property int cellRowHeight: (parent.height - (parent.rows * parent.rowSpacing)) / (parent.rows)
+                            property int cellColumnWidth: (parent.width - (parent.columns * parent.columnSpacing)) / (parent.columns)
+
+                            id: _setSubnetMaskLabel
+
+                            height: ScreenTools.defaultFontPixelHeight
+
+                            text: qsTr("SUBNET(x.x.x.x):")
+
+                            horizontalAlignment: Text.AlignLeft
+                            verticalAlignment: Text.AlignVCenter
+
+                            Layout.rowSpan: 1
+                            Layout.columnSpan: 4
+
+                            Layout.preferredHeight: cellRowHeight * Layout.rowSpan
+                            Layout.preferredWidth: cellColumnWidth * Layout.columnSpan
+                            Layout.maximumHeight: cellRowHeight * Layout.rowSpan
+                            Layout.maximumWidth: cellColumnWidth * Layout.columnSpan
+
+                            Layout.fillWidth: false
+                            Layout.fillHeight: false
+                            Layout.alignment: Qt.AlignLeft
+                        }
+                        QGCTextField {
+                            property int cellRowHeight: (parent.height - (parent.rows * parent.rowSpacing)) / (parent.rows)
+                            property int cellColumnWidth: (parent.width - (parent.columns * parent.columnSpacing)) / (parent.columns)
+
+                            id: _setSubnetMaskField
+
+                            Layout.rowSpan: 1
+                            Layout.columnSpan: 4
+
+                            Layout.preferredHeight: cellRowHeight * Layout.rowSpan
+                            Layout.preferredWidth: cellColumnWidth * Layout.columnSpan
+                            Layout.maximumHeight: cellRowHeight * Layout.rowSpan
+                            Layout.maximumWidth: cellColumnWidth * Layout.columnSpan
+
+                            Layout.fillWidth: false
+                            Layout.fillHeight: false
+                            Layout.alignment: Qt.AlignLeft
+
+                            //maximumLength: 4
+                            font.pointSize: ScreenTools.isMobile ? point_size : 9
+                            text: qsTr("255.255.255.0")
+                        }
+                        QGCButton {
+                            property int cellRowHeight: (parent.height - (parent.rows * parent.rowSpacing)) / (parent.rows)
+                            property int cellColumnWidth: (parent.width - (parent.columns * parent.columnSpacing)) / (parent.columns)
+
+                            id: _setSubnetMaskButton
+
+                            showBorder: true
+                            text: qsTr("SET")
+
+                            Layout.rowSpan: 1
+                            Layout.columnSpan: 4
+
+                            Layout.preferredHeight: cellRowHeight * Layout.rowSpan
+                            Layout.preferredWidth: cellColumnWidth * Layout.columnSpan
+                            Layout.maximumHeight: cellRowHeight * Layout.rowSpan
+                            Layout.maximumWidth: cellColumnWidth * Layout.columnSpan
+
+                            Layout.fillWidth: false
+                            Layout.fillHeight: false
+                            Layout.alignment: Qt.AlignLeft
+
+                            onClicked: {
+                                QGroundControl.commtactLinkManagement.setCommonEthernetICDSubnetMaskCommand(
+                                            _setSubnetMaskField.text)
+                            }
+                        }
+
+                        QGCLabel {
+                            property int cellRowHeight: (parent.height - (parent.rows * parent.rowSpacing)) / (parent.rows)
+                            property int cellColumnWidth: (parent.width - (parent.columns * parent.columnSpacing)) / (parent.columns)
+
+                            id: _setDefaultGatewayLabel
+
+                            height: ScreenTools.defaultFontPixelHeight
+
+                            text: qsTr("DEFAULT GATEWAY(x.x.x.x):")
+
+                            horizontalAlignment: Text.AlignLeft
+                            verticalAlignment: Text.AlignVCenter
+
+                            Layout.rowSpan: 1
+                            Layout.columnSpan: 4
+
+                            Layout.preferredHeight: cellRowHeight * Layout.rowSpan
+                            Layout.preferredWidth: cellColumnWidth * Layout.columnSpan
+                            Layout.maximumHeight: cellRowHeight * Layout.rowSpan
+                            Layout.maximumWidth: cellColumnWidth * Layout.columnSpan
+
+                            Layout.fillWidth: false
+                            Layout.fillHeight: false
+                            Layout.alignment: Qt.AlignLeft
+                        }
+                        QGCTextField {
+                            property int cellRowHeight: (parent.height - (parent.rows * parent.rowSpacing)) / (parent.rows)
+                            property int cellColumnWidth: (parent.width - (parent.columns * parent.columnSpacing)) / (parent.columns)
+
+                            id: _setDefaultGatewayField
+
+                            Layout.rowSpan: 1
+                            Layout.columnSpan: 4
+
+                            Layout.preferredHeight: cellRowHeight * Layout.rowSpan
+                            Layout.preferredWidth: cellColumnWidth * Layout.columnSpan
+                            Layout.maximumHeight: cellRowHeight * Layout.rowSpan
+                            Layout.maximumWidth: cellColumnWidth * Layout.columnSpan
+
+                            Layout.fillWidth: false
+                            Layout.fillHeight: false
+                            Layout.alignment: Qt.AlignLeft
+
+                            //maximumLength: 4
+                            font.pointSize: ScreenTools.isMobile ? point_size : 9
+                            text: qsTr("127.0.0.1")
+                        }
+                        QGCButton {
+                            property int cellRowHeight: (parent.height - (parent.rows * parent.rowSpacing)) / (parent.rows)
+                            property int cellColumnWidth: (parent.width - (parent.columns * parent.columnSpacing)) / (parent.columns)
+
+                            id: _setDefaultGatewayButton
+
+                            showBorder: true
+                            text: qsTr("SET")
+
+                            Layout.rowSpan: 1
+                            Layout.columnSpan: 4
+
+                            Layout.preferredHeight: cellRowHeight * Layout.rowSpan
+                            Layout.preferredWidth: cellColumnWidth * Layout.columnSpan
+                            Layout.maximumHeight: cellRowHeight * Layout.rowSpan
+                            Layout.maximumWidth: cellColumnWidth * Layout.columnSpan
+
+                            Layout.fillWidth: false
+                            Layout.fillHeight: false
+                            Layout.alignment: Qt.AlignLeft
+
+                            onClicked: {
+                                QGroundControl.commtactLinkManagement.setCommonEthernetICDDefaultGatewayCommand(
+                                            _setDefaultGatewayField.text)
+                            }
+                        }
+
+                        QGCLabel {
+                            property int cellRowHeight: (parent.height - (parent.rows * parent.rowSpacing)) / (parent.rows)
+                            property int cellColumnWidth: (parent.width - (parent.columns * parent.columnSpacing)) / (parent.columns)
+
+                            id: _setEthernetHostIPPortLabel
+
+                            height: ScreenTools.defaultFontPixelHeight
+
+                            text: qsTr("HOST IP(x.x.x.x:port):")
+
+                            horizontalAlignment: Text.AlignLeft
+                            verticalAlignment: Text.AlignVCenter
+
+                            Layout.rowSpan: 1
+                            Layout.columnSpan: 4
+
+                            Layout.preferredHeight: cellRowHeight * Layout.rowSpan
+                            Layout.preferredWidth: cellColumnWidth * Layout.columnSpan
+                            Layout.maximumHeight: cellRowHeight * Layout.rowSpan
+                            Layout.maximumWidth: cellColumnWidth * Layout.columnSpan
+
+                            Layout.fillWidth: false
+                            Layout.fillHeight: false
+                            Layout.alignment: Qt.AlignLeft
+                        }
+                        QGCTextField {
+                            property int cellRowHeight: (parent.height - (parent.rows * parent.rowSpacing)) / (parent.rows)
+                            property int cellColumnWidth: (parent.width - (parent.columns * parent.columnSpacing)) / (parent.columns)
+
+                            id: _setEthernetHostIPPortField
+
+                            Layout.rowSpan: 1
+                            Layout.columnSpan: 4
+
+                            Layout.preferredHeight: cellRowHeight * Layout.rowSpan
+                            Layout.preferredWidth: cellColumnWidth * Layout.columnSpan
+                            Layout.maximumHeight: cellRowHeight * Layout.rowSpan
+                            Layout.maximumWidth: cellColumnWidth * Layout.columnSpan
+
+                            Layout.fillWidth: false
+                            Layout.fillHeight: false
+                            Layout.alignment: Qt.AlignLeft
+
+                            //maximumLength: 4
+                            font.pointSize: ScreenTools.isMobile ? point_size : 9
+                            text: qsTr("127.0.0.1:3001")
+                        }
+                        QGCButton {
+                            property int cellRowHeight: (parent.height - (parent.rows * parent.rowSpacing)) / (parent.rows)
+                            property int cellColumnWidth: (parent.width - (parent.columns * parent.columnSpacing)) / (parent.columns)
+
+                            id: _setEthernetHostIPPortButton
+
+                            showBorder: true
+                            text: qsTr("SET")
+
+                            Layout.rowSpan: 1
+                            Layout.columnSpan: 4
+
+                            Layout.preferredHeight: cellRowHeight * Layout.rowSpan
+                            Layout.preferredWidth: cellColumnWidth * Layout.columnSpan
+                            Layout.maximumHeight: cellRowHeight * Layout.rowSpan
+                            Layout.maximumWidth: cellColumnWidth * Layout.columnSpan
+
+                            Layout.fillWidth: false
+                            Layout.fillHeight: false
+                            Layout.alignment: Qt.AlignLeft
+
+                            onClicked: {
+                                QGroundControl.commtactLinkManagement.setCommonEthernetICDHostIPCommand(
+                                            _setEthernetHostIPPortField.text)
+                            }
+                        }
+
+                        QGCLabel {
+                            property int cellRowHeight: (parent.height - (parent.rows * parent.rowSpacing)) / (parent.rows)
+                            property int cellColumnWidth: (parent.width - (parent.columns * parent.columnSpacing)) / (parent.columns)
+
+                            id: _setEthernetDiscoveryPortLabel
+
+                            height: ScreenTools.defaultFontPixelHeight
+
+                            text: qsTr("DISCOVERY PORT:")
+
+                            horizontalAlignment: Text.AlignLeft
+                            verticalAlignment: Text.AlignVCenter
+
+                            Layout.rowSpan: 1
+                            Layout.columnSpan: 4
+
+                            Layout.preferredHeight: cellRowHeight * Layout.rowSpan
+                            Layout.preferredWidth: cellColumnWidth * Layout.columnSpan
+                            Layout.maximumHeight: cellRowHeight * Layout.rowSpan
+                            Layout.maximumWidth: cellColumnWidth * Layout.columnSpan
+
+                            Layout.fillWidth: false
+                            Layout.fillHeight: false
+                            Layout.alignment: Qt.AlignLeft
+                        }
+                        QGCTextField {
+                            property int cellRowHeight: (parent.height - (parent.rows * parent.rowSpacing)) / (parent.rows)
+                            property int cellColumnWidth: (parent.width - (parent.columns * parent.columnSpacing)) / (parent.columns)
+
+                            id: _setEthernetDiscoveryPortField
+
+                            Layout.rowSpan: 1
+                            Layout.columnSpan: 4
+
+                            Layout.preferredHeight: cellRowHeight * Layout.rowSpan
+                            Layout.preferredWidth: cellColumnWidth * Layout.columnSpan
+                            Layout.maximumHeight: cellRowHeight * Layout.rowSpan
+                            Layout.maximumWidth: cellColumnWidth * Layout.columnSpan
+
+                            Layout.fillWidth: false
+                            Layout.fillHeight: false
+                            Layout.alignment: Qt.AlignLeft
+
+                            //maximumLength: 4
+                            font.pointSize: ScreenTools.isMobile ? point_size : 9
+                            text: qsTr("56000")
+                        }
+                        QGCButton {
+                            property int cellRowHeight: (parent.height - (parent.rows * parent.rowSpacing)) / (parent.rows)
+                            property int cellColumnWidth: (parent.width - (parent.columns * parent.columnSpacing)) / (parent.columns)
+
+                            id: _setEthernetDiscoveryPortButton
+
+                            showBorder: true
+                            text: qsTr("SET")
+
+                            Layout.rowSpan: 1
+                            Layout.columnSpan: 4
+
+                            Layout.preferredHeight: cellRowHeight * Layout.rowSpan
+                            Layout.preferredWidth: cellColumnWidth * Layout.columnSpan
+                            Layout.maximumHeight: cellRowHeight * Layout.rowSpan
+                            Layout.maximumWidth: cellColumnWidth * Layout.columnSpan
+
+                            Layout.fillWidth: false
+                            Layout.fillHeight: false
+                            Layout.alignment: Qt.AlignLeft
+
+                            onClicked: {
+                                QGroundControl.commtactLinkManagement.setCommonEthernetICDDiscoveryPortCommand(
+                                            parseInt(
+                                                _setEthernetDiscoveryPortField.text))
+                            }
+                        }
+                    }
+                }
+                QGCGroupBox {
+                    property int cellRowHeight: (parent.height - (parent.rows * parent.rowSpacing))
+                                                / (parent.rows)
+                    property int cellColumnWidth: (parent.width - (parent.columns * parent.columnSpacing)) / (parent.columns)
+                    id: gdtEthernetGetGroupBox
+                    height: cellRowHeight * Layout.rowSpan
+                    width: cellColumnWidth * Layout.columnSpan
+                    Layout.rowSpan: 1
+                    Layout.columnSpan: 1
+                    Layout.preferredHeight: cellRowHeight * Layout.rowSpan
+                    Layout.preferredWidth: cellColumnWidth * Layout.columnSpan
+                    Layout.fillWidth: true
+                    Layout.fillHeight: true
+                    Layout.alignment: Qt.AlignCenter
+                    title: qsTr("REPORT")
+                    label: Text {
+                        color: "#808080"
+                        text: gdtEthernetGetGroupBox.title
+                    }
+
+                    GridLayout {
+                        id: gdtEthernetGetGrid
+
+                        columns: 12
+                        rows: 5
+                        anchors.fill: parent
+                        anchors.margins: 3
+                        columnSpacing: 2
+                        rowSpacing: 2
+
+                        QGCLabel {
+
+                            property int cellRowHeight: (parent.height - (parent.rows * parent.rowSpacing)) / (parent.rows)
+                            property int cellColumnWidth: (parent.width - (parent.columns * parent.columnSpacing)) / (parent.columns)
+
+                            height: ScreenTools.defaultFontPixelHeight
+
+                            text: {
+                                qsTr("ICD IP:")
+                                        + QGroundControl.commtactLinkManagement.commonICDIPAddress
+                            }
+                            font.family: ScreenTools.demiboldFontFamily
+
+                            horizontalAlignment: Text.AlignLeft
+                            verticalAlignment: Text.AlignVCenter
+
+                            Layout.alignment: Qt.AlignLeft
+                            Layout.columnSpan: 4
+                            Layout.fillHeight: false
+                            Layout.fillWidth: true
+                            Layout.preferredHeight: cellRowHeight * Layout.rowSpan
+                            Layout.preferredWidth: cellColumnWidth * Layout.columnSpan
+                            Layout.maximumHeight: cellRowHeight * Layout.rowSpan
+                            Layout.maximumWidth: cellColumnWidth * Layout.columnSpan
+                        }
+                        QGCLabel {
+
+                            property int cellRowHeight: (parent.height - (parent.rows * parent.rowSpacing)) / (parent.rows)
+                            property int cellColumnWidth: (parent.width - (parent.columns * parent.columnSpacing)) / (parent.columns)
+
+                            height: ScreenTools.defaultFontPixelHeight
+
+                            text: {
+                                qsTr("ICD PORT:")
+                                        + QGroundControl.commtactLinkManagement.commonICDPort
+                            }
+                            font.family: ScreenTools.demiboldFontFamily
+
+                            horizontalAlignment: Text.AlignLeft
+                            verticalAlignment: Text.AlignVCenter
+
+                            Layout.alignment: Qt.AlignLeft
+                            Layout.columnSpan: 4
+                            Layout.fillHeight: false
+                            Layout.fillWidth: true
+                            Layout.preferredHeight: cellRowHeight * Layout.rowSpan
+                            Layout.preferredWidth: cellColumnWidth * Layout.columnSpan
+                            Layout.maximumHeight: cellRowHeight * Layout.rowSpan
+                            Layout.maximumWidth: cellColumnWidth * Layout.columnSpan
+                        }
+                        QGCLabel {
+
+                            property int cellRowHeight: (parent.height - (parent.rows * parent.rowSpacing)) / (parent.rows)
+                            property int cellColumnWidth: (parent.width - (parent.columns * parent.columnSpacing)) / (parent.columns)
+
+                            height: ScreenTools.defaultFontPixelHeight
+
+                            text: {
+                                qsTr("ICD SUBNET:")
+                                        + QGroundControl.commtactLinkManagement.commonICDSubnetMask
+                            }
+                            font.family: ScreenTools.demiboldFontFamily
+
+                            horizontalAlignment: Text.AlignLeft
+                            verticalAlignment: Text.AlignVCenter
+
+                            Layout.alignment: Qt.AlignLeft
+                            Layout.columnSpan: 4
+                            Layout.fillHeight: false
+                            Layout.fillWidth: true
+                            Layout.preferredHeight: cellRowHeight * Layout.rowSpan
+                            Layout.preferredWidth: cellColumnWidth * Layout.columnSpan
+                            Layout.maximumHeight: cellRowHeight * Layout.rowSpan
+                            Layout.maximumWidth: cellColumnWidth * Layout.columnSpan
+                        }
+                        QGCLabel {
+
+                            property int cellRowHeight: (parent.height - (parent.rows * parent.rowSpacing)) / (parent.rows)
+                            property int cellColumnWidth: (parent.width - (parent.columns * parent.columnSpacing)) / (parent.columns)
+
+                            height: ScreenTools.defaultFontPixelHeight
+
+                            text: {
+                                qsTr("ICD GATEWAY:") + QGroundControl.commtactLinkManagement.commonICDDefaultGateway
+                            }
+                            font.family: ScreenTools.demiboldFontFamily
+
+                            horizontalAlignment: Text.AlignLeft
+                            verticalAlignment: Text.AlignVCenter
+
+                            Layout.alignment: Qt.AlignLeft
+                            Layout.columnSpan: 4
+                            Layout.fillHeight: false
+                            Layout.fillWidth: true
+                            Layout.preferredHeight: cellRowHeight * Layout.rowSpan
+                            Layout.preferredWidth: cellColumnWidth * Layout.columnSpan
+                            Layout.maximumHeight: cellRowHeight * Layout.rowSpan
+                            Layout.maximumWidth: cellColumnWidth * Layout.columnSpan
+                        }
+                        QGCLabel {
+
+                            property int cellRowHeight: (parent.height - (parent.rows * parent.rowSpacing)) / (parent.rows)
+                            property int cellColumnWidth: (parent.width - (parent.columns * parent.columnSpacing)) / (parent.columns)
+
+                            height: ScreenTools.defaultFontPixelHeight
+
+                            text: {
+                                qsTr("HOST IP:") + QGroundControl.commtactLinkManagement.commonICDHostIPAddress
+                            }
+                            font.family: ScreenTools.demiboldFontFamily
+
+                            horizontalAlignment: Text.AlignLeft
+                            verticalAlignment: Text.AlignVCenter
+
+                            Layout.alignment: Qt.AlignLeft
+                            Layout.columnSpan: 4
+                            Layout.fillHeight: false
+                            Layout.fillWidth: true
+                            Layout.preferredHeight: cellRowHeight * Layout.rowSpan
+                            Layout.preferredWidth: cellColumnWidth * Layout.columnSpan
+                            Layout.maximumHeight: cellRowHeight * Layout.rowSpan
+                            Layout.maximumWidth: cellColumnWidth * Layout.columnSpan
+                        }
+                        QGCLabel {
+
+                            property int cellRowHeight: (parent.height - (parent.rows * parent.rowSpacing)) / (parent.rows)
+                            property int cellColumnWidth: (parent.width - (parent.columns * parent.columnSpacing)) / (parent.columns)
+
+                            height: ScreenTools.defaultFontPixelHeight
+
+                            text: {
+                                qsTr("ICD HOST PORT:")
+                                        + QGroundControl.commtactLinkManagement.commonICDHostPort
+                            }
+                            font.family: ScreenTools.demiboldFontFamily
+
+                            horizontalAlignment: Text.AlignLeft
+                            verticalAlignment: Text.AlignVCenter
+
+                            Layout.alignment: Qt.AlignLeft
+                            Layout.columnSpan: 4
+                            Layout.fillHeight: false
+                            Layout.fillWidth: true
+                            Layout.preferredHeight: cellRowHeight * Layout.rowSpan
+                            Layout.preferredWidth: cellColumnWidth * Layout.columnSpan
+                            Layout.maximumHeight: cellRowHeight * Layout.rowSpan
+                            Layout.maximumWidth: cellColumnWidth * Layout.columnSpan
+                        }
+                        QGCLabel {
+
+                            property int cellRowHeight: (parent.height - (parent.rows * parent.rowSpacing)) / (parent.rows)
+                            property int cellColumnWidth: (parent.width - (parent.columns * parent.columnSpacing)) / (parent.columns)
+
+                            height: ScreenTools.defaultFontPixelHeight
+
+                            text: {
+                                qsTr("DISCOVERY PORT:") + QGroundControl.commtactLinkManagement.commonICDDiscoveryPort
+                            }
+                            font.family: ScreenTools.demiboldFontFamily
+
+                            horizontalAlignment: Text.AlignLeft
+                            verticalAlignment: Text.AlignVCenter
+
+                            Layout.alignment: Qt.AlignLeft
+                            Layout.columnSpan: 4
+                            Layout.fillHeight: false
+                            Layout.fillWidth: true
+                            Layout.preferredHeight: cellRowHeight * Layout.rowSpan
+                            Layout.preferredWidth: cellColumnWidth * Layout.columnSpan
+                            Layout.maximumHeight: cellRowHeight * Layout.rowSpan
+                            Layout.maximumWidth: cellColumnWidth * Layout.columnSpan
+                        }
+                    }
+                }
             }
         }
 
@@ -76,7 +683,7 @@ Item {
             Layout.fillWidth: false
             Layout.fillHeight: false
             Layout.alignment: Qt.AlignCenter
-            title: qsTr("ADT ETHERNET SETTINGS")
+            title: qsTr("ADT")
             label: Text {
                 color: "#808080"
                 text: adtEthernetSettingsGroupBox.title

@@ -1,5 +1,41 @@
 #include "CommtactLinkManagement.h"
 
+static bool is_ip(const QString &address)
+{
+    int a, b, c, d;
+    if (sscanf(address.toStdString().c_str(), "%d.%d.%d.%d", &a, &b, &c, &d) != 4 && strcmp("::1", address.toStdString().c_str()))
+    {
+        return false;
+    }
+    else
+    {
+        return true;
+    }
+}
+
+static QString get_ip_address(const QString &address)
+{
+    if (is_ip(address))
+    {
+        return address;
+    }
+    // Need to look it up
+    QHostInfo info = QHostInfo::fromName(address);
+    if (info.error() == QHostInfo::NoError)
+    {
+        QList<QHostAddress> hostAddresses = info.addresses();
+        for (int i = 0; i < hostAddresses.size(); i++)
+        {
+            // Exclude all IPv6 addresses
+            if (!hostAddresses.at(i).toString().contains(":"))
+            {
+                return hostAddresses.at(i).toString();
+            }
+        }
+    }
+    return QString();
+}
+
 CommtactLinkManagement::CommtactLinkManagement(QGCApplication *app, QGCToolbox *toolbox) : QGCTool(app, toolbox)
 {
     qmlRegisterUncreatableType<CommtactLinkManagement>("QGroundControl", 1, 0, "CommtactLinkManagement", "Reference only");
@@ -28,9 +64,14 @@ void CommtactLinkManagement::updateTimeout()
         // GDT mission ADT status report
         getGDTRequiredMessageCommand(0x82);
     }
+    if (counter == 2)
+    {
+        // Common ethernet settings report
+        getGDTRequiredMessageCommand(0x89);
+    }
 
     counter++;
-    if (counter > 1)
+    if (counter > 2)
     {
         counter = 0;
     }
@@ -865,6 +906,228 @@ void CommtactLinkManagement::setADTOperationalFrequencyCommand(uint adt_operatio
 
 //--------------------------------------------------------
 
+//----------------------- COMMON commands ----------------
+void CommtactLinkManagement::setCommonEthernetICDIPAddressCommand(QString icd_ip_address_port_string)
+{
+    QString icd_ip_address_string;
+    uint icd_ip_address = 0;
+    uint icd_listen_port = 0;
+    /* Sending the camera command */
+    WeakCommtactLinkInterfacePtr weakLink = this->_commtactLinkManager->selectedSharedLinkInterfacePointerForLink();
+    if (weakLink.expired())
+    {
+        return;
+    }
+    SharedCommtactLinkInterfacePtr sharedLink = weakLink.lock();
+
+    if (sharedLink != nullptr)
+    {
+        CommtactLinkProtocol *linkProtocol = this->_commtactLinkManager->linkProtocol();
+
+        CommtactLinkProtocol::commtact_link_message_t message = {};
+
+        // Handle x.x.x.x:p
+        if (icd_ip_address_port_string.contains(":"))
+        {
+            icd_ip_address_string = icd_ip_address_port_string.split(":").first();
+            icd_listen_port = icd_ip_address_port_string.split(":").last().toUInt();
+        }
+        else
+        {
+            icd_ip_address_string = icd_ip_address_port_string;
+            icd_listen_port = _common_ethernet_settings_report.icd_listen_port;
+        }
+
+        QString ipAdd = get_ip_address(icd_ip_address_string);
+        unsigned char *pointer_to_ip_address = (unsigned char *) &icd_ip_address;
+        *(pointer_to_ip_address + 3) = (unsigned char) ipAdd.split(".")[0].toUInt();
+        *(pointer_to_ip_address + 2) = (unsigned char) ipAdd.split(".")[1].toUInt();
+        *(pointer_to_ip_address + 1) = (unsigned char) ipAdd.split(".")[2].toUInt();
+        *(pointer_to_ip_address + 0) = (unsigned char) ipAdd.split(".")[3].toUInt();
+
+        uint16_t payload_size = linkProtocol->commtact_link_msg_ethernet_settings_pack(
+            &message, icd_ip_address, icd_listen_port, _common_ethernet_settings_report.icd_subnet_mask, _common_ethernet_settings_report.icd_default_gateway,
+            _common_ethernet_settings_report.encoder_ip_address, _common_ethernet_settings_report.metadata_input_port, _common_ethernet_settings_report.reserved_1,
+            _common_ethernet_settings_report.reserved_2, _common_ethernet_settings_report.host_ip, _common_ethernet_settings_report.host_port,
+            _common_ethernet_settings_report.transceiver_video_dest_ip, _common_ethernet_settings_report.transceiver_video_dest_port, _common_ethernet_settings_report.user_payload_dest_ip,
+            _common_ethernet_settings_report.user_payload_port, _common_ethernet_settings_report.discovery_port, _common_ethernet_settings_report.encoded_video_dest_aux_ip,
+            _common_ethernet_settings_report.encoded_video_dest_aux_port, _common_ethernet_settings_report.encoded_video_dest_ip, _common_ethernet_settings_report.encoded_video_dest_port,
+            _common_ethernet_settings_report.dsp_subnet_mask, _common_ethernet_settings_report.dsp_default_gateway, _common_ethernet_settings_report.ebox_controller_ip,
+            _common_ethernet_settings_report.ebox_controller_port);
+
+        uint8_t buffer[sizeof(CommtactLinkProtocol::commtact_link_message_header_t) + payload_size] = {};
+        int len = linkProtocol->commtact_link_msg_to_send_buffer(&buffer[0], &message, payload_size);
+
+        sharedLink->writeBytesThreadSafe((const char *) buffer, len);
+    }
+}
+void CommtactLinkManagement::setCommonEthernetICDSubnetMaskCommand(QString icd_subnet_mask_string)
+{
+    uint icd_subnet_mask = 0;
+    /* Sending the camera command */
+    WeakCommtactLinkInterfacePtr weakLink = this->_commtactLinkManager->selectedSharedLinkInterfacePointerForLink();
+    if (weakLink.expired())
+    {
+        return;
+    }
+    SharedCommtactLinkInterfacePtr sharedLink = weakLink.lock();
+
+    if (sharedLink != nullptr)
+    {
+        CommtactLinkProtocol *linkProtocol = this->_commtactLinkManager->linkProtocol();
+
+        CommtactLinkProtocol::commtact_link_message_t message = {};
+
+        unsigned char *pointer_to_subnet_mask = (unsigned char *) &icd_subnet_mask;
+        *(pointer_to_subnet_mask + 3) = (unsigned char) icd_subnet_mask_string.split(".")[0].toUInt();
+        *(pointer_to_subnet_mask + 2) = (unsigned char) icd_subnet_mask_string.split(".")[1].toUInt();
+        *(pointer_to_subnet_mask + 1) = (unsigned char) icd_subnet_mask_string.split(".")[2].toUInt();
+        *(pointer_to_subnet_mask + 0) = (unsigned char) icd_subnet_mask_string.split(".")[3].toUInt();
+
+        uint16_t payload_size = linkProtocol->commtact_link_msg_ethernet_settings_pack(
+            &message, _common_ethernet_settings_report.icd_ip_address, _common_ethernet_settings_report.icd_listen_port, icd_subnet_mask,
+            _common_ethernet_settings_report.icd_default_gateway, _common_ethernet_settings_report.encoder_ip_address, _common_ethernet_settings_report.metadata_input_port,
+            _common_ethernet_settings_report.reserved_1, _common_ethernet_settings_report.reserved_2, _common_ethernet_settings_report.host_ip, _common_ethernet_settings_report.host_port,
+            _common_ethernet_settings_report.transceiver_video_dest_ip, _common_ethernet_settings_report.transceiver_video_dest_port, _common_ethernet_settings_report.user_payload_dest_ip,
+            _common_ethernet_settings_report.user_payload_port, _common_ethernet_settings_report.discovery_port, _common_ethernet_settings_report.encoded_video_dest_aux_ip,
+            _common_ethernet_settings_report.encoded_video_dest_aux_port, _common_ethernet_settings_report.encoded_video_dest_ip, _common_ethernet_settings_report.encoded_video_dest_port,
+            _common_ethernet_settings_report.dsp_subnet_mask, _common_ethernet_settings_report.dsp_default_gateway, _common_ethernet_settings_report.ebox_controller_ip,
+            _common_ethernet_settings_report.ebox_controller_port);
+
+        uint8_t buffer[sizeof(CommtactLinkProtocol::commtact_link_message_header_t) + payload_size] = {};
+        int len = linkProtocol->commtact_link_msg_to_send_buffer(&buffer[0], &message, payload_size);
+
+        sharedLink->writeBytesThreadSafe((const char *) buffer, len);
+    }
+}
+void CommtactLinkManagement::setCommonEthernetICDDefaultGatewayCommand(QString icd_default_gateway_string)
+{
+    uint icd_default_gateway = 0;
+    /* Sending the camera command */
+    WeakCommtactLinkInterfacePtr weakLink = this->_commtactLinkManager->selectedSharedLinkInterfacePointerForLink();
+    if (weakLink.expired())
+    {
+        return;
+    }
+    SharedCommtactLinkInterfacePtr sharedLink = weakLink.lock();
+
+    if (sharedLink != nullptr)
+    {
+        CommtactLinkProtocol *linkProtocol = this->_commtactLinkManager->linkProtocol();
+
+        CommtactLinkProtocol::commtact_link_message_t message = {};
+
+        QString default_gateway = get_ip_address(icd_default_gateway_string);
+        unsigned char *pointer_to_default_gateway = (unsigned char *) &icd_default_gateway;
+        *(pointer_to_default_gateway + 3) = (unsigned char) default_gateway.split(".")[0].toUInt();
+        *(pointer_to_default_gateway + 2) = (unsigned char) default_gateway.split(".")[1].toUInt();
+        *(pointer_to_default_gateway + 1) = (unsigned char) default_gateway.split(".")[2].toUInt();
+        *(pointer_to_default_gateway + 0) = (unsigned char) default_gateway.split(".")[3].toUInt();
+
+        uint16_t payload_size = linkProtocol->commtact_link_msg_ethernet_settings_pack(
+            &message, _common_ethernet_settings_report.icd_ip_address, _common_ethernet_settings_report.icd_listen_port, _common_ethernet_settings_report.icd_subnet_mask,
+            icd_default_gateway, _common_ethernet_settings_report.encoder_ip_address, _common_ethernet_settings_report.metadata_input_port, _common_ethernet_settings_report.reserved_1,
+            _common_ethernet_settings_report.reserved_2, _common_ethernet_settings_report.host_ip, _common_ethernet_settings_report.host_port,
+            _common_ethernet_settings_report.transceiver_video_dest_ip, _common_ethernet_settings_report.transceiver_video_dest_port, _common_ethernet_settings_report.user_payload_dest_ip,
+            _common_ethernet_settings_report.user_payload_port, _common_ethernet_settings_report.discovery_port, _common_ethernet_settings_report.encoded_video_dest_aux_ip,
+            _common_ethernet_settings_report.encoded_video_dest_aux_port, _common_ethernet_settings_report.encoded_video_dest_ip, _common_ethernet_settings_report.encoded_video_dest_port,
+            _common_ethernet_settings_report.dsp_subnet_mask, _common_ethernet_settings_report.dsp_default_gateway, _common_ethernet_settings_report.ebox_controller_ip,
+            _common_ethernet_settings_report.ebox_controller_port);
+
+        uint8_t buffer[sizeof(CommtactLinkProtocol::commtact_link_message_header_t) + payload_size] = {};
+        int len = linkProtocol->commtact_link_msg_to_send_buffer(&buffer[0], &message, payload_size);
+
+        sharedLink->writeBytesThreadSafe((const char *) buffer, len);
+    }
+}
+void CommtactLinkManagement::setCommonEthernetICDHostIPCommand(QString icd_host_ip_port_string)
+{
+    QString icd_host_ip_address_string;
+    uint icd_host_ip_address = 0;
+    uint icd_host_port = 0;
+    /* Sending the camera command */
+    WeakCommtactLinkInterfacePtr weakLink = this->_commtactLinkManager->selectedSharedLinkInterfacePointerForLink();
+    if (weakLink.expired())
+    {
+        return;
+    }
+    SharedCommtactLinkInterfacePtr sharedLink = weakLink.lock();
+
+    if (sharedLink != nullptr)
+    {
+        CommtactLinkProtocol *linkProtocol = this->_commtactLinkManager->linkProtocol();
+
+        CommtactLinkProtocol::commtact_link_message_t message = {};
+
+        // Handle x.x.x.x:p
+        if (icd_host_ip_port_string.contains(":"))
+        {
+            icd_host_ip_address_string = icd_host_ip_port_string.split(":").first();
+            icd_host_port = icd_host_ip_port_string.split(":").last().toUInt();
+        }
+        else
+        {
+            icd_host_ip_address_string = icd_host_ip_port_string;
+            icd_host_port = _common_ethernet_settings_report.host_port;
+        }
+
+        QString ipAdd = get_ip_address(icd_host_ip_address_string);
+        unsigned char *pointer_to_ip_address = (unsigned char *) &icd_host_ip_address;
+        *(pointer_to_ip_address + 3) = (unsigned char) ipAdd.split(".")[0].toUInt();
+        *(pointer_to_ip_address + 2) = (unsigned char) ipAdd.split(".")[1].toUInt();
+        *(pointer_to_ip_address + 1) = (unsigned char) ipAdd.split(".")[2].toUInt();
+        *(pointer_to_ip_address + 0) = (unsigned char) ipAdd.split(".")[3].toUInt();
+
+        uint16_t payload_size = linkProtocol->commtact_link_msg_ethernet_settings_pack(
+            &message, _common_ethernet_settings_report.icd_ip_address, _common_ethernet_settings_report.icd_listen_port, _common_ethernet_settings_report.icd_subnet_mask,
+            _common_ethernet_settings_report.icd_default_gateway, _common_ethernet_settings_report.encoder_ip_address, _common_ethernet_settings_report.metadata_input_port,
+            _common_ethernet_settings_report.reserved_1, _common_ethernet_settings_report.reserved_2, icd_host_ip_address, icd_host_port,
+            _common_ethernet_settings_report.transceiver_video_dest_ip, _common_ethernet_settings_report.transceiver_video_dest_port, _common_ethernet_settings_report.user_payload_dest_ip,
+            _common_ethernet_settings_report.user_payload_port, _common_ethernet_settings_report.discovery_port, _common_ethernet_settings_report.encoded_video_dest_aux_ip,
+            _common_ethernet_settings_report.encoded_video_dest_aux_port, _common_ethernet_settings_report.encoded_video_dest_ip, _common_ethernet_settings_report.encoded_video_dest_port,
+            _common_ethernet_settings_report.dsp_subnet_mask, _common_ethernet_settings_report.dsp_default_gateway, _common_ethernet_settings_report.ebox_controller_ip,
+            _common_ethernet_settings_report.ebox_controller_port);
+
+        uint8_t buffer[sizeof(CommtactLinkProtocol::commtact_link_message_header_t) + payload_size] = {};
+        int len = linkProtocol->commtact_link_msg_to_send_buffer(&buffer[0], &message, payload_size);
+
+        sharedLink->writeBytesThreadSafe((const char *) buffer, len);
+    }
+}
+void CommtactLinkManagement::setCommonEthernetICDDiscoveryPortCommand(uint icd_discovery_port)
+{
+    /* Sending the camera command */
+    WeakCommtactLinkInterfacePtr weakLink = this->_commtactLinkManager->selectedSharedLinkInterfacePointerForLink();
+    if (weakLink.expired())
+    {
+        return;
+    }
+    SharedCommtactLinkInterfacePtr sharedLink = weakLink.lock();
+
+    if (sharedLink != nullptr)
+    {
+        CommtactLinkProtocol *linkProtocol = this->_commtactLinkManager->linkProtocol();
+
+        CommtactLinkProtocol::commtact_link_message_t message = {};
+
+        uint16_t payload_size = linkProtocol->commtact_link_msg_ethernet_settings_pack(
+            &message, _common_ethernet_settings_report.icd_ip_address, _common_ethernet_settings_report.icd_listen_port, _common_ethernet_settings_report.icd_subnet_mask,
+            _common_ethernet_settings_report.icd_default_gateway, _common_ethernet_settings_report.encoder_ip_address, _common_ethernet_settings_report.metadata_input_port,
+            _common_ethernet_settings_report.reserved_1, _common_ethernet_settings_report.reserved_2, _common_ethernet_settings_report.host_ip, _common_ethernet_settings_report.host_port,
+            _common_ethernet_settings_report.transceiver_video_dest_ip, _common_ethernet_settings_report.transceiver_video_dest_port, _common_ethernet_settings_report.user_payload_dest_ip,
+            _common_ethernet_settings_report.user_payload_port, icd_discovery_port, _common_ethernet_settings_report.encoded_video_dest_aux_ip,
+            _common_ethernet_settings_report.encoded_video_dest_aux_port, _common_ethernet_settings_report.encoded_video_dest_ip, _common_ethernet_settings_report.encoded_video_dest_port,
+            _common_ethernet_settings_report.dsp_subnet_mask, _common_ethernet_settings_report.dsp_default_gateway, _common_ethernet_settings_report.ebox_controller_ip,
+            _common_ethernet_settings_report.ebox_controller_port);
+
+        uint8_t buffer[sizeof(CommtactLinkProtocol::commtact_link_message_header_t) + payload_size] = {};
+        int len = linkProtocol->commtact_link_msg_to_send_buffer(&buffer[0], &message, payload_size);
+
+        sharedLink->writeBytesThreadSafe((const char *) buffer, len);
+    }
+}
+//--------------------------------------------------------
+
 bool CommtactLinkManagement::getShouldUiEnabledRescueElement()
 {
     /* Set Focus State */
@@ -965,6 +1228,20 @@ void CommtactLinkManagement::_commtactLinkMessageReceived(CommtactLinkInterface 
     case CommtactLinkProtocol::GDT_MISSION_ADT_STATUS_REPORT:
 
         linkProtocol->commtact_link_msg_gdt_mission_adt_status_report_decode(&message, &_gdt_mission_adt_status_report);
+
+        break;
+
+    case CommtactLinkProtocol::COMMON_ETHERNET_SETTINGS_REPORT:
+
+        linkProtocol->commtact_link_msg_common_ethernet_settings_report_decode(&message, &_common_ethernet_settings_report);
+
+        setCommonICDIPAddressInt(_common_ethernet_settings_report.icd_ip_address);
+        setCommonICDPort(_common_ethernet_settings_report.icd_listen_port);
+        setCommonICDSubnetMaskInt(_common_ethernet_settings_report.icd_subnet_mask);
+        setCommonICDDefaultGatewayInt(_common_ethernet_settings_report.icd_default_gateway);
+        setCommonICDHostIPAddressInt(_common_ethernet_settings_report.host_ip);
+        setCommonICDHostPort(_common_ethernet_settings_report.host_port);
+        setCommonICDDiscoveryPort(_common_ethernet_settings_report.discovery_port);
 
         break;
     }

@@ -641,6 +641,66 @@ void CommtactLinkProtocol::commtact_link_msg_adt_status_report_decode(const comm
 }
 //------------------------------------------------------------------
 
+//------------------------ COMMON ----------------------------------
+uint16_t CommtactLinkProtocol::commtact_link_msg_ethernet_settings_pack(CommtactLinkProtocol::commtact_link_message_t *msg, uint32_t icd_ip_address, uint16_t icd_listen_port,
+                                                                        uint32_t icd_subnet_mask, uint32_t icd_default_gateway, uint32_t encoder_ip_address, uint16_t metadata_input_port,
+                                                                        uint32_t reserved_1, uint16_t reserved_2, uint32_t host_ip, uint16_t host_port, uint32_t transceiver_video_dest_ip,
+                                                                        uint16_t transceiver_video_dest_port, uint16_t user_payload_dest_ip, uint16_t user_payload_port,
+                                                                        uint16_t discovery_port, uint32_t encoded_video_dest_aux_ip, uint16_t encoded_video_dest_aux_port,
+                                                                        uint32_t encoded_video_dest_ip, uint16_t encoded_video_dest_port, uint32_t dsp_subnet_mask,
+                                                                        uint32_t dsp_default_gateway, uint32_t ebox_controller_ip, uint16_t ebox_controller_port)
+{
+    CommtactLinkProtocol::commtact_basic_ethernet_settings_t packet = {};
+
+    msg->time_stamp[0] = 0;
+    msg->time_stamp[1] = 0;
+    msg->time_stamp[2] = 0;
+    msg->time_stamp[3] = 0;
+
+    msg->seq_num[0] = 0;
+    msg->seq_num[1] = 0;
+
+    msg->opcode = COMMON_ETHERNET_SETTINGS;
+
+    packet.icd_ip_address = icd_ip_address;
+    packet.icd_listen_port = icd_listen_port;
+    packet.icd_subnet_mask = icd_subnet_mask;
+    packet.icd_default_gateway = icd_default_gateway;
+    packet.encoder_ip_address = encoder_ip_address;
+    packet.metadata_input_port = metadata_input_port;
+    packet.reserved_1 = reserved_1;
+    packet.reserved_2 = reserved_2;
+    packet.host_ip = host_ip;
+    packet.host_port = host_port;
+    packet.transceiver_video_dest_ip = transceiver_video_dest_ip;
+    packet.transceiver_video_dest_port = transceiver_video_dest_port;
+    packet.user_payload_dest_ip = user_payload_dest_ip;
+    packet.user_payload_port = user_payload_port;
+    packet.discovery_port = discovery_port;
+    packet.encoded_video_dest_aux_ip = encoded_video_dest_aux_ip;
+    packet.encoded_video_dest_aux_port = encoded_video_dest_aux_port;
+    packet.encoded_video_dest_ip = encoded_video_dest_ip;
+    packet.encoded_video_dest_port = encoded_video_dest_port;
+    packet.dsp_subnet_mask = dsp_subnet_mask;
+    packet.dsp_default_gateway = dsp_default_gateway;
+    packet.ebox_controller_ip = ebox_controller_ip;
+    packet.ebox_controller_port = ebox_controller_port;
+
+    uint8_t payload[sizeof(commtact_basic_ethernet_settings_t)] = {};
+
+    memcpy(&payload, &packet, sizeof(commtact_basic_ethernet_settings_t));
+
+    memcpy(_COMMTACT_PAYLOAD_NON_CONST(msg), &packet, sizeof(packet));
+
+    return sizeof(commtact_basic_ethernet_settings_t);
+}
+void CommtactLinkProtocol::commtact_link_msg_common_ethernet_settings_report_decode(const commtact_link_message_t *msg,
+                                                                                    commtact_basic_ethernet_settings_report_t *basic_ethernet_settings_report)
+{
+    memcpy(basic_ethernet_settings_report, _COMMTACT_PAYLOAD(msg), sizeof(commtact_basic_ethernet_settings_report_t));
+}
+//------------------------------------------------------------------
+
 //-------------------------- Helpers -------------------------------
 void CommtactLinkProtocol::_swap_bytes(uint16_t *data)
 {
