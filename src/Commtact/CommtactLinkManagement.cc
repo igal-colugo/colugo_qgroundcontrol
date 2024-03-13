@@ -1138,111 +1138,267 @@ void CommtactLinkManagement::_commtactLinkMessageReceived(CommtactLinkInterface 
 {
     CommtactLinkProtocol *linkProtocol = this->_commtactLinkManager->linkProtocol();
 
-    switch (message.opcode)
+    if (link->linkConfiguration()->name().toLower().contains("gdt"))
     {
-    case CommtactLinkProtocol::GDT_OPERATIONAL_MODES_REPORT:
-
-        if (message_size == sizeof(CommtactLinkProtocol::commtact_gdt_operational_modes_report_t) + sizeof(CommtactLinkProtocol::commtact_link_message_header_t)) // GDT message
+        switch (message.opcode)
         {
-            linkProtocol->commtact_link_msg_operational_modes_report_decode(&message, &_operational_modes_report);
+        case CommtactLinkProtocol::GDT_OPERATIONAL_MODES_REPORT:
 
-            setTransmitterOperationalMode(_operational_modes_report.transmitter_operational_mode);
-            setGdtAntennaSelect(_operational_modes_report.gdt_antenna_select);
-            setGdtPedestalTrackMode(_operational_modes_report.gdt_pedestal_track_mode);
-            setGdtTddOperationalMode(_operational_modes_report.tdd_operational_mode);
-            setGdtFrequencyMode(_operational_modes_report.frequency_mode);
-            setGdtUnitMode(_operational_modes_report.unit_mode);
-            setGdtSymbolRate(_operational_modes_report.byte_20.bit_t.symbol_rate);
-            setGdtAesEncryption(_operational_modes_report.aes_encryption);
+            if (message_size == sizeof(CommtactLinkProtocol::commtact_gdt_operational_modes_report_t) + sizeof(CommtactLinkProtocol::commtact_link_message_header_t)) // GDT message
+            {
+                linkProtocol->commtact_link_msg_operational_modes_report_decode(&message, &_operational_modes_report);
+
+                setTransmitterOperationalMode(_operational_modes_report.transmitter_operational_mode);
+                setGdtAntennaSelect(_operational_modes_report.gdt_antenna_select);
+                setGdtPedestalTrackMode(_operational_modes_report.gdt_pedestal_track_mode);
+                setGdtTddOperationalMode(_operational_modes_report.tdd_operational_mode);
+                setGdtFrequencyMode(_operational_modes_report.frequency_mode);
+                setGdtUnitMode(_operational_modes_report.unit_mode);
+                setGdtSymbolRate(_operational_modes_report.byte_20.bit_t.symbol_rate);
+                setGdtAesEncryption(_operational_modes_report.aes_encryption);
+            }
+
+            break;
+
+        case CommtactLinkProtocol::GDT_STATUS_REPORT:
+
+            if (message_size == sizeof(CommtactLinkProtocol::commtact_gdt_status_report_t) + sizeof(CommtactLinkProtocol::commtact_link_message_header_t)) // GDT message
+            {
+                linkProtocol->commtact_link_msg_gdt_status_report_decode(&message, &_gdt_status_report);
+
+                setGdtTDDSync(_gdt_status_report.byte_0.bit_t.tdd_sync);
+                setGdtLinkRSSI(_gdt_status_report.link_rssi);
+                setGdtLinkTransferedPackets(_gdt_status_report.link_transfered_packets);
+                setGdtLinkErrorPackets(_gdt_status_report.link_error_packets);
+                setGdtLinkCRCErrorPackets(_gdt_status_report.link_crc_errors_packets);
+            }
+
+            break;
+
+        case CommtactLinkProtocol::GDT_CONSTANT_FREQUENCY_REPORT:
+
+            if (message_size == sizeof(CommtactLinkProtocol::commtact_gdt_constant_frequency_report_t) + sizeof(CommtactLinkProtocol::commtact_link_message_header_t)) // GDT message
+            {
+                linkProtocol->commtact_link_msg_gdt_constant_frequency_report_decode(&message, &_gdt_constant_frequency_report);
+
+                setGdtOperationFrequency(_gdt_constant_frequency_report.gdt_operation_frequency);
+            }
+
+            break;
+
+        case CommtactLinkProtocol::GDT_CBIT_REPORT:
+
+            linkProtocol->commtact_link_msg_gdt_cbit_report_decode(&message, &_gdt_cbit_report);
+
+            setGdtCBITPAPowerOutput(_gdt_cbit_report.pa_power_output);
+            setGdtCBITPAReturnPower(_gdt_cbit_report.pa_return_power);
+
+            break;
+
+        case CommtactLinkProtocol::GDT_MISSION_ADT_STATUS_REPORT:
+
+            linkProtocol->commtact_link_msg_gdt_mission_adt_status_report_decode(&message, &_gdt_mission_adt_status_report);
+
+            break;
+
+        case CommtactLinkProtocol::COMMON_ETHERNET_SETTINGS_REPORT:
+
+            linkProtocol->commtact_link_msg_common_ethernet_settings_report_decode(&message, &_common_ethernet_settings_report);
+
+            setCommonICDIPAddressInt(_common_ethernet_settings_report.icd_ip_address);
+            setCommonICDPort(_common_ethernet_settings_report.icd_listen_port);
+            setCommonICDSubnetMaskInt(_common_ethernet_settings_report.icd_subnet_mask);
+            setCommonICDDefaultGatewayInt(_common_ethernet_settings_report.icd_default_gateway);
+            setCommonICDHostIPAddressInt(_common_ethernet_settings_report.host_ip);
+            setCommonICDHostPort(_common_ethernet_settings_report.host_port);
+            setCommonICDDiscoveryPort(_common_ethernet_settings_report.discovery_port);
+
+            break;
         }
-        else if (message_size == sizeof(CommtactLinkProtocol::commtact_adt_operational_modes_report_t) + sizeof(CommtactLinkProtocol::commtact_link_message_header_t)) // ADT message
+    }
+    else if (link->linkConfiguration()->name().toLower().contains("adt"))
+    {
+        switch (message.opcode)
         {
-            linkProtocol->commtact_link_msg_adt_operational_modes_report_decode(&message, &_adt_operational_modes_report);
+        case CommtactLinkProtocol::GDT_OPERATIONAL_MODES_REPORT:
 
-            setAdtTransmitterOperationalMode(_adt_operational_modes_report.transmitter_operational_mode);
-            setAdtAntennaSelect(_adt_operational_modes_report.antenna_select);
-            setAdtTddOperationalMode(_adt_operational_modes_report.tdd_operational_mode);
-            setAdtFrequencyMode(_adt_operational_modes_report.adt_frequency_mode);
-            setAdtVideoTransmitEnable(_adt_operational_modes_report.video_transmit_enable);
-            setAdtUnitMode(_adt_operational_modes_report.unit_mode);
-            setAdtSymbolRate(_adt_operational_modes_report.byte_13.bit_t.symbol_rate);
-            setAdtAesEncryption(_adt_operational_modes_report.aes_encryption_enable);
-            setAdtTelemetryMetadataSeparation(_adt_operational_modes_report.telemetry_metadata_separation);
-            setAdtVideoRate(_adt_operational_modes_report.byte_12.bit_t.video_rate);
-            setAdtVideoSource(_adt_operational_modes_report.byte_12.bit_t.video_source);
+            if (message_size == sizeof(CommtactLinkProtocol::commtact_adt_operational_modes_report_t) + sizeof(CommtactLinkProtocol::commtact_link_message_header_t)) // ADT message
+            {
+                linkProtocol->commtact_link_msg_adt_operational_modes_report_decode(&message, &_adt_operational_modes_report);
+
+                setAdtTransmitterOperationalMode(_adt_operational_modes_report.transmitter_operational_mode);
+                setAdtAntennaSelect(_adt_operational_modes_report.antenna_select);
+                setAdtTddOperationalMode(_adt_operational_modes_report.tdd_operational_mode);
+                setAdtFrequencyMode(_adt_operational_modes_report.adt_frequency_mode);
+                setAdtVideoTransmitEnable(_adt_operational_modes_report.video_transmit_enable);
+                setAdtUnitMode(_adt_operational_modes_report.unit_mode);
+                setAdtSymbolRate(_adt_operational_modes_report.byte_13.bit_t.symbol_rate);
+                setAdtAesEncryption(_adt_operational_modes_report.aes_encryption_enable);
+                setAdtTelemetryMetadataSeparation(_adt_operational_modes_report.telemetry_metadata_separation);
+                setAdtVideoRate(_adt_operational_modes_report.byte_12.bit_t.video_rate);
+                setAdtVideoSource(_adt_operational_modes_report.byte_12.bit_t.video_source);
+            }
+
+            break;
+
+        case CommtactLinkProtocol::GDT_STATUS_REPORT:
+
+            if (message_size == sizeof(CommtactLinkProtocol::commtact_adt_status_report_t) + sizeof(CommtactLinkProtocol::commtact_link_message_header_t)) // ADT message
+            {
+                linkProtocol->commtact_link_msg_adt_status_report_decode(&message, &_adt_status_report);
+
+                setAdtTDDSync(_adt_status_report.primary_tdd_sync);
+                setAdtLinkRSSI(_adt_status_report.link_rssi);
+                setAdtLinkTransferedPackets(_adt_status_report.link_transfered_packets);
+                setAdtLinkErrorPackets(_adt_status_report.link_error_packets);
+                setAdtLinkCRCErrorPackets(_adt_status_report.link_crc_errors_packets);
+            }
+
+            break;
+
+        case CommtactLinkProtocol::GDT_CONSTANT_FREQUENCY_REPORT:
+
+            if (message_size == sizeof(CommtactLinkProtocol::commtact_adt_constant_frequency_report_t) + sizeof(CommtactLinkProtocol::commtact_link_message_header_t)) // ADT message
+            {
+                linkProtocol->commtact_link_msg_adt_constant_frequency_report_decode(&message, &_adt_constant_frequency_report);
+
+                setAdtOperationFrequency(_adt_constant_frequency_report.adt_primary_channel_frequency);
+            }
+
+            break;
+
+        case CommtactLinkProtocol::GDT_CBIT_REPORT:
+
+            linkProtocol->commtact_link_msg_gdt_cbit_report_decode(&message, &_gdt_cbit_report);
+
+            setGdtCBITPAPowerOutput(_gdt_cbit_report.pa_power_output);
+            setGdtCBITPAReturnPower(_gdt_cbit_report.pa_return_power);
+
+            break;
+
+        case CommtactLinkProtocol::COMMON_ETHERNET_SETTINGS_REPORT:
+
+            linkProtocol->commtact_link_msg_common_ethernet_settings_report_decode(&message, &_common_ethernet_settings_report);
+
+            setCommonICDADTIPAddressInt(_common_ethernet_settings_report.icd_ip_address);
+            setCommonICDADTPort(_common_ethernet_settings_report.icd_listen_port);
+            setCommonICDADTSubnetMaskInt(_common_ethernet_settings_report.icd_subnet_mask);
+            setCommonICDADTDefaultGatewayInt(_common_ethernet_settings_report.icd_default_gateway);
+            setCommonICDADTHostIPAddressInt(_common_ethernet_settings_report.host_ip);
+            setCommonICDADTHostPort(_common_ethernet_settings_report.host_port);
+            setCommonICDADTDiscoveryPort(_common_ethernet_settings_report.discovery_port);
+
+            break;
         }
-
-        break;
-
-    case CommtactLinkProtocol::GDT_STATUS_REPORT:
-
-        if (message_size == sizeof(CommtactLinkProtocol::commtact_gdt_status_report_t) + sizeof(CommtactLinkProtocol::commtact_link_message_header_t)) // GDT message
+    }
+    else
+    {
+        switch (message.opcode)
         {
-            linkProtocol->commtact_link_msg_gdt_status_report_decode(&message, &_gdt_status_report);
+        case CommtactLinkProtocol::GDT_OPERATIONAL_MODES_REPORT:
 
-            setGdtTDDSync(_gdt_status_report.byte_0.bit_t.tdd_sync);
-            setGdtLinkRSSI(_gdt_status_report.link_rssi);
-            setGdtLinkTransferedPackets(_gdt_status_report.link_transfered_packets);
-            setGdtLinkErrorPackets(_gdt_status_report.link_error_packets);
-            setGdtLinkCRCErrorPackets(_gdt_status_report.link_crc_errors_packets);
+            if (message_size == sizeof(CommtactLinkProtocol::commtact_gdt_operational_modes_report_t) + sizeof(CommtactLinkProtocol::commtact_link_message_header_t)) // GDT message
+            {
+                linkProtocol->commtact_link_msg_operational_modes_report_decode(&message, &_operational_modes_report);
+
+                setTransmitterOperationalMode(_operational_modes_report.transmitter_operational_mode);
+                setGdtAntennaSelect(_operational_modes_report.gdt_antenna_select);
+                setGdtPedestalTrackMode(_operational_modes_report.gdt_pedestal_track_mode);
+                setGdtTddOperationalMode(_operational_modes_report.tdd_operational_mode);
+                setGdtFrequencyMode(_operational_modes_report.frequency_mode);
+                setGdtUnitMode(_operational_modes_report.unit_mode);
+                setGdtSymbolRate(_operational_modes_report.byte_20.bit_t.symbol_rate);
+                setGdtAesEncryption(_operational_modes_report.aes_encryption);
+            }
+            else if (message_size == sizeof(CommtactLinkProtocol::commtact_adt_operational_modes_report_t) + sizeof(CommtactLinkProtocol::commtact_link_message_header_t)) // ADT message
+            {
+                linkProtocol->commtact_link_msg_adt_operational_modes_report_decode(&message, &_adt_operational_modes_report);
+
+                setAdtTransmitterOperationalMode(_adt_operational_modes_report.transmitter_operational_mode);
+                setAdtAntennaSelect(_adt_operational_modes_report.antenna_select);
+                setAdtTddOperationalMode(_adt_operational_modes_report.tdd_operational_mode);
+                setAdtFrequencyMode(_adt_operational_modes_report.adt_frequency_mode);
+                setAdtVideoTransmitEnable(_adt_operational_modes_report.video_transmit_enable);
+                setAdtUnitMode(_adt_operational_modes_report.unit_mode);
+                setAdtSymbolRate(_adt_operational_modes_report.byte_13.bit_t.symbol_rate);
+                setAdtAesEncryption(_adt_operational_modes_report.aes_encryption_enable);
+                setAdtTelemetryMetadataSeparation(_adt_operational_modes_report.telemetry_metadata_separation);
+                setAdtVideoRate(_adt_operational_modes_report.byte_12.bit_t.video_rate);
+                setAdtVideoSource(_adt_operational_modes_report.byte_12.bit_t.video_source);
+            }
+
+            break;
+
+        case CommtactLinkProtocol::GDT_STATUS_REPORT:
+
+            if (message_size == sizeof(CommtactLinkProtocol::commtact_gdt_status_report_t) + sizeof(CommtactLinkProtocol::commtact_link_message_header_t)) // GDT message
+            {
+                linkProtocol->commtact_link_msg_gdt_status_report_decode(&message, &_gdt_status_report);
+
+                setGdtTDDSync(_gdt_status_report.byte_0.bit_t.tdd_sync);
+                setGdtLinkRSSI(_gdt_status_report.link_rssi);
+                setGdtLinkTransferedPackets(_gdt_status_report.link_transfered_packets);
+                setGdtLinkErrorPackets(_gdt_status_report.link_error_packets);
+                setGdtLinkCRCErrorPackets(_gdt_status_report.link_crc_errors_packets);
+            }
+            else if (message_size == sizeof(CommtactLinkProtocol::commtact_adt_status_report_t) + sizeof(CommtactLinkProtocol::commtact_link_message_header_t)) // ADT message
+            {
+                linkProtocol->commtact_link_msg_adt_status_report_decode(&message, &_adt_status_report);
+
+                setAdtTDDSync(_adt_status_report.primary_tdd_sync);
+                setAdtLinkRSSI(_adt_status_report.link_rssi);
+                setAdtLinkTransferedPackets(_adt_status_report.link_transfered_packets);
+                setAdtLinkErrorPackets(_adt_status_report.link_error_packets);
+                setAdtLinkCRCErrorPackets(_adt_status_report.link_crc_errors_packets);
+            }
+
+            break;
+
+        case CommtactLinkProtocol::GDT_CONSTANT_FREQUENCY_REPORT:
+
+            if (message_size == sizeof(CommtactLinkProtocol::commtact_gdt_constant_frequency_report_t) + sizeof(CommtactLinkProtocol::commtact_link_message_header_t)) // GDT message
+            {
+                linkProtocol->commtact_link_msg_gdt_constant_frequency_report_decode(&message, &_gdt_constant_frequency_report);
+
+                setGdtOperationFrequency(_gdt_constant_frequency_report.gdt_operation_frequency);
+            }
+            else if (message_size == sizeof(CommtactLinkProtocol::commtact_adt_constant_frequency_report_t) + sizeof(CommtactLinkProtocol::commtact_link_message_header_t)) // ADT message
+            {
+                linkProtocol->commtact_link_msg_adt_constant_frequency_report_decode(&message, &_adt_constant_frequency_report);
+
+                setAdtOperationFrequency(_adt_constant_frequency_report.adt_primary_channel_frequency);
+            }
+
+            break;
+
+        case CommtactLinkProtocol::GDT_CBIT_REPORT:
+
+            linkProtocol->commtact_link_msg_gdt_cbit_report_decode(&message, &_gdt_cbit_report);
+
+            setGdtCBITPAPowerOutput(_gdt_cbit_report.pa_power_output);
+            setGdtCBITPAReturnPower(_gdt_cbit_report.pa_return_power);
+
+            break;
+
+        case CommtactLinkProtocol::GDT_MISSION_ADT_STATUS_REPORT:
+
+            linkProtocol->commtact_link_msg_gdt_mission_adt_status_report_decode(&message, &_gdt_mission_adt_status_report);
+
+            break;
+
+        case CommtactLinkProtocol::COMMON_ETHERNET_SETTINGS_REPORT:
+
+            linkProtocol->commtact_link_msg_common_ethernet_settings_report_decode(&message, &_common_ethernet_settings_report);
+
+            setCommonICDIPAddressInt(_common_ethernet_settings_report.icd_ip_address);
+            setCommonICDPort(_common_ethernet_settings_report.icd_listen_port);
+            setCommonICDSubnetMaskInt(_common_ethernet_settings_report.icd_subnet_mask);
+            setCommonICDDefaultGatewayInt(_common_ethernet_settings_report.icd_default_gateway);
+            setCommonICDHostIPAddressInt(_common_ethernet_settings_report.host_ip);
+            setCommonICDHostPort(_common_ethernet_settings_report.host_port);
+            setCommonICDDiscoveryPort(_common_ethernet_settings_report.discovery_port);
+
+            break;
         }
-        else if (message_size == sizeof(CommtactLinkProtocol::commtact_adt_status_report_t) + sizeof(CommtactLinkProtocol::commtact_link_message_header_t)) // ADT message
-        {
-            linkProtocol->commtact_link_msg_adt_status_report_decode(&message, &_adt_status_report);
-
-            setAdtTDDSync(_adt_status_report.primary_tdd_sync);
-            setAdtLinkRSSI(_adt_status_report.link_rssi);
-            setAdtLinkTransferedPackets(_adt_status_report.link_transfered_packets);
-            setAdtLinkErrorPackets(_adt_status_report.link_error_packets);
-            setAdtLinkCRCErrorPackets(_adt_status_report.link_crc_errors_packets);
-        }
-
-        break;
-
-    case CommtactLinkProtocol::GDT_CONSTANT_FREQUENCY_REPORT:
-
-        if (message_size == sizeof(CommtactLinkProtocol::commtact_gdt_constant_frequency_report_t) + sizeof(CommtactLinkProtocol::commtact_link_message_header_t)) // GDT message
-        {
-            linkProtocol->commtact_link_msg_gdt_constant_frequency_report_decode(&message, &_gdt_constant_frequency_report);
-
-            setGdtOperationFrequency(_gdt_constant_frequency_report.gdt_operation_frequency);
-        }
-        else if (message_size == sizeof(CommtactLinkProtocol::commtact_adt_constant_frequency_report_t) + sizeof(CommtactLinkProtocol::commtact_link_message_header_t)) // ADT message
-        {
-            linkProtocol->commtact_link_msg_adt_constant_frequency_report_decode(&message, &_adt_constant_frequency_report);
-
-            setAdtOperationFrequency(_adt_constant_frequency_report.adt_primary_channel_frequency);
-        }
-
-        break;
-
-    case CommtactLinkProtocol::GDT_CBIT_REPORT:
-
-        linkProtocol->commtact_link_msg_gdt_cbit_report_decode(&message, &_gdt_cbit_report);
-
-        setGdtCBITPAPowerOutput(_gdt_cbit_report.pa_power_output);
-        setGdtCBITPAReturnPower(_gdt_cbit_report.pa_return_power);
-
-        break;
-
-    case CommtactLinkProtocol::GDT_MISSION_ADT_STATUS_REPORT:
-
-        linkProtocol->commtact_link_msg_gdt_mission_adt_status_report_decode(&message, &_gdt_mission_adt_status_report);
-
-        break;
-
-    case CommtactLinkProtocol::COMMON_ETHERNET_SETTINGS_REPORT:
-
-        linkProtocol->commtact_link_msg_common_ethernet_settings_report_decode(&message, &_common_ethernet_settings_report);
-
-        setCommonICDIPAddressInt(_common_ethernet_settings_report.icd_ip_address);
-        setCommonICDPort(_common_ethernet_settings_report.icd_listen_port);
-        setCommonICDSubnetMaskInt(_common_ethernet_settings_report.icd_subnet_mask);
-        setCommonICDDefaultGatewayInt(_common_ethernet_settings_report.icd_default_gateway);
-        setCommonICDHostIPAddressInt(_common_ethernet_settings_report.host_ip);
-        setCommonICDHostPort(_common_ethernet_settings_report.host_port);
-        setCommonICDDiscoveryPort(_common_ethernet_settings_report.discovery_port);
-
-        break;
     }
 }

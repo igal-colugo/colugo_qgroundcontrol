@@ -429,7 +429,7 @@ class CommtactLinkManagement : public QGCTool
     }
     //---------------------------------------------------------------
 
-    //------------------- Common Properties -------------------------
+    //------------------- Common GDT Properties -------------------------
     Q_PROPERTY(uint commonICDIPAddressInt READ getCommonICDIPAddressInt WRITE setCommonICDIPAddressInt NOTIFY commonICDIPAddressIntChanged)
     uint getCommonICDIPAddressInt()
     {
@@ -592,6 +592,169 @@ class CommtactLinkManagement : public QGCTool
 
     //---------------------------------------------------------------
 
+    //------------------- Common ADT Properties -------------------------
+    Q_PROPERTY(uint commonICDADTIPAddressInt READ getCommonICDADTIPAddressInt WRITE setCommonICDADTIPAddressInt NOTIFY commonICDADTIPAddressIntChanged)
+    uint getCommonICDADTIPAddressInt()
+    {
+        return (uint) _commonICDADTIPAddressInt;
+    }
+    void setCommonICDADTIPAddressInt(const uint &commonICDADTIPAddressInt)
+    {
+        _commonICDADTIPAddressInt = (uint) commonICDADTIPAddressInt;
+
+        unsigned char *pointer_to_ip_address = (unsigned char *) &_commonICDADTIPAddressInt;
+
+        QString commonICDADTIPAddress = QString::number((uint) * (pointer_to_ip_address + 3)) + "." + QString::number((uint) * (pointer_to_ip_address + 2)) + "." +
+                                        QString::number((uint) * (pointer_to_ip_address + 1)) + "." + QString::number((uint) * (pointer_to_ip_address + 0));
+
+        setCommonICDADTIPAddress(commonICDADTIPAddress);
+
+        emit commonICDADTIPAddressIntChanged();
+    }
+
+    Q_PROPERTY(QString commonICDADTIPAddress READ getCommonICDADTIPAddress WRITE setCommonICDADTIPAddress NOTIFY commonICDADTIPAddressChanged)
+    QString getCommonICDADTIPAddress()
+    {
+        return _commonICDADTIPAddress;
+    }
+    void setCommonICDADTIPAddress(const QString &commonICDADTIPAddress)
+    {
+        _commonICDADTIPAddress = commonICDADTIPAddress;
+
+        emit commonICDADTIPAddressChanged();
+    }
+
+    Q_PROPERTY(uint commonICDADTPort READ getCommonICDADTPort WRITE setCommonICDADTPort NOTIFY commonICDADTPortChanged)
+    uint getCommonICDADTPort()
+    {
+        return _commonICDADTPort;
+    }
+    void setCommonICDADTPort(const uint &commonICDADTPort)
+    {
+        _commonICDADTPort = commonICDADTPort;
+
+        emit commonICDADTPortChanged();
+    }
+
+    Q_PROPERTY(uint commonICDADTSubnetMaskInt READ getCommonICDADTSubnetMaskInt WRITE setCommonICDADTSubnetMaskInt NOTIFY commonICDADTSubnetMaskIntChanged)
+    uint getCommonICDADTSubnetMaskInt()
+    {
+        return (uint) _commonICDADTSubnetMaskInt;
+    }
+    void setCommonICDADTSubnetMaskInt(const uint &commonICDADTSubnetMaskInt)
+    {
+        _commonICDADTSubnetMaskInt = (uint) commonICDADTSubnetMaskInt;
+
+        unsigned char *pointer_to_ip_address = (unsigned char *) &_commonICDADTSubnetMaskInt;
+
+        QString commonICDADTSubnetMask = QString::number((uint) * (pointer_to_ip_address + 3)) + "." + QString::number((uint) * (pointer_to_ip_address + 2)) + "." +
+                                         QString::number((uint) * (pointer_to_ip_address + 1)) + "." + QString::number((uint) * (pointer_to_ip_address + 0));
+
+        setCommonICDADTSubnetMask(commonICDADTSubnetMask);
+
+        emit commonICDADTSubnetMaskIntChanged();
+    }
+
+    Q_PROPERTY(QString commonICDADTSubnetMask READ getCommonICDADTSubnetMask WRITE setCommonICDADTSubnetMask NOTIFY commonICDADTSubnetMaskChanged)
+    QString getCommonICDADTSubnetMask()
+    {
+        return _commonICDADTSubnetMask;
+    }
+    void setCommonICDADTSubnetMask(const QString &commonICDADTSubnetMask)
+    {
+        _commonICDADTSubnetMask = commonICDADTSubnetMask;
+
+        emit commonICDADTSubnetMaskChanged();
+    }
+
+    Q_PROPERTY(uint commonICDADTDefaultGatewayInt READ getCommonICDADTDefaultGatewayInt WRITE setCommonICDADTDefaultGatewayInt NOTIFY commonICDADTDefaultGatewayIntChanged)
+    uint getCommonICDADTDefaultGatewayInt()
+    {
+        return (uint) _commonICDADTDefaultGatewayInt;
+    }
+    void setCommonICDADTDefaultGatewayInt(const uint &commonICDADTDefaultGatewayInt)
+    {
+        _commonICDADTDefaultGatewayInt = (uint) commonICDADTDefaultGatewayInt;
+
+        unsigned char *pointer_to_ip_address = (unsigned char *) &_commonICDADTDefaultGatewayInt;
+
+        QString commonICDADTDefaultGateway = QString::number((uint) * (pointer_to_ip_address + 3)) + "." + QString::number((uint) * (pointer_to_ip_address + 2)) + "." +
+                                             QString::number((uint) * (pointer_to_ip_address + 1)) + "." + QString::number((uint) * (pointer_to_ip_address + 0));
+
+        setCommonICDADTDefaultGateway(commonICDADTDefaultGateway);
+
+        emit commonICDADTDefaultGatewayIntChanged();
+    }
+
+    Q_PROPERTY(QString commonICDADTDefaultGateway READ getCommonICDADTDefaultGateway WRITE setCommonICDADTDefaultGateway NOTIFY commonICDADTDefaultGatewayChanged)
+    QString getCommonICDADTDefaultGateway()
+    {
+        return _commonICDADTDefaultGateway;
+    }
+    void setCommonICDADTDefaultGateway(const QString &commonICDADTDefaultGateway)
+    {
+        _commonICDADTDefaultGateway = commonICDADTDefaultGateway;
+
+        emit commonICDADTDefaultGatewayChanged();
+    }
+
+    Q_PROPERTY(uint commonICDADTHostIPAddressInt READ getCommonICDADTHostIPAddressInt WRITE setCommonICDADTHostIPAddressInt NOTIFY commonICDADTHostIPAddressIntChanged)
+    uint getCommonICDADTHostIPAddressInt()
+    {
+        return (uint) _commonICDADTHostIPAddressInt;
+    }
+    void setCommonICDADTHostIPAddressInt(const uint &commonICDADTHostIPAddressInt)
+    {
+        _commonICDADTHostIPAddressInt = (uint) commonICDADTHostIPAddressInt;
+
+        unsigned char *pointer_to_ip_address = (unsigned char *) &_commonICDADTHostIPAddressInt;
+
+        QString commonICDADTHostIPAddress = QString::number((uint) * (pointer_to_ip_address + 3)) + "." + QString::number((uint) * (pointer_to_ip_address + 2)) + "." +
+                                            QString::number((uint) * (pointer_to_ip_address + 1)) + "." + QString::number((uint) * (pointer_to_ip_address + 0));
+
+        setCommonICDADTHostIPAddress(commonICDADTHostIPAddress);
+
+        emit commonICDADTHostIPAddressIntChanged();
+    }
+
+    Q_PROPERTY(QString commonICDADTHostIPAddress READ getCommonICDADTHostIPAddress WRITE setCommonICDADTHostIPAddress NOTIFY commonICDADTHostIPAddressChanged)
+    QString getCommonICDADTHostIPAddress()
+    {
+        return _commonICDADTHostIPAddress;
+    }
+    void setCommonICDADTHostIPAddress(const QString &commonICDADTHostIPAddress)
+    {
+        _commonICDADTHostIPAddress = commonICDADTHostIPAddress;
+
+        emit commonICDADTHostIPAddressChanged();
+    }
+
+    Q_PROPERTY(uint commonICDADTHostPort READ getCommonICDADTHostPort WRITE setCommonICDADTHostPort NOTIFY commonICDADTHostPortChanged)
+    uint getCommonICDADTHostPort()
+    {
+        return _commonICDADTHostPort;
+    }
+    void setCommonICDADTHostPort(const uint &commonICDADTHostPort)
+    {
+        _commonICDADTHostPort = commonICDADTHostPort;
+
+        emit commonICDADTHostPortChanged();
+    }
+
+    Q_PROPERTY(uint commonICDADTDiscoveryPort READ getCommonICDADTDiscoveryPort WRITE setCommonICDADTDiscoveryPort NOTIFY commonICDADTDiscoveryPortChanged)
+    uint getCommonICDADTDiscoveryPort()
+    {
+        return _commonICDADTDiscoveryPort;
+    }
+    void setCommonICDADTDiscoveryPort(const uint &commonICDADTDiscoveryPort)
+    {
+        _commonICDADTDiscoveryPort = commonICDADTDiscoveryPort;
+
+        emit commonICDADTDiscoveryPortChanged();
+    }
+
+    //---------------------------------------------------------------
+
     //------------------- GDT commands ------------------------------
     QStringList operationalModeTypeStrings(void) const;
     QStringList gdtAntennaSelectTypeStrings(void) const;
@@ -716,7 +879,7 @@ class CommtactLinkManagement : public QGCTool
 
     //-----------------------------------------------
 
-    //--------------- Common fields -----------------
+    //--------------- Common GDT fields -------------
     uint _commonICDIPAddressInt = 0;
     QString _commonICDIPAddress = "127.0.0.1";
     uint _commonICDPort = 0;
@@ -728,6 +891,20 @@ class CommtactLinkManagement : public QGCTool
     QString _commonICDHostIPAddress = "127.0.0.1";
     uint _commonICDHostPort = 0;
     uint _commonICDDiscoveryPort = 0;
+    //-----------------------------------------------
+
+    //--------------- Common ADT fields -------------
+    uint _commonICDADTIPAddressInt = 0;
+    QString _commonICDADTIPAddress = "127.0.0.1";
+    uint _commonICDADTPort = 0;
+    uint _commonICDADTSubnetMaskInt = 0;
+    QString _commonICDADTSubnetMask = "255.255.255.0";
+    uint _commonICDADTDefaultGatewayInt = 0;
+    QString _commonICDADTDefaultGateway = "127.0.0.1";
+    uint _commonICDADTHostIPAddressInt = 0;
+    QString _commonICDADTHostIPAddress = "127.0.0.1";
+    uint _commonICDADTHostPort = 0;
+    uint _commonICDADTDiscoveryPort = 0;
     //-----------------------------------------------
 
   signals:
@@ -779,7 +956,7 @@ class CommtactLinkManagement : public QGCTool
     void adtVideoSourceChanged();
     //-----------------------------------------------
 
-    //---------------- Common signals ---------------
+    //---------------- Common GDT signals -----------
     void commonICDIPAddressChanged();
     void commonICDIPAddressIntChanged();
     void commonICDPortChanged();
@@ -791,6 +968,20 @@ class CommtactLinkManagement : public QGCTool
     void commonICDHostIPAddressIntChanged();
     void commonICDHostPortChanged();
     void commonICDDiscoveryPortChanged();
+    //-----------------------------------------------
+
+    //---------------- Common ADT signals -----------
+    void commonICDADTIPAddressChanged();
+    void commonICDADTIPAddressIntChanged();
+    void commonICDADTPortChanged();
+    void commonICDADTSubnetMaskChanged();
+    void commonICDADTSubnetMaskIntChanged();
+    void commonICDADTDefaultGatewayChanged();
+    void commonICDADTDefaultGatewayIntChanged();
+    void commonICDADTHostIPAddressChanged();
+    void commonICDADTHostIPAddressIntChanged();
+    void commonICDADTHostPortChanged();
+    void commonICDADTDiscoveryPortChanged();
     //-----------------------------------------------
 
   public slots:
