@@ -1490,6 +1490,34 @@ Item {
                             Layout.maximumHeight: cellRowHeight
                             Layout.maximumWidth: cellColumnWidth * Layout.columnSpan
                         }
+                        Rectangle {
+                            property int cellRowHeight: (parent.height - (parent.rows * parent.rowSpacing)) / (parent.rows)
+                            property int cellColumnWidth: (parent.width - (parent.columns * parent.columnSpacing)) / (parent.columns)
+
+                            id: dataRecievedIndicator
+                            radius: width / 2
+                            color: {
+                                if (QGroundControl.commtactLinkManagement.gdtDataRecieved === 1) {
+                                    "Green"
+                                } else {
+                                    "Black"
+                                }
+                            }
+
+                            border.color: qgcPal.text
+                            border.width: 1
+
+                            height: cellRowHeight * Layout.rowSpan
+
+                            Layout.alignment: Qt.AlignLeft
+                            Layout.columnSpan: 4
+                            Layout.fillHeight: false
+                            Layout.fillWidth: false
+                            Layout.preferredHeight: cellRowHeight * Layout.rowSpan
+                            Layout.preferredWidth: Layout.preferredHeight
+                            Layout.maximumHeight: cellRowHeight * Layout.rowSpan
+                            Layout.maximumWidth: Layout.maximumHeight
+                        }
                     }
                 }
             }

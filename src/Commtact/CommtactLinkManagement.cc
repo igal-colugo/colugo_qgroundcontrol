@@ -1214,6 +1214,26 @@ void CommtactLinkManagement::_commtactLinkMessageReceived(CommtactLinkInterface 
             setCommonICDDiscoveryPort(_common_ethernet_settings_report.discovery_port);
 
             break;
+
+        case CommtactLinkProtocol::COMMON_DISCOVERY_REPORT:
+
+            if (message_size == sizeof(CommtactLinkProtocol::commtact_discovery_report_t) + sizeof(CommtactLinkProtocol::commtact_link_message_header_t))
+            {
+                linkProtocol->commtact_link_msg_common_discovery_report_decode(&message, &_common_discovery_report);
+
+                setCommonICDDiscoveryGDTIPAddressInt(_common_discovery_report.icd_ip_address);
+                setCommonICDDiscoveryGDTPort(_common_discovery_report.icd_listen_port);
+                setCommonICDDiscoveryDestGDTIPAddressInt(_common_discovery_report.icd_dest_ip_address);
+                setCommonICDDiscoveryDestGDTPort(_common_discovery_report.icd_dest_port);
+                setCommonICDDiscoveryGDTSubnetMaskInt(_common_discovery_report.subnet_mask);
+                setCommonICDDiscoveryGDTDefaultGatewayInt(_common_discovery_report.default_gateway);
+                setCommonICDGDTDiscoveryVer(_common_discovery_report.icd_ver);
+                setCommonICDGDTDiscoveryRev(_common_discovery_report.icd_rev);
+                setCommonICDGDTDiscoveryDevType(_common_discovery_report.dev_type);
+                setCommonICDGDTDiscoveryDestPort(_common_discovery_report.discovery_dest_port);
+            }
+
+            break;
         }
     }
     else if (link->linkConfiguration()->name().toLower().contains("adt"))
@@ -1221,6 +1241,15 @@ void CommtactLinkManagement::_commtactLinkMessageReceived(CommtactLinkInterface 
         switch (message.opcode)
         {
         case CommtactLinkProtocol::GDT_OPERATIONAL_MODES_REPORT:
+
+            if (getADTDataRecieved() > 0)
+            {
+                setADTDataRecieved(0);
+            }
+            else
+            {
+                setADTDataRecieved(1);
+            }
 
             if (message_size == sizeof(CommtactLinkProtocol::commtact_adt_operational_modes_report_t) + sizeof(CommtactLinkProtocol::commtact_link_message_header_t)) // ADT message
             {
@@ -1243,6 +1272,15 @@ void CommtactLinkManagement::_commtactLinkMessageReceived(CommtactLinkInterface 
 
         case CommtactLinkProtocol::GDT_STATUS_REPORT:
 
+            if (getADTDataRecieved() > 0)
+            {
+                setADTDataRecieved(0);
+            }
+            else
+            {
+                setADTDataRecieved(1);
+            }
+
             if (message_size == sizeof(CommtactLinkProtocol::commtact_adt_status_report_t) + sizeof(CommtactLinkProtocol::commtact_link_message_header_t)) // ADT message
             {
                 linkProtocol->commtact_link_msg_adt_status_report_decode(&message, &_adt_status_report);
@@ -1257,6 +1295,15 @@ void CommtactLinkManagement::_commtactLinkMessageReceived(CommtactLinkInterface 
             break;
 
         case CommtactLinkProtocol::GDT_CONSTANT_FREQUENCY_REPORT:
+
+            if (getADTDataRecieved() > 0)
+            {
+                setADTDataRecieved(0);
+            }
+            else
+            {
+                setADTDataRecieved(1);
+            }
 
             if (message_size == sizeof(CommtactLinkProtocol::commtact_adt_constant_frequency_report_t) + sizeof(CommtactLinkProtocol::commtact_link_message_header_t)) // ADT message
             {
@@ -1287,6 +1334,26 @@ void CommtactLinkManagement::_commtactLinkMessageReceived(CommtactLinkInterface 
             setCommonICDADTHostIPAddressInt(_common_ethernet_settings_report.host_ip);
             setCommonICDADTHostPort(_common_ethernet_settings_report.host_port);
             setCommonICDADTDiscoveryPort(_common_ethernet_settings_report.discovery_port);
+
+            break;
+
+        case CommtactLinkProtocol::COMMON_DISCOVERY_REPORT:
+
+            if (message_size == sizeof(CommtactLinkProtocol::commtact_discovery_report_t) + sizeof(CommtactLinkProtocol::commtact_link_message_header_t))
+            {
+                linkProtocol->commtact_link_msg_common_discovery_report_decode(&message, &_common_discovery_report);
+
+                setCommonICDDiscoveryADTIPAddressInt(_common_discovery_report.icd_ip_address);
+                setCommonICDDiscoveryADTPort(_common_discovery_report.icd_listen_port);
+                setCommonICDDiscoveryDestADTIPAddressInt(_common_discovery_report.icd_dest_ip_address);
+                setCommonICDDiscoveryDestADTPort(_common_discovery_report.icd_dest_port);
+                setCommonICDDiscoveryADTSubnetMaskInt(_common_discovery_report.subnet_mask);
+                setCommonICDDiscoveryADTDefaultGatewayInt(_common_discovery_report.default_gateway);
+                setCommonICDADTDiscoveryVer(_common_discovery_report.icd_ver);
+                setCommonICDADTDiscoveryRev(_common_discovery_report.icd_rev);
+                setCommonICDADTDiscoveryDevType(_common_discovery_report.dev_type);
+                setCommonICDADTDiscoveryDestPort(_common_discovery_report.discovery_dest_port);
+            }
 
             break;
         }
@@ -1397,6 +1464,15 @@ void CommtactLinkManagement::_commtactLinkMessageReceived(CommtactLinkInterface 
             setCommonICDHostIPAddressInt(_common_ethernet_settings_report.host_ip);
             setCommonICDHostPort(_common_ethernet_settings_report.host_port);
             setCommonICDDiscoveryPort(_common_ethernet_settings_report.discovery_port);
+
+            break;
+
+        case CommtactLinkProtocol::COMMON_DISCOVERY_REPORT:
+
+            if (message_size == sizeof(CommtactLinkProtocol::commtact_discovery_report_t) + sizeof(CommtactLinkProtocol::commtact_link_message_header_t))
+            {
+                linkProtocol->commtact_link_msg_common_discovery_report_decode(&message, &_common_discovery_report);
+            }
 
             break;
         }

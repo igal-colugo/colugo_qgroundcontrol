@@ -381,6 +381,24 @@ class CommtactLinkProtocol : public QGCTool
     })
     commtact_basic_ethernet_settings_report_t;
 
+    PACKED_STRUCT(typedef struct __commtact_discovery_report {
+        uint32_t icd_ip_address;
+        uint16_t icd_listen_port;
+        uint32_t icd_dest_ip_address;
+        uint16_t icd_dest_port;
+        uint32_t subnet_mask;
+        uint32_t default_gateway;
+        uint8_t product_name[20];
+        uint8_t setup_name[20];
+        uint8_t icd_ver;
+        uint8_t icd_rev;
+        uint8_t dev_type;
+        uint16_t discovery_dest_port;
+        uint8_t pedestal_type;
+        uint8_t link_encoding_type;
+    })
+    commtact_discovery_report_t;
+
     //--------------------------------------------
 
     typedef enum
@@ -445,8 +463,16 @@ class CommtactLinkProtocol : public QGCTool
     typedef enum
     {
         COMMON_ETHERNET_SETTINGS = 0x05,
-        COMMON_ETHERNET_SETTINGS_REPORT = 0x89
+        COMMON_ETHERNET_SETTINGS_REPORT = 0x89,
+        COMMON_DISCOVERY_REPORT = 0xA7
     } commtact_link_common_opcode_t;
+
+    typedef enum
+    {
+        GDT,
+        ADT,
+        RVT
+    } commtact_device_type_t;
 
   public:
     CommtactLinkProtocol(QGCApplication *app, QGCToolbox *toolbox);
@@ -502,6 +528,7 @@ class CommtactLinkProtocol : public QGCTool
                                                       uint16_t user_payload_dest_ip, uint16_t user_payload_port, uint16_t discovery_port, uint32_t encoded_video_dest_aux_ip,
                                                       uint16_t encoded_video_dest_aux_port, uint32_t encoded_video_dest_ip, uint16_t encoded_video_dest_port, uint32_t dsp_subnet_mask,
                                                       uint32_t dsp_default_gateway, uint32_t ebox_controller_ip, uint16_t ebox_controller_port);
+    void commtact_link_msg_common_discovery_report_decode(const commtact_link_message_t *msg, commtact_discovery_report_t *discovery_report);
     //-----------------------------------------------------------
 
   public slots:

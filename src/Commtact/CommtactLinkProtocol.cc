@@ -699,6 +699,10 @@ void CommtactLinkProtocol::commtact_link_msg_common_ethernet_settings_report_dec
 {
     memcpy(basic_ethernet_settings_report, _COMMTACT_PAYLOAD(msg), sizeof(commtact_basic_ethernet_settings_report_t));
 }
+void CommtactLinkProtocol::commtact_link_msg_common_discovery_report_decode(const commtact_link_message_t *msg, commtact_discovery_report_t *discovery_report)
+{
+    memcpy(discovery_report, _COMMTACT_PAYLOAD(msg), sizeof(commtact_discovery_report_t));
+}
 //------------------------------------------------------------------
 
 //-------------------------- Helpers -------------------------------

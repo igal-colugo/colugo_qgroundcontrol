@@ -138,7 +138,7 @@ Rectangle {
     Row {
         id: buttonRow
         spacing: ScreenTools.defaultFontPixelWidth
-        anchors.bottom: parent.bottom
+        anchors.top: _links.bottom
         anchors.margins: ScreenTools.defaultFontPixelWidth
         anchors.horizontalCenter: parent.horizontalCenter
         QGCButton {

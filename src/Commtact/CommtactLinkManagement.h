@@ -28,6 +28,18 @@ class CommtactLinkManagement : public QGCTool
     Q_INVOKABLE bool getShouldUiEnabledRescueElement();
 
     //---------------------- GDT Properties ---------------------------------
+    Q_PROPERTY(uint gdtDataRecieved READ getGDTDataRecieved WRITE setGDTDataRecieved NOTIFY gdtDataRecievedChanged)
+    uint getGDTDataRecieved()
+    {
+        return (uint) _gdtDataRecieved;
+    }
+    void setGDTDataRecieved(const uint &gdtDataRecieved)
+    {
+        _gdtDataRecieved = (uint) gdtDataRecieved;
+
+        emit gdtDataRecievedChanged();
+    }
+
     Q_PROPERTY(QStringList operationalModeTypeStrings READ operationalModeTypeStrings CONSTANT)
     Q_PROPERTY(uint transmitterOperationalMode READ getTransmitterOperationalMode WRITE setTransmitterOperationalMode NOTIFY transmitterOperationalModeChanged)
     uint getTransmitterOperationalMode()
@@ -212,6 +224,18 @@ class CommtactLinkManagement : public QGCTool
     }
 
     //---------------------- ADT Properties ---------------------------------
+    Q_PROPERTY(uint adtDataRecieved READ getADTDataRecieved WRITE setADTDataRecieved NOTIFY adtDataRecievedChanged)
+    uint getADTDataRecieved()
+    {
+        return (uint) _adtDataRecieved;
+    }
+    void setADTDataRecieved(const uint &adtDataRecieved)
+    {
+        _adtDataRecieved = (uint) adtDataRecieved;
+
+        emit adtDataRecievedChanged();
+    }
+
     Q_PROPERTY(QStringList adtOperationalModeTypeStrings READ adtOperationalModeTypeStrings CONSTANT)
     Q_PROPERTY(uint adtTransmitterOperationalMode READ getAdtTransmitterOperationalMode WRITE setAdtTransmitterOperationalMode NOTIFY adtTransmitterOperationalModeChanged)
     uint getAdtTransmitterOperationalMode()
@@ -592,6 +616,210 @@ class CommtactLinkManagement : public QGCTool
 
     //---------------------------------------------------------------
 
+    //------------------- Common Discovery GDT -------------------------
+    Q_PROPERTY(uint commonICDDiscoveryGDTIPAddressInt READ getCommonICDDiscoveryGDTIPAddressInt WRITE setCommonICDDiscoveryGDTIPAddressInt NOTIFY commonICDDiscoveryGDTIPAddressIntChanged)
+    uint getCommonICDDiscoveryGDTIPAddressInt()
+    {
+        return (uint) _commonICDDiscoveryGDTIPAddressInt;
+    }
+    void setCommonICDDiscoveryGDTIPAddressInt(const uint &commonICDDiscoveryGDTIPAddressInt)
+    {
+        _commonICDDiscoveryGDTIPAddressInt = (uint) commonICDDiscoveryGDTIPAddressInt;
+
+        unsigned char *pointer_to_ip_address = (unsigned char *) &_commonICDDiscoveryGDTIPAddressInt;
+
+        QString commonICDDiscoveryGDTIPAddress = QString::number((uint) * (pointer_to_ip_address + 3)) + "." + QString::number((uint) * (pointer_to_ip_address + 2)) + "." +
+                                                 QString::number((uint) * (pointer_to_ip_address + 1)) + "." + QString::number((uint) * (pointer_to_ip_address + 0));
+
+        setCommonICDDiscoveryGDTIPAddress(commonICDDiscoveryGDTIPAddress);
+
+        emit commonICDDiscoveryGDTIPAddressIntChanged();
+    }
+
+    Q_PROPERTY(QString commonICDDiscoveryGDTIPAddress READ getCommonICDDiscoveryGDTIPAddress WRITE setCommonICDDiscoveryGDTIPAddress NOTIFY commonICDDiscoveryGDTIPAddressChanged)
+    QString getCommonICDDiscoveryGDTIPAddress()
+    {
+        return _commonICDDiscoveryGDTIPAddress;
+    }
+    void setCommonICDDiscoveryGDTIPAddress(const QString &commonICDDiscoveryGDTIPAddress)
+    {
+        _commonICDDiscoveryGDTIPAddress = commonICDDiscoveryGDTIPAddress;
+
+        emit commonICDDiscoveryGDTIPAddressChanged();
+    }
+
+    Q_PROPERTY(uint commonICDDiscoveryGDTPort READ getCommonICDDiscoveryGDTPort WRITE setCommonICDDiscoveryGDTPort NOTIFY commonICDDiscoveryGDTPortChanged)
+    uint getCommonICDDiscoveryGDTPort()
+    {
+        return _commonICDDiscoveryGDTPort;
+    }
+    void setCommonICDDiscoveryGDTPort(const uint &commonICDDiscoveryGDTPort)
+    {
+        _commonICDDiscoveryGDTPort = commonICDDiscoveryGDTPort;
+
+        emit commonICDDiscoveryGDTPortChanged();
+    }
+
+    Q_PROPERTY(uint commonICDDiscoveryDestGDTIPAddressInt READ getCommonICDDiscoveryDestGDTIPAddressInt WRITE setCommonICDDiscoveryDestGDTIPAddressInt NOTIFY
+                   commonICDDiscoveryDestGDTIPAddressIntChanged)
+    uint getCommonICDDiscoveryDestGDTIPAddressInt()
+    {
+        return (uint) _commonICDDiscoveryDestGDTIPAddressInt;
+    }
+    void setCommonICDDiscoveryDestGDTIPAddressInt(const uint &commonICDDiscoveryDestGDTIPAddressInt)
+    {
+        _commonICDDiscoveryDestGDTIPAddressInt = (uint) commonICDDiscoveryDestGDTIPAddressInt;
+
+        unsigned char *pointer_to_ip_address = (unsigned char *) &_commonICDDiscoveryDestGDTIPAddressInt;
+
+        QString commonICDDiscoveryDestGDTIPAddress = QString::number((uint) * (pointer_to_ip_address + 3)) + "." + QString::number((uint) * (pointer_to_ip_address + 2)) + "." +
+                                                     QString::number((uint) * (pointer_to_ip_address + 1)) + "." + QString::number((uint) * (pointer_to_ip_address + 0));
+
+        setCommonICDDiscoveryDestGDTIPAddress(commonICDDiscoveryDestGDTIPAddress);
+
+        emit commonICDDiscoveryDestGDTIPAddressIntChanged();
+    }
+
+    Q_PROPERTY(
+        QString commonICDDiscoveryDestGDTIPAddress READ getCommonICDDiscoveryDestGDTIPAddress WRITE setCommonICDDiscoveryDestGDTIPAddress NOTIFY commonICDDiscoveryDestGDTIPAddressChanged)
+    QString getCommonICDDiscoveryDestGDTIPAddress()
+    {
+        return _commonICDDiscoveryDestGDTIPAddress;
+    }
+    void setCommonICDDiscoveryDestGDTIPAddress(const QString &commonICDDiscoveryDestGDTIPAddress)
+    {
+        _commonICDDiscoveryDestGDTIPAddress = commonICDDiscoveryDestGDTIPAddress;
+
+        emit commonICDDiscoveryDestGDTIPAddressChanged();
+    }
+
+    Q_PROPERTY(uint commonICDDiscoveryDestGDTPort READ getCommonICDDiscoveryDestGDTPort WRITE setCommonICDDiscoveryDestGDTPort NOTIFY commonICDDiscoveryDestGDTPortChanged)
+    uint getCommonICDDiscoveryDestGDTPort()
+    {
+        return _commonICDDiscoveryDestGDTPort;
+    }
+    void setCommonICDDiscoveryDestGDTPort(const uint &commonICDDiscoveryDestGDTPort)
+    {
+        _commonICDDiscoveryDestGDTPort = commonICDDiscoveryDestGDTPort;
+
+        emit commonICDDiscoveryDestGDTPortChanged();
+    }
+
+    Q_PROPERTY(
+        uint commonICDDiscoveryGDTSubnetMaskInt READ getCommonICDDiscoveryGDTSubnetMaskInt WRITE setCommonICDDiscoveryGDTSubnetMaskInt NOTIFY commonICDDiscoveryGDTSubnetMaskIntChanged)
+    uint getCommonICDDiscoveryGDTSubnetMaskInt()
+    {
+        return (uint) _commonICDDiscoveryGDTSubnetMaskInt;
+    }
+    void setCommonICDDiscoveryGDTSubnetMaskInt(const uint &commonICDDiscoveryGDTSubnetMaskInt)
+    {
+        _commonICDDiscoveryGDTSubnetMaskInt = (uint) commonICDDiscoveryGDTSubnetMaskInt;
+
+        unsigned char *pointer_to_ip_address = (unsigned char *) &_commonICDDiscoveryGDTSubnetMaskInt;
+
+        QString commonICDDiscoveryGDTSubnetMask = QString::number((uint) * (pointer_to_ip_address + 3)) + "." + QString::number((uint) * (pointer_to_ip_address + 2)) + "." +
+                                                  QString::number((uint) * (pointer_to_ip_address + 1)) + "." + QString::number((uint) * (pointer_to_ip_address + 0));
+
+        setCommonICDDiscoveryGDTSubnetMask(commonICDDiscoveryGDTSubnetMask);
+
+        emit commonICDDiscoveryGDTSubnetMaskIntChanged();
+    }
+
+    Q_PROPERTY(QString commonICDDiscoveryGDTSubnetMask READ getCommonICDDiscoveryGDTSubnetMask WRITE setCommonICDDiscoveryGDTSubnetMask NOTIFY commonICDDiscoveryGDTSubnetMaskChanged)
+    QString getCommonICDDiscoveryGDTSubnetMask()
+    {
+        return _commonICDDiscoveryGDTSubnetMask;
+    }
+    void setCommonICDDiscoveryGDTSubnetMask(const QString &commonICDDiscoveryGDTSubnetMask)
+    {
+        _commonICDDiscoveryGDTSubnetMask = commonICDDiscoveryGDTSubnetMask;
+
+        emit commonICDDiscoveryGDTSubnetMaskChanged();
+    }
+
+    Q_PROPERTY(uint commonICDDiscoveryGDTDefaultGatewayInt READ getCommonICDDiscoveryGDTDefaultGatewayInt WRITE setCommonICDDiscoveryGDTDefaultGatewayInt NOTIFY
+                   commonICDDiscoveryGDTDefaultGatewayIntChanged)
+    uint getCommonICDDiscoveryGDTDefaultGatewayInt()
+    {
+        return (uint) _commonICDDiscoveryGDTDefaultGatewayInt;
+    }
+    void setCommonICDDiscoveryGDTDefaultGatewayInt(const uint &commonICDDiscoveryGDTDefaultGatewayInt)
+    {
+        _commonICDDiscoveryGDTDefaultGatewayInt = (uint) commonICDDiscoveryGDTDefaultGatewayInt;
+
+        unsigned char *pointer_to_ip_address = (unsigned char *) &_commonICDDiscoveryGDTDefaultGatewayInt;
+
+        QString commonICDDiscoveryGDTDefaultGateway = QString::number((uint) * (pointer_to_ip_address + 3)) + "." + QString::number((uint) * (pointer_to_ip_address + 2)) + "." +
+                                                      QString::number((uint) * (pointer_to_ip_address + 1)) + "." + QString::number((uint) * (pointer_to_ip_address + 0));
+
+        setCommonICDDiscoveryGDTDefaultGateway(commonICDDiscoveryGDTDefaultGateway);
+
+        emit commonICDDiscoveryGDTDefaultGatewayIntChanged();
+    }
+
+    Q_PROPERTY(QString commonICDDiscoveryGDTDefaultGateway READ getCommonICDDiscoveryGDTDefaultGateway WRITE setCommonICDDiscoveryGDTDefaultGateway NOTIFY
+                   commonICDDiscoveryGDTDefaultGatewayChanged)
+    QString getCommonICDDiscoveryGDTDefaultGateway()
+    {
+        return _commonICDDiscoveryGDTDefaultGateway;
+    }
+    void setCommonICDDiscoveryGDTDefaultGateway(const QString &commonICDDiscoveryGDTDefaultGateway)
+    {
+        _commonICDDiscoveryGDTDefaultGateway = commonICDDiscoveryGDTDefaultGateway;
+
+        emit commonICDDiscoveryGDTDefaultGatewayChanged();
+    }
+
+    Q_PROPERTY(uint commonICDGDTDiscoveryDestPort READ getCommonICDGDTDiscoveryDestPort WRITE setCommonICDGDTDiscoveryDestPort NOTIFY commonICDGDTDiscoveryDestPortChanged)
+    uint getCommonICDGDTDiscoveryDestPort()
+    {
+        return _commonICDGDTDiscoveryDestPort;
+    }
+    void setCommonICDGDTDiscoveryDestPort(const uint &commonICDGDTDiscoveryDestPort)
+    {
+        _commonICDGDTDiscoveryDestPort = commonICDGDTDiscoveryDestPort;
+
+        emit commonICDGDTDiscoveryDestPortChanged();
+    }
+
+    Q_PROPERTY(uint commonICDGDTDiscoveryVer READ getCommonICDGDTDiscoveryVer WRITE setCommonICDGDTDiscoveryVer NOTIFY commonICDGDTDiscoveryVerChanged)
+    uint getCommonICDGDTDiscoveryVer()
+    {
+        return _commonICDGDTDiscoveryVer;
+    }
+    void setCommonICDGDTDiscoveryVer(const uint &commonICDGDTDiscoveryVer)
+    {
+        _commonICDGDTDiscoveryVer = commonICDGDTDiscoveryVer;
+
+        emit commonICDGDTDiscoveryVerChanged();
+    }
+
+    Q_PROPERTY(uint commonICDGDTDiscoveryRev READ getCommonICDGDTDiscoveryRev WRITE setCommonICDGDTDiscoveryRev NOTIFY commonICDGDTDiscoveryRevChanged)
+    uint getCommonICDGDTDiscoveryRev()
+    {
+        return _commonICDGDTDiscoveryRev;
+    }
+    void setCommonICDGDTDiscoveryRev(const uint &commonICDGDTDiscoveryRev)
+    {
+        _commonICDGDTDiscoveryRev = commonICDGDTDiscoveryRev;
+
+        emit commonICDGDTDiscoveryRevChanged();
+    }
+
+    Q_PROPERTY(uint commonICDGDTDiscoveryDevType READ getCommonICDGDTDiscoveryDevType WRITE setCommonICDGDTDiscoveryDevType NOTIFY commonICDGDTDiscoveryDevTypeChanged)
+    uint getCommonICDGDTDiscoveryDevType()
+    {
+        return _commonICDGDTDiscoveryDevType;
+    }
+    void setCommonICDGDTDiscoveryDevType(const uint &commonICDGDTDiscoveryDevType)
+    {
+        _commonICDGDTDiscoveryDevType = commonICDGDTDiscoveryDevType;
+
+        emit commonICDGDTDiscoveryDevTypeChanged();
+    }
+
+    //---------------------------------------------------------------
+
     //------------------- Common ADT Properties -------------------------
     Q_PROPERTY(uint commonICDADTIPAddressInt READ getCommonICDADTIPAddressInt WRITE setCommonICDADTIPAddressInt NOTIFY commonICDADTIPAddressIntChanged)
     uint getCommonICDADTIPAddressInt()
@@ -753,6 +981,208 @@ class CommtactLinkManagement : public QGCTool
         emit commonICDADTDiscoveryPortChanged();
     }
 
+    //------------------- Common Discovery ADT -------------------------
+    Q_PROPERTY(uint commonICDDiscoveryADTIPAddressInt READ getCommonICDDiscoveryADTIPAddressInt WRITE setCommonICDDiscoveryADTIPAddressInt NOTIFY commonICDDiscoveryADTIPAddressIntChanged)
+    uint getCommonICDDiscoveryADTIPAddressInt()
+    {
+        return (uint) _commonICDDiscoveryADTIPAddressInt;
+    }
+    void setCommonICDDiscoveryADTIPAddressInt(const uint &commonICDDiscoveryADTIPAddressInt)
+    {
+        _commonICDDiscoveryADTIPAddressInt = (uint) commonICDDiscoveryADTIPAddressInt;
+
+        unsigned char *pointer_to_ip_address = (unsigned char *) &_commonICDDiscoveryADTIPAddressInt;
+
+        QString commonICDDiscoveryADTIPAddress = QString::number((uint) * (pointer_to_ip_address + 3)) + "." + QString::number((uint) * (pointer_to_ip_address + 2)) + "." +
+                                                 QString::number((uint) * (pointer_to_ip_address + 1)) + "." + QString::number((uint) * (pointer_to_ip_address + 0));
+
+        setCommonICDDiscoveryADTIPAddress(commonICDDiscoveryADTIPAddress);
+
+        emit commonICDDiscoveryADTIPAddressIntChanged();
+    }
+
+    Q_PROPERTY(QString commonICDDiscoveryADTIPAddress READ getCommonICDDiscoveryADTIPAddress WRITE setCommonICDDiscoveryADTIPAddress NOTIFY commonICDDiscoveryADTIPAddressChanged)
+    QString getCommonICDDiscoveryADTIPAddress()
+    {
+        return _commonICDDiscoveryADTIPAddress;
+    }
+    void setCommonICDDiscoveryADTIPAddress(const QString &commonICDDiscoveryADTIPAddress)
+    {
+        _commonICDDiscoveryADTIPAddress = commonICDDiscoveryADTIPAddress;
+
+        emit commonICDDiscoveryADTIPAddressChanged();
+    }
+
+    Q_PROPERTY(uint commonICDDiscoveryADTPort READ getCommonICDDiscoveryADTPort WRITE setCommonICDDiscoveryADTPort NOTIFY commonICDDiscoveryADTPortChanged)
+    uint getCommonICDDiscoveryADTPort()
+    {
+        return _commonICDDiscoveryADTPort;
+    }
+    void setCommonICDDiscoveryADTPort(const uint &commonICDDiscoveryADTPort)
+    {
+        _commonICDDiscoveryADTPort = commonICDDiscoveryADTPort;
+
+        emit commonICDDiscoveryADTPortChanged();
+    }
+
+    Q_PROPERTY(uint commonICDDiscoveryDestADTIPAddressInt READ getCommonICDDiscoveryDestADTIPAddressInt WRITE setCommonICDDiscoveryDestADTIPAddressInt NOTIFY
+                   commonICDDiscoveryDestADTIPAddressIntChanged)
+    uint getCommonICDDiscoveryDestADTIPAddressInt()
+    {
+        return (uint) _commonICDDiscoveryDestADTIPAddressInt;
+    }
+    void setCommonICDDiscoveryDestADTIPAddressInt(const uint &commonICDDiscoveryDestADTIPAddressInt)
+    {
+        _commonICDDiscoveryDestADTIPAddressInt = (uint) commonICDDiscoveryDestADTIPAddressInt;
+
+        unsigned char *pointer_to_ip_address = (unsigned char *) &_commonICDDiscoveryDestADTIPAddressInt;
+
+        QString commonICDDiscoveryDestADTIPAddress = QString::number((uint) * (pointer_to_ip_address + 3)) + "." + QString::number((uint) * (pointer_to_ip_address + 2)) + "." +
+                                                     QString::number((uint) * (pointer_to_ip_address + 1)) + "." + QString::number((uint) * (pointer_to_ip_address + 0));
+
+        setCommonICDDiscoveryDestADTIPAddress(commonICDDiscoveryDestADTIPAddress);
+
+        emit commonICDDiscoveryDestADTIPAddressIntChanged();
+    }
+
+    Q_PROPERTY(
+        QString commonICDDiscoveryDestADTIPAddress READ getCommonICDDiscoveryDestADTIPAddress WRITE setCommonICDDiscoveryDestADTIPAddress NOTIFY commonICDDiscoveryDestADTIPAddressChanged)
+    QString getCommonICDDiscoveryDestADTIPAddress()
+    {
+        return _commonICDDiscoveryDestADTIPAddress;
+    }
+    void setCommonICDDiscoveryDestADTIPAddress(const QString &commonICDDiscoveryDestADTIPAddress)
+    {
+        _commonICDDiscoveryDestADTIPAddress = commonICDDiscoveryDestADTIPAddress;
+
+        emit commonICDDiscoveryDestADTIPAddressChanged();
+    }
+
+    Q_PROPERTY(uint commonICDDiscoveryDestADTPort READ getCommonICDDiscoveryDestADTPort WRITE setCommonICDDiscoveryDestADTPort NOTIFY commonICDDiscoveryDestADTPortChanged)
+    uint getCommonICDDiscoveryDestADTPort()
+    {
+        return _commonICDDiscoveryDestADTPort;
+    }
+    void setCommonICDDiscoveryDestADTPort(const uint &commonICDDiscoveryDestADTPort)
+    {
+        _commonICDDiscoveryDestADTPort = commonICDDiscoveryDestADTPort;
+
+        emit commonICDDiscoveryDestADTPortChanged();
+    }
+
+    Q_PROPERTY(
+        uint commonICDDiscoveryADTSubnetMaskInt READ getCommonICDDiscoveryADTSubnetMaskInt WRITE setCommonICDDiscoveryADTSubnetMaskInt NOTIFY commonICDDiscoveryADTSubnetMaskIntChanged)
+    uint getCommonICDDiscoveryADTSubnetMaskInt()
+    {
+        return (uint) _commonICDDiscoveryADTSubnetMaskInt;
+    }
+    void setCommonICDDiscoveryADTSubnetMaskInt(const uint &commonICDDiscoveryADTSubnetMaskInt)
+    {
+        _commonICDDiscoveryADTSubnetMaskInt = (uint) commonICDDiscoveryADTSubnetMaskInt;
+
+        unsigned char *pointer_to_ip_address = (unsigned char *) &_commonICDDiscoveryADTSubnetMaskInt;
+
+        QString commonICDDiscoveryADTSubnetMask = QString::number((uint) * (pointer_to_ip_address + 3)) + "." + QString::number((uint) * (pointer_to_ip_address + 2)) + "." +
+                                                  QString::number((uint) * (pointer_to_ip_address + 1)) + "." + QString::number((uint) * (pointer_to_ip_address + 0));
+
+        setCommonICDDiscoveryADTSubnetMask(commonICDDiscoveryADTSubnetMask);
+
+        emit commonICDDiscoveryADTSubnetMaskIntChanged();
+    }
+
+    Q_PROPERTY(QString commonICDDiscoveryADTSubnetMask READ getCommonICDDiscoveryADTSubnetMask WRITE setCommonICDDiscoveryADTSubnetMask NOTIFY commonICDDiscoveryADTSubnetMaskChanged)
+    QString getCommonICDDiscoveryADTSubnetMask()
+    {
+        return _commonICDDiscoveryADTSubnetMask;
+    }
+    void setCommonICDDiscoveryADTSubnetMask(const QString &commonICDDiscoveryADTSubnetMask)
+    {
+        _commonICDDiscoveryADTSubnetMask = commonICDDiscoveryADTSubnetMask;
+
+        emit commonICDDiscoveryADTSubnetMaskChanged();
+    }
+
+    Q_PROPERTY(uint commonICDDiscoveryADTDefaultGatewayInt READ getCommonICDDiscoveryADTDefaultGatewayInt WRITE setCommonICDDiscoveryADTDefaultGatewayInt NOTIFY
+                   commonICDDiscoveryADTDefaultGatewayIntChanged)
+    uint getCommonICDDiscoveryADTDefaultGatewayInt()
+    {
+        return (uint) _commonICDDiscoveryADTDefaultGatewayInt;
+    }
+    void setCommonICDDiscoveryADTDefaultGatewayInt(const uint &commonICDDiscoveryADTDefaultGatewayInt)
+    {
+        _commonICDDiscoveryADTDefaultGatewayInt = (uint) commonICDDiscoveryADTDefaultGatewayInt;
+
+        unsigned char *pointer_to_ip_address = (unsigned char *) &_commonICDDiscoveryADTDefaultGatewayInt;
+
+        QString commonICDDiscoveryADTDefaultGateway = QString::number((uint) * (pointer_to_ip_address + 3)) + "." + QString::number((uint) * (pointer_to_ip_address + 2)) + "." +
+                                                      QString::number((uint) * (pointer_to_ip_address + 1)) + "." + QString::number((uint) * (pointer_to_ip_address + 0));
+
+        setCommonICDDiscoveryADTDefaultGateway(commonICDDiscoveryADTDefaultGateway);
+
+        emit commonICDDiscoveryADTDefaultGatewayIntChanged();
+    }
+
+    Q_PROPERTY(QString commonICDDiscoveryADTDefaultGateway READ getCommonICDDiscoveryADTDefaultGateway WRITE setCommonICDDiscoveryADTDefaultGateway NOTIFY
+                   commonICDDiscoveryADTDefaultGatewayChanged)
+    QString getCommonICDDiscoveryADTDefaultGateway()
+    {
+        return _commonICDDiscoveryADTDefaultGateway;
+    }
+    void setCommonICDDiscoveryADTDefaultGateway(const QString &commonICDDiscoveryADTDefaultGateway)
+    {
+        _commonICDDiscoveryADTDefaultGateway = commonICDDiscoveryADTDefaultGateway;
+
+        emit commonICDDiscoveryADTDefaultGatewayChanged();
+    }
+
+    Q_PROPERTY(uint commonICDADTDiscoveryDestPort READ getCommonICDADTDiscoveryDestPort WRITE setCommonICDADTDiscoveryDestPort NOTIFY commonICDADTDiscoveryDestPortChanged)
+    uint getCommonICDADTDiscoveryDestPort()
+    {
+        return _commonICDADTDiscoveryDestPort;
+    }
+    void setCommonICDADTDiscoveryDestPort(const uint &commonICDADTDiscoveryDestPort)
+    {
+        _commonICDADTDiscoveryDestPort = commonICDADTDiscoveryDestPort;
+
+        emit commonICDADTDiscoveryDestPortChanged();
+    }
+
+    Q_PROPERTY(uint commonICDADTDiscoveryVer READ getCommonICDADTDiscoveryVer WRITE setCommonICDADTDiscoveryVer NOTIFY commonICDADTDiscoveryVerChanged)
+    uint getCommonICDADTDiscoveryVer()
+    {
+        return _commonICDADTDiscoveryVer;
+    }
+    void setCommonICDADTDiscoveryVer(const uint &commonICDADTDiscoveryVer)
+    {
+        _commonICDADTDiscoveryVer = commonICDADTDiscoveryVer;
+
+        emit commonICDADTDiscoveryVerChanged();
+    }
+
+    Q_PROPERTY(uint commonICDADTDiscoveryRev READ getCommonICDADTDiscoveryRev WRITE setCommonICDADTDiscoveryRev NOTIFY commonICDADTDiscoveryRevChanged)
+    uint getCommonICDADTDiscoveryRev()
+    {
+        return _commonICDADTDiscoveryRev;
+    }
+    void setCommonICDADTDiscoveryRev(const uint &commonICDADTDiscoveryRev)
+    {
+        _commonICDADTDiscoveryRev = commonICDADTDiscoveryRev;
+
+        emit commonICDADTDiscoveryRevChanged();
+    }
+
+    Q_PROPERTY(uint commonICDADTDiscoveryDevType READ getCommonICDADTDiscoveryDevType WRITE setCommonICDADTDiscoveryDevType NOTIFY commonICDADTDiscoveryDevTypeChanged)
+    uint getCommonICDADTDiscoveryDevType()
+    {
+        return _commonICDADTDiscoveryDevType;
+    }
+    void setCommonICDADTDiscoveryDevType(const uint &commonICDADTDiscoveryDevType)
+    {
+        _commonICDADTDiscoveryDevType = commonICDADTDiscoveryDevType;
+
+        emit commonICDADTDiscoveryDevTypeChanged();
+    }
+
     //---------------------------------------------------------------
 
     //------------------- GDT commands ------------------------------
@@ -821,6 +1251,7 @@ class CommtactLinkManagement : public QGCTool
     QTimer _updateTimer;
 
     //--------------- GDT fields --------------------
+    uint8_t _gdtDataRecieved = 0;
     uint8_t _transmitterOperationalMode = 0;
     uint8_t _gdtAntennaSelect = 0;
     uint8_t _gdtPedestalTrackMode = 0;
@@ -847,8 +1278,10 @@ class CommtactLinkManagement : public QGCTool
     CommtactLinkProtocol::commtact_gdt_cbit_report_t _gdt_cbit_report;
     CommtactLinkProtocol::commtact_gdt_mission_adt_status_report_t _gdt_mission_adt_status_report;
     CommtactLinkProtocol::commtact_basic_ethernet_settings_report_t _common_ethernet_settings_report;
+    CommtactLinkProtocol::commtact_discovery_report_t _common_discovery_report;
 
     //--------------- ADT fields --------------------
+    uint8_t _adtDataRecieved = 0;
     uint8_t _adtTransmitterOperationalMode = 0;
     uint8_t _adtAntennaSelect = 0;
     uint8_t _adtTddOperationalMode = 0;
@@ -891,6 +1324,21 @@ class CommtactLinkManagement : public QGCTool
     QString _commonICDHostIPAddress = "127.0.0.1";
     uint _commonICDHostPort = 0;
     uint _commonICDDiscoveryPort = 0;
+    //--------------- Common discovery -------------
+    uint _commonICDDiscoveryGDTIPAddressInt = 0;
+    QString _commonICDDiscoveryGDTIPAddress = "127.0.0.1";
+    uint _commonICDDiscoveryGDTPort = 0;
+    uint _commonICDDiscoveryDestGDTIPAddressInt = 0;
+    QString _commonICDDiscoveryDestGDTIPAddress = "127.0.0.1";
+    uint _commonICDDiscoveryDestGDTPort = 0;
+    uint _commonICDDiscoveryGDTSubnetMaskInt = 0;
+    QString _commonICDDiscoveryGDTSubnetMask = "255.255.255.0";
+    uint _commonICDDiscoveryGDTDefaultGatewayInt = 0;
+    QString _commonICDDiscoveryGDTDefaultGateway = "127.0.0.1";
+    uint _commonICDGDTDiscoveryDestPort = 0;
+    uint _commonICDGDTDiscoveryVer = 0;
+    uint _commonICDGDTDiscoveryRev = 0;
+    uint _commonICDGDTDiscoveryDevType = 0;
     //-----------------------------------------------
 
     //--------------- Common ADT fields -------------
@@ -905,10 +1353,26 @@ class CommtactLinkManagement : public QGCTool
     QString _commonICDADTHostIPAddress = "127.0.0.1";
     uint _commonICDADTHostPort = 0;
     uint _commonICDADTDiscoveryPort = 0;
+    //--------------- Common discovery -------------
+    uint _commonICDDiscoveryADTIPAddressInt = 0;
+    QString _commonICDDiscoveryADTIPAddress = "127.0.0.1";
+    uint _commonICDDiscoveryADTPort = 0;
+    uint _commonICDDiscoveryDestADTIPAddressInt = 0;
+    QString _commonICDDiscoveryDestADTIPAddress = "127.0.0.1";
+    uint _commonICDDiscoveryDestADTPort = 0;
+    uint _commonICDDiscoveryADTSubnetMaskInt = 0;
+    QString _commonICDDiscoveryADTSubnetMask = "255.255.255.0";
+    uint _commonICDDiscoveryADTDefaultGatewayInt = 0;
+    QString _commonICDDiscoveryADTDefaultGateway = "127.0.0.1";
+    uint _commonICDADTDiscoveryDestPort = 0;
+    uint _commonICDADTDiscoveryVer = 0;
+    uint _commonICDADTDiscoveryRev = 0;
+    uint _commonICDADTDiscoveryDevType = 0;
     //-----------------------------------------------
 
   signals:
     //---------------- GDT signals ------------------
+    void gdtDataRecievedChanged();
     void transmitterOperationalModeChanged();
     void gdtAntennaSelectChanged();
     void gdtPedestalTrackModeChanged();
@@ -931,6 +1395,7 @@ class CommtactLinkManagement : public QGCTool
     //-----------------------------------------------
 
     //---------------- ADT signals ------------------
+    void adtDataRecievedChanged();
     void adtTransmitterOperationalModeChanged();
     void adtAntennaSelectChanged();
     void adtTddOperationalModeChanged();
@@ -968,6 +1433,22 @@ class CommtactLinkManagement : public QGCTool
     void commonICDHostIPAddressIntChanged();
     void commonICDHostPortChanged();
     void commonICDDiscoveryPortChanged();
+
+    void commonICDDiscoveryGDTIPAddressIntChanged();
+    void commonICDDiscoveryGDTIPAddressChanged();
+    void commonICDDiscoveryGDTPortChanged();
+    void commonICDDiscoveryDestGDTIPAddressIntChanged();
+    void commonICDDiscoveryDestGDTIPAddressChanged();
+    void commonICDDiscoveryDestGDTPortChanged();
+    void commonICDDiscoveryGDTSubnetMaskIntChanged();
+    void commonICDDiscoveryGDTSubnetMaskChanged();
+    void commonICDDiscoveryGDTDefaultGatewayIntChanged();
+    void commonICDDiscoveryGDTDefaultGatewayChanged();
+    void commonICDGDTDiscoveryDestPortChanged();
+    void commonICDGDTDiscoveryVerChanged();
+    void commonICDGDTDiscoveryRevChanged();
+    void commonICDGDTDiscoveryDevTypeChanged();
+
     //-----------------------------------------------
 
     //---------------- Common ADT signals -----------
@@ -982,6 +1463,21 @@ class CommtactLinkManagement : public QGCTool
     void commonICDADTHostIPAddressIntChanged();
     void commonICDADTHostPortChanged();
     void commonICDADTDiscoveryPortChanged();
+
+    void commonICDDiscoveryADTIPAddressIntChanged();
+    void commonICDDiscoveryADTIPAddressChanged();
+    void commonICDDiscoveryADTPortChanged();
+    void commonICDDiscoveryDestADTIPAddressIntChanged();
+    void commonICDDiscoveryDestADTIPAddressChanged();
+    void commonICDDiscoveryDestADTPortChanged();
+    void commonICDDiscoveryADTSubnetMaskIntChanged();
+    void commonICDDiscoveryADTSubnetMaskChanged();
+    void commonICDDiscoveryADTDefaultGatewayIntChanged();
+    void commonICDDiscoveryADTDefaultGatewayChanged();
+    void commonICDADTDiscoveryDestPortChanged();
+    void commonICDADTDiscoveryVerChanged();
+    void commonICDADTDiscoveryRevChanged();
+    void commonICDADTDiscoveryDevTypeChanged();
     //-----------------------------------------------
 
   public slots:
