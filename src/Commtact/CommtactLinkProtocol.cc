@@ -703,6 +703,10 @@ void CommtactLinkProtocol::commtact_link_msg_common_discovery_report_decode(cons
 {
     memcpy(discovery_report, _COMMTACT_PAYLOAD(msg), sizeof(commtact_discovery_report_t));
 }
+void CommtactLinkProtocol::commtact_link_msg_common_version_report_decode(const commtact_link_message_t *msg, commtact_version_report_t *version_report)
+{
+    memcpy(version_report, _COMMTACT_PAYLOAD(msg), sizeof(commtact_version_report_t));
+}
 //------------------------------------------------------------------
 
 //-------------------------- Helpers -------------------------------

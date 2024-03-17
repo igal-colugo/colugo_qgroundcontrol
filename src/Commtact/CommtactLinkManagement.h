@@ -614,6 +614,42 @@ class CommtactLinkManagement : public QGCTool
         emit commonICDDiscoveryPortChanged();
     }
 
+    Q_PROPERTY(uint commonICDGDTFWVersion READ getCommonICDGDTFWVersion WRITE setCommonICDGDTFWVersion NOTIFY commonICDGDTFWVersionChanged)
+    uint getCommonICDGDTFWVersion()
+    {
+        return _commonICDGDTFWVersion;
+    }
+    void setCommonICDGDTFWVersion(const uint &commonICDGDTFWVersion)
+    {
+        _commonICDGDTFWVersion = commonICDGDTFWVersion;
+
+        emit commonICDGDTFWVersionChanged();
+    }
+
+    Q_PROPERTY(uint commonICDGDTSW0Version READ getCommonICDGDTSW0Version WRITE setCommonICDGDTSW0Version NOTIFY commonICDGDTSW0VersionChanged)
+    uint getCommonICDGDTSW0Version()
+    {
+        return _commonICDGDTSW0Version;
+    }
+    void setCommonICDGDTSW0Version(const uint &commonICDGDTSW0Version)
+    {
+        _commonICDGDTSW0Version = commonICDGDTSW0Version;
+
+        emit commonICDGDTSW0VersionChanged();
+    }
+
+    Q_PROPERTY(uint commonICDGDTSW1Version READ getCommonICDGDTSW1Version WRITE setCommonICDGDTSW1Version NOTIFY commonICDGDTSW1VersionChanged)
+    uint getCommonICDGDTSW1Version()
+    {
+        return _commonICDGDTSW1Version;
+    }
+    void setCommonICDGDTSW1Version(const uint &commonICDGDTSW1Version)
+    {
+        _commonICDGDTSW1Version = commonICDGDTSW1Version;
+
+        emit commonICDGDTSW1VersionChanged();
+    }
+
     //---------------------------------------------------------------
 
     //------------------- Common Discovery GDT -------------------------
@@ -981,6 +1017,42 @@ class CommtactLinkManagement : public QGCTool
         emit commonICDADTDiscoveryPortChanged();
     }
 
+    Q_PROPERTY(uint commonICDADTFWVersion READ getCommonICDADTFWVersion WRITE setCommonICDADTFWVersion NOTIFY commonICDADTFWVersionChanged)
+    uint getCommonICDADTFWVersion()
+    {
+        return _commonICDADTFWVersion;
+    }
+    void setCommonICDADTFWVersion(const uint &commonICDADTFWVersion)
+    {
+        _commonICDADTFWVersion = commonICDADTFWVersion;
+
+        emit commonICDADTFWVersionChanged();
+    }
+
+    Q_PROPERTY(uint commonICDADTSW0Version READ getCommonICDADTSW0Version WRITE setCommonICDADTSW0Version NOTIFY commonICDADTSW0VersionChanged)
+    uint getCommonICDADTSW0Version()
+    {
+        return _commonICDADTSW0Version;
+    }
+    void setCommonICDADTSW0Version(const uint &commonICDADTSW0Version)
+    {
+        _commonICDADTSW0Version = commonICDADTSW0Version;
+
+        emit commonICDADTSW0VersionChanged();
+    }
+
+    Q_PROPERTY(uint commonICDADTSW1Version READ getCommonICDADTSW1Version WRITE setCommonICDADTSW1Version NOTIFY commonICDADTSW1VersionChanged)
+    uint getCommonICDADTSW1Version()
+    {
+        return _commonICDADTSW1Version;
+    }
+    void setCommonICDADTSW1Version(const uint &commonICDADTSW1Version)
+    {
+        _commonICDADTSW1Version = commonICDADTSW1Version;
+
+        emit commonICDADTSW1VersionChanged();
+    }
+
     //------------------- Common Discovery ADT -------------------------
     Q_PROPERTY(uint commonICDDiscoveryADTIPAddressInt READ getCommonICDDiscoveryADTIPAddressInt WRITE setCommonICDDiscoveryADTIPAddressInt NOTIFY commonICDDiscoveryADTIPAddressIntChanged)
     uint getCommonICDDiscoveryADTIPAddressInt()
@@ -1279,6 +1351,7 @@ class CommtactLinkManagement : public QGCTool
     CommtactLinkProtocol::commtact_gdt_mission_adt_status_report_t _gdt_mission_adt_status_report;
     CommtactLinkProtocol::commtact_basic_ethernet_settings_report_t _common_ethernet_settings_report;
     CommtactLinkProtocol::commtact_discovery_report_t _common_discovery_report;
+    CommtactLinkProtocol::commtact_version_report_t _common_version_report;
 
     //--------------- ADT fields --------------------
     uint8_t _adtDataRecieved = 0;
@@ -1339,6 +1412,10 @@ class CommtactLinkManagement : public QGCTool
     uint _commonICDGDTDiscoveryVer = 0;
     uint _commonICDGDTDiscoveryRev = 0;
     uint _commonICDGDTDiscoveryDevType = 0;
+
+    uint _commonICDGDTFWVersion = 0;
+    uint _commonICDGDTSW0Version = 0;
+    uint _commonICDGDTSW1Version = 0;
     //-----------------------------------------------
 
     //--------------- Common ADT fields -------------
@@ -1368,6 +1445,10 @@ class CommtactLinkManagement : public QGCTool
     uint _commonICDADTDiscoveryVer = 0;
     uint _commonICDADTDiscoveryRev = 0;
     uint _commonICDADTDiscoveryDevType = 0;
+
+    uint _commonICDADTFWVersion = 0;
+    uint _commonICDADTSW0Version = 0;
+    uint _commonICDADTSW1Version = 0;
     //-----------------------------------------------
 
   signals:
@@ -1449,6 +1530,10 @@ class CommtactLinkManagement : public QGCTool
     void commonICDGDTDiscoveryRevChanged();
     void commonICDGDTDiscoveryDevTypeChanged();
 
+    void commonICDGDTFWVersionChanged();
+    void commonICDGDTSW0VersionChanged();
+    void commonICDGDTSW1VersionChanged();
+
     //-----------------------------------------------
 
     //---------------- Common ADT signals -----------
@@ -1478,6 +1563,10 @@ class CommtactLinkManagement : public QGCTool
     void commonICDADTDiscoveryVerChanged();
     void commonICDADTDiscoveryRevChanged();
     void commonICDADTDiscoveryDevTypeChanged();
+
+    void commonICDADTFWVersionChanged();
+    void commonICDADTSW0VersionChanged();
+    void commonICDADTSW1VersionChanged();
     //-----------------------------------------------
 
   public slots:

@@ -367,7 +367,7 @@ class CommtactLinkProtocol : public QGCTool
         uint16_t host_port;
         uint32_t transceiver_video_dest_ip;
         uint16_t transceiver_video_dest_port;
-        uint16_t user_payload_dest_ip;
+        uint32_t user_payload_dest_ip;
         uint16_t user_payload_port;
         uint16_t discovery_port;
         uint32_t encoded_video_dest_aux_ip;
@@ -398,6 +398,19 @@ class CommtactLinkProtocol : public QGCTool
         uint8_t link_encoding_type;
     })
     commtact_discovery_report_t;
+
+    PACKED_STRUCT(typedef struct __commtact_version_report {
+        uint8_t device_type;
+        uint16_t fw_version;
+        uint16_t sw0_version;
+        uint16_t ebox_version;
+        uint16_t sw1_version;
+        uint16_t dsp_version;
+        uint8_t reserved;
+        uint8_t hw_version;
+        uint8_t rf_hw_version;
+    })
+    commtact_version_report_t;
 
     //--------------------------------------------
 
@@ -464,6 +477,7 @@ class CommtactLinkProtocol : public QGCTool
     {
         COMMON_ETHERNET_SETTINGS = 0x05,
         COMMON_ETHERNET_SETTINGS_REPORT = 0x89,
+        COMMON_VERSION_REPORT = 0x8A,
         COMMON_DISCOVERY_REPORT = 0xA7
     } commtact_link_common_opcode_t;
 
@@ -529,6 +543,7 @@ class CommtactLinkProtocol : public QGCTool
                                                       uint16_t encoded_video_dest_aux_port, uint32_t encoded_video_dest_ip, uint16_t encoded_video_dest_port, uint32_t dsp_subnet_mask,
                                                       uint32_t dsp_default_gateway, uint32_t ebox_controller_ip, uint16_t ebox_controller_port);
     void commtact_link_msg_common_discovery_report_decode(const commtact_link_message_t *msg, commtact_discovery_report_t *discovery_report);
+    void commtact_link_msg_common_version_report_decode(const commtact_link_message_t *msg, commtact_version_report_t *version_report);
     //-----------------------------------------------------------
 
   public slots:

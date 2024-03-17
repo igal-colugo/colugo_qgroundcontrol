@@ -971,7 +971,11 @@ Item {
             Layout.fillWidth: false
             Layout.fillHeight: false
             Layout.alignment: Qt.AlignCenter
-            title: qsTr("ADT REPORT")
+            title: qsTr("ADT REPORT:") + qsTr(
+                       "FW:") + QGroundControl.commtactLinkManagement.commonICDADTFWVersion + qsTr(
+                       " SW0:")
+                   + QGroundControl.commtactLinkManagement.commonICDADTSW0Version + qsTr(
+                       " SW1:") + QGroundControl.commtactLinkManagement.commonICDADTSW1Version
             label: Text {
                 color: "#808080"
                 text: adtReportGroupBox.title

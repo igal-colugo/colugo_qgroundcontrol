@@ -831,7 +831,11 @@ Item {
             Layout.fillWidth: false
             Layout.fillHeight: false
             Layout.alignment: Qt.AlignCenter
-            title: qsTr("GDT REPORT")
+            title: qsTr("GDT REPORT:") + qsTr(
+                       "FW:") + QGroundControl.commtactLinkManagement.commonICDGDTFWVersion + qsTr(
+                       " SW0:")
+                   + QGroundControl.commtactLinkManagement.commonICDGDTSW0Version + qsTr(
+                       " SW1:") + QGroundControl.commtactLinkManagement.commonICDGDTSW1Version
             label: Text {
                 color: "#808080"
                 text: gdtReportGroupBox.title
