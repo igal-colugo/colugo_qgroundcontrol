@@ -93,20 +93,23 @@ Rectangle {
         color: qgcPal.window
         anchors.top: adtGdtSettingsLoader.bottom
 
-        QGCFlickable {
-            clip: true
+        QGCGroupBox {
+            id: linksGroupBox
             anchors.fill: parent
-            anchors.margins: ScreenTools.defaultFontPixelWidth
-            flickableDirection: Flickable.VerticalFlick
+            title: qsTr("LINKS")
+            label: Text {
+                color: "#808080"
+                text: linksGroupBox.title
+            }
 
-            QGCGroupBox {
-                id: linksGroupBox
-                anchors.fill: parent
-                title: qsTr("LINKS")
-                label: Text {
-                    color: "#808080"
-                    text: linksGroupBox.title
-                }
+            QGCFlickable {
+                clip: true
+                anchors.top: parent.top
+                width: parent.width
+                height: parent.height - buttonRow.height
+                contentHeight: settingsColumn.height
+                contentWidth: parent.width
+                flickableDirection: Flickable.VerticalFlick
 
                 Column {
                     id: settingsColumn

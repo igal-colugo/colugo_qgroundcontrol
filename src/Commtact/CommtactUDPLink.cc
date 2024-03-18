@@ -203,7 +203,7 @@ void CommtactUDPLink::readBytes()
         }
 
         emit bytesReceived(this, datagram);
-        datagram.clear();
+        // datagram.clear();
     }
 }
 
