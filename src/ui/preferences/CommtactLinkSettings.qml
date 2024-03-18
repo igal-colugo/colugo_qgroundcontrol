@@ -30,7 +30,7 @@ Rectangle {
     property int _rowSpacing: ScreenTools.defaultFontPixelHeight / 2
     property int _colSpacing: ScreenTools.defaultFontPixelWidth / 2
 
-    property var pages: ["qrc:/commtactqml/CommtactGDTSettings.qml", "qrc:/commtactqml/CommtactADTSettings.qml", "qrc:/commtactqml/CommtactEthernetSettings.qml"]
+    property var pages: ["qrc:/commtactqml/CommtactGDTSettings.qml", "qrc:/commtactqml/CommtactADTSettings.qml", "qrc:/commtactqml/CommtactEthernetSettings.qml", "qrc:/commtactqml/CommtactLinkStatus.qml"]
 
     QGCPalette {
         id: qgcPal
@@ -73,6 +73,9 @@ Rectangle {
         }
         QGCTabButton {
             text: qsTr("ETHERNET SETTINGS")
+        }
+        QGCTabButton {
+            text: qsTr("LINK STATUS")
         }
     }
 

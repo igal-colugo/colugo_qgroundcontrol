@@ -642,6 +642,41 @@ void CommtactLinkProtocol::commtact_link_msg_adt_status_report_decode(const comm
 //------------------------------------------------------------------
 
 //------------------------ COMMON ----------------------------------
+uint16_t CommtactLinkProtocol::commtact_link_msg_get_extended_report_message_pack(CommtactLinkProtocol::commtact_link_message_t *msg, uint8_t required_message, uint8_t parameter_size,
+                                                                                  uint8_t *parameters)
+{
+    CommtactLinkProtocol::commtact_extended_report_t packet = {};
+
+    msg->time_stamp[0] = 0;
+    msg->time_stamp[1] = 0;
+    msg->time_stamp[2] = 0;
+    msg->time_stamp[3] = 0;
+
+    msg->seq_num[0] = 0;
+    msg->seq_num[1] = 0;
+
+    msg->opcode = COMMON_EXTENDED_REPORT;
+
+    packet.required_message = required_message;
+    packet.parameter_size = parameter_size;
+
+    for (int i = 0; i < parameter_size; i++)
+    {
+        packet.parameters[i] = *(parameters + i);
+    }
+
+    uint8_t payload[sizeof(packet.required_message) + sizeof(packet.parameter_size) + parameter_size] = {};
+
+    uint8_t *pointer_to_packet = (uint8_t *) &payload;
+
+    memcpy(pointer_to_packet, &packet.required_message, sizeof(packet.required_message));
+    memcpy((pointer_to_packet + sizeof(packet.required_message)), &packet.parameter_size, sizeof(packet.parameter_size));
+    memcpy((pointer_to_packet + sizeof(packet.required_message) + sizeof(packet.parameter_size)), packet.parameters, parameter_size);
+
+    memcpy(_COMMTACT_PAYLOAD_NON_CONST(msg), &payload, sizeof(payload));
+
+    return sizeof(payload);
+}
 uint16_t CommtactLinkProtocol::commtact_link_msg_ethernet_settings_pack(CommtactLinkProtocol::commtact_link_message_t *msg, uint32_t icd_ip_address, uint16_t icd_listen_port,
                                                                         uint32_t icd_subnet_mask, uint32_t icd_default_gateway, uint32_t encoder_ip_address, uint16_t metadata_input_port,
                                                                         uint32_t reserved_1, uint16_t reserved_2, uint32_t host_ip, uint16_t host_port, uint32_t transceiver_video_dest_ip,
@@ -706,6 +741,16 @@ void CommtactLinkProtocol::commtact_link_msg_common_discovery_report_decode(cons
 void CommtactLinkProtocol::commtact_link_msg_common_version_report_decode(const commtact_link_message_t *msg, commtact_version_report_t *version_report)
 {
     memcpy(version_report, _COMMTACT_PAYLOAD(msg), sizeof(commtact_version_report_t));
+}
+void CommtactLinkProtocol::commtact_link_msg_common_extended_report_decode(const commtact_link_message_t *msg, int msg_size, commtact_key_length_value_report_t *extended_report)
+{
+    memcpy(extended_report, _COMMTACT_PAYLOAD(msg), msg_size);
+}
+
+void CommtactLinkProtocol::commtact_link_msg_common_antennas_per_link_configuration_report_decode(const commtact_link_message_t *msg, int msg_size,
+                                                                                                  commtact_antennas_per_link_configuration_report_t *antennas_per_link_configuration_report)
+{
+    memcpy(antennas_per_link_configuration_report, _COMMTACT_PAYLOAD(msg), msg_size);
 }
 //------------------------------------------------------------------
 

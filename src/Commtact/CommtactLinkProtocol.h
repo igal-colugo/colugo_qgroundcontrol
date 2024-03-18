@@ -412,6 +412,49 @@ class CommtactLinkProtocol : public QGCTool
     })
     commtact_version_report_t;
 
+    PACKED_STRUCT(typedef struct __commtact_key_length_value_report {
+        uint32_t key;
+        uint32_t length;
+        uint8_t data[256];
+    })
+    commtact_key_length_value_report_t;
+
+    PACKED_STRUCT(typedef struct __commtact_extended_report {
+        uint8_t required_message;
+        uint8_t parameter_size;
+        uint8_t parameters[256];
+    })
+    commtact_extended_report_t;
+
+    PACKED_STRUCT(typedef struct __commtact_antennas_per_link_configuration {
+        uint8_t role;
+        uint16_t antenna_port_involved;
+        uint8_t antenna_switching_mode;
+        uint16_t ber_to_switch;
+        uint16_t ber_to_peep;
+        uint16_t test_period;
+        uint16_t good_to_select;
+        uint16_t peep_period;
+        uint16_t ber_to_unsync;
+    })
+    commtact_antennas_per_link_configuration_t;
+
+    PACKED_STRUCT(typedef struct __commtact_antennas_per_link_configuration_set {
+        uint32_t key = 0x07000005;
+        uint32_t length;
+        uint8_t number_of_possible_configurations;
+        commtact_antennas_per_link_configuration_t configuration[256];
+    })
+    commtact_antennas_per_link_configuration_set_t;
+
+    PACKED_STRUCT(typedef struct __commtact_antennas_per_link_configuration_report {
+        uint32_t key = 0x07000006;
+        uint32_t length;
+        uint8_t number_of_possible_configurations;
+        commtact_antennas_per_link_configuration_t configuration[10];
+    })
+    commtact_antennas_per_link_configuration_report_t;
+
     //--------------------------------------------
 
     typedef enum
@@ -476,6 +519,8 @@ class CommtactLinkProtocol : public QGCTool
     typedef enum
     {
         COMMON_ETHERNET_SETTINGS = 0x05,
+        COMMON_KEY_LENGTH_VALUE_REPORT = 0x67,
+        COMMON_EXTENDED_REPORT = 0x69,
         COMMON_ETHERNET_SETTINGS_REPORT = 0x89,
         COMMON_VERSION_REPORT = 0x8A,
         COMMON_DISCOVERY_REPORT = 0xA7
@@ -535,6 +580,7 @@ class CommtactLinkProtocol : public QGCTool
     //-----------------------------------------------------------
 
     //------------------- COMMON --------------------------------
+    uint16_t commtact_link_msg_get_extended_report_message_pack(CommtactLinkProtocol::commtact_link_message_t *msg, uint8_t required_message, uint8_t parameter_size, uint8_t *parameters);
     void commtact_link_msg_common_ethernet_settings_report_decode(const commtact_link_message_t *msg, commtact_basic_ethernet_settings_report_t *basic_ethernet_settings_report);
     uint16_t commtact_link_msg_ethernet_settings_pack(CommtactLinkProtocol::commtact_link_message_t *msg, uint32_t icd_ip_address, uint16_t icd_listen_port, uint32_t icd_subnet_mask,
                                                       uint32_t icd_default_gateway, uint32_t encoder_ip_address, uint16_t metadata_input_port, uint32_t reserved_1, uint16_t reserved_2,
@@ -544,6 +590,9 @@ class CommtactLinkProtocol : public QGCTool
                                                       uint32_t dsp_default_gateway, uint32_t ebox_controller_ip, uint16_t ebox_controller_port);
     void commtact_link_msg_common_discovery_report_decode(const commtact_link_message_t *msg, commtact_discovery_report_t *discovery_report);
     void commtact_link_msg_common_version_report_decode(const commtact_link_message_t *msg, commtact_version_report_t *version_report);
+    void commtact_link_msg_common_extended_report_decode(const commtact_link_message_t *msg, int msg_size, commtact_key_length_value_report_t *extended_report);
+    void commtact_link_msg_common_antennas_per_link_configuration_report_decode(const commtact_link_message_t *msg, int msg_size,
+                                                                                commtact_antennas_per_link_configuration_report_t *antennas_per_link_configuration_report);
     //-----------------------------------------------------------
 
   public slots:

@@ -411,5 +411,6 @@
         <file alias="CommtactADTSettings.qml">src/Commtact/Qml/CommtactADTSettings.qml</file>
         <file alias="CommtactGDTSettings.qml">src/Commtact/Qml/CommtactGDTSettings.qml</file>
         <file alias="CommtactEthernetSettings.qml">src/Commtact/Qml/CommtactEthernetSettings.qml</file>
+        <file alias="CommtactLinkStatus.qml">src/Commtact/Qml/CommtactLinkStatus.qml</file>
     </qresource>
 </RCC>

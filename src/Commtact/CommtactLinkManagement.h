@@ -1307,7 +1307,7 @@ class CommtactLinkManagement : public QGCTool
     //-------------------------------------------------------------------
 
     //----------------- COMMON commands ---------------------------------
-
+    Q_INVOKABLE void getExtendedRequiredMessageCommand(uint required_message, uint parameter_size, uint *parameters);
     Q_INVOKABLE void setCommonEthernetICDIPAddressCommand(QString icd_ip_address_port_string);
     Q_INVOKABLE void setCommonEthernetICDSubnetMaskCommand(QString icd_subnet_mask_string);
     Q_INVOKABLE void setCommonEthernetICDDefaultGatewayCommand(QString icd_default_gateway_string);
@@ -1352,6 +1352,8 @@ class CommtactLinkManagement : public QGCTool
     CommtactLinkProtocol::commtact_basic_ethernet_settings_report_t _common_ethernet_settings_report;
     CommtactLinkProtocol::commtact_discovery_report_t _common_discovery_report;
     CommtactLinkProtocol::commtact_version_report_t _common_version_report;
+    CommtactLinkProtocol::commtact_key_length_value_report_t _common_extended_report;
+    CommtactLinkProtocol::commtact_antennas_per_link_configuration_report_t _antennas_per_link_configuration_report;
 
     //--------------- ADT fields --------------------
     uint8_t _adtDataRecieved = 0;

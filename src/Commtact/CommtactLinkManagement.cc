@@ -74,9 +74,18 @@ void CommtactLinkManagement::updateTimeout()
         // Common version report
         getGDTRequiredMessageCommand(0x8A);
     }
+    if (counter == 4)
+    {
+        // Common extended report
+        uint32_t key = 0x07000006;
+        uint8_t parameters[4] = {0, 0, 0, 0};
+        uint8_t *pointer_to_key = (uint8_t *) &key;
+        memcpy(parameters, pointer_to_key, sizeof(parameters));
+        getExtendedRequiredMessageCommand(0x67, 4, (uint *) &parameters);
+    }
 
     counter++;
-    if (counter > 3)
+    if (counter > 4)
     {
         counter = 0;
     }
@@ -912,6 +921,30 @@ void CommtactLinkManagement::setADTOperationalFrequencyCommand(uint adt_operatio
 //--------------------------------------------------------
 
 //----------------------- COMMON commands ----------------
+void CommtactLinkManagement::getExtendedRequiredMessageCommand(uint required_message, uint parameter_size, uint *parameters)
+{
+    /* Sending the camera command */
+    WeakCommtactLinkInterfacePtr weakLink = this->_commtactLinkManager->selectedSharedLinkInterfacePointerForLink();
+    if (weakLink.expired())
+    {
+        return;
+    }
+    SharedCommtactLinkInterfacePtr sharedLink = weakLink.lock();
+
+    if (sharedLink != nullptr)
+    {
+        CommtactLinkProtocol *linkProtocol = this->_commtactLinkManager->linkProtocol();
+
+        CommtactLinkProtocol::commtact_link_message_t message = {};
+
+        uint16_t payload_size = linkProtocol->commtact_link_msg_get_extended_report_message_pack(&message, required_message, parameter_size, (uint8_t *) parameters);
+
+        uint8_t buffer[sizeof(CommtactLinkProtocol::commtact_link_message_header_t) + payload_size] = {};
+        int len = linkProtocol->commtact_link_msg_to_send_buffer(&buffer[0], &message, payload_size);
+
+        sharedLink->writeBytesThreadSafe((const char *) buffer, len);
+    }
+}
 void CommtactLinkManagement::setCommonEthernetICDIPAddressCommand(QString icd_ip_address_port_string)
 {
     QString icd_ip_address_string;
@@ -1414,6 +1447,17 @@ void CommtactLinkManagement::_commtactLinkMessageReceived(CommtactLinkInterface 
                 setCommonICDADTDiscoveryRev(_common_discovery_report.icd_rev);
                 setCommonICDADTDiscoveryDevType(_common_discovery_report.dev_type);
                 setCommonICDADTDiscoveryDestPort(_common_discovery_report.discovery_dest_port);
+            }
+
+            break;
+
+        case CommtactLinkProtocol::COMMON_KEY_LENGTH_VALUE_REPORT:
+
+            linkProtocol->commtact_link_msg_common_extended_report_decode(&message, message_size, &_common_extended_report);
+
+            if (_common_extended_report.key == 0x07000006)
+            {
+                linkProtocol->commtact_link_msg_common_antennas_per_link_configuration_report_decode(&message, message_size, &_antennas_per_link_configuration_report);
             }
 
             break;
