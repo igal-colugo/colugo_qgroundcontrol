@@ -58,6 +58,39 @@ Item {
                 anchors.margins: 3
                 columnSpacing: 2
                 rowSpacing: 2
+
+                QGCGroupBox {
+                    property int cellRowHeight: (parent.height - (parent.rows * parent.rowSpacing))
+                                                / (parent.rows)
+                    property int cellColumnWidth: (parent.width - (parent.columns * parent.columnSpacing)) / (parent.columns)
+                    id: gdtAntennaStatusGroupBox
+                    height: cellRowHeight * Layout.rowSpan
+                    width: cellColumnWidth * Layout.columnSpan
+                    Layout.rowSpan: 3
+                    Layout.columnSpan: 1
+                    Layout.preferredHeight: cellRowHeight * Layout.rowSpan
+                    Layout.preferredWidth: cellColumnWidth * Layout.columnSpan
+                    Layout.fillWidth: true
+                    Layout.fillHeight: true
+                    Layout.alignment: Qt.AlignCenter
+                    title: qsTr("Antenna")
+                    label: Text {
+                        color: "#808080"
+                        text: gdtAntennaStatusGroupBox.title
+                    }
+
+                    QGCListView {
+                        anchors.fill: parent
+                        orientation: ListView.Vertical
+                        delegate: Rectangle {
+                            width: parent.width
+                            height: 100
+                            color: bgcolor
+                        }
+
+                        model: QGroundControl.commtactLinkManagement.antennaPerLinkConfigurations
+                    }
+                }
             }
         }
 

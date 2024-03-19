@@ -1255,6 +1255,7 @@ class CommtactLinkManagement : public QGCTool
         emit commonICDADTDiscoveryDevTypeChanged();
     }
 
+    Q_PROPERTY(QmlObjectListModel *antennaPerLinkConfigurations READ _qmlAntennaPerLinkConfigurations CONSTANT)
     //---------------------------------------------------------------
 
     //------------------- GDT commands ------------------------------
@@ -1314,12 +1315,20 @@ class CommtactLinkManagement : public QGCTool
     Q_INVOKABLE void setCommonEthernetICDHostIPCommand(QString icd_host_ip_port_string);
     Q_INVOKABLE void setCommonEthernetICDDiscoveryPortCommand(uint icd_discovery_port);
 
+    void addConfiguration(AntennasPerLinkConfiguration *config);
+
     //-------------------------------------------------------------------
 
   protected:
     CommtactLinkManager *_commtactLinkManager = nullptr;
 
   private:
+    QmlObjectListModel *_qmlAntennaPerLinkConfigurations(void)
+    {
+        return &_qmlAntennaLinkConfigurations;
+    }
+    QmlObjectListModel _qmlAntennaLinkConfigurations;
+
     QTimer _updateTimer;
 
     //--------------- GDT fields --------------------

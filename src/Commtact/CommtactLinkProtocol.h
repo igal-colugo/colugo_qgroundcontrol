@@ -45,6 +45,96 @@
 class CommtactLinkManager;
 class QGCApplication;
 
+class AntennasPerLinkConfiguration : public QObject
+{
+    Q_OBJECT
+
+  public:
+    AntennasPerLinkConfiguration(const QString &name);
+    AntennasPerLinkConfiguration(AntennasPerLinkConfiguration *copy);
+    virtual ~AntennasPerLinkConfiguration()
+    {
+    }
+
+    Q_PROPERTY(QString name READ name WRITE setName NOTIFY nameChanged)
+    // Q_PROPERTY(QString settingsTitle READ settingsTitle CONSTANT)
+
+    // Property accessors
+    QString name(void) const
+    {
+        return _name;
+    }
+    void setName(const QString name);
+
+    //    /*!
+    //     * @brief Load settings
+    //     *
+    //     * Pure virtual method telling the instance to load its configuration.
+    //     * @param[in] settings The QSettings instance to use
+    //     * @param[in] root The root path of the setting.
+    //     */
+    //    virtual void loadSettings(QSettings &settings, const QString &root) = 0;
+
+    //    /*!
+    //     * @brief Save settings
+    //     *
+    //     * Pure virtual method telling the instance to save its configuration.
+    //     * @param[in] settings The QSettings instance to use
+    //     * @param[in] root The root path of the setting.
+    //     */
+    //    virtual void saveSettings(QSettings &settings, const QString &root) = 0;
+
+    //    /*!
+    //     * @brief Settings Title
+    //     *
+    //     * Pure virtual method providing the Title for the (QML) settings dialog
+    //     */
+    //    virtual QString settingsTitle() = 0;
+
+    /*!
+     * @brief Copy instance data
+     *
+     * When manipulating data, you create a copy of the configuration using the
+     * copy constructor, edit it and then transfer its content to the original
+     * using this method.
+     * @param[in] source The source instance (the edited copy)
+     */
+    virtual void copyFrom(AntennasPerLinkConfiguration *source);
+
+    /// Helper static methods
+
+    /*!
+     * @brief Root path for QSettings
+     *
+     * @return The root path of the settings.
+     */
+    static const QString settingsRoot();
+
+    /*!
+     * @brief Create new link configuration instance
+     *
+     * Configuration Factory. Creates an appropriate configuration instance based
+     * on the given type.
+     * @return A new instance of the given type
+     */
+    static AntennasPerLinkConfiguration *createSettings(const QString &name);
+
+    /*!
+     * @brief Duplicate configuration instance
+     *
+     * Helper method to create a new instance copy for editing.
+     * @return A new copy of the given settings instance
+     */
+    static AntennasPerLinkConfiguration *duplicateSettings(AntennasPerLinkConfiguration *source);
+
+  signals:
+    void nameChanged(const QString &name);
+
+  protected:
+  private:
+    QString _name;
+};
+
 /**
  * @brief MAVLink micro air vehicle protocol reference implementation.
  *
@@ -663,3 +753,5 @@ class CommtactLinkProtocol : public QGCTool
     void _swap_bytes(uint16_t *data);
     void _swap_bytes(uint32_t *data);
 };
+
+typedef std::shared_ptr<AntennasPerLinkConfiguration> SharedAntennasPerLinkConfigurationPtr;

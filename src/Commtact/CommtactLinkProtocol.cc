@@ -27,6 +27,8 @@ Q_DECLARE_METATYPE(mavlink_message_t)
 
 QGC_LOGGING_CATEGORY(CommtactLinkProtocolLog, "CommtactLinkProtocolLog")
 
+#define LINK_SETTING_ROOT "AntennasPerLinkConfiguration"
+
 const char *CommtactLinkProtocol::_tempLogFileTemplate = "FlightDataXXXXXX"; ///< Template for temporary log file
 const char *CommtactLinkProtocol::_logFileExtension = "commtact_link";       ///< Extension for log files
 
@@ -782,4 +784,52 @@ void CommtactLinkProtocol::_swap_bytes(uint32_t *data)
     *(temp_byte + 3) = *(data_byte + 0);
 
     *(data) = temp;
+}
+
+//------------- Antennas per link configurations -------------------
+AntennasPerLinkConfiguration::AntennasPerLinkConfiguration(const QString &name) : _name(name)
+{
+}
+AntennasPerLinkConfiguration::AntennasPerLinkConfiguration(AntennasPerLinkConfiguration *copy)
+{
+    _name = copy->name();
+    Q_ASSERT(!_name.isEmpty());
+}
+void AntennasPerLinkConfiguration::copyFrom(AntennasPerLinkConfiguration *source)
+{
+    Q_ASSERT(source != nullptr);
+    _name = source->name();
+}
+/*!
+  Where the settings are saved
+  @return The root path of the setting.
+*/
+const QString AntennasPerLinkConfiguration::settingsRoot()
+{
+    return QString(LINK_SETTING_ROOT);
+}
+/*!
+  Configuration Factory
+  @return A new instance of the given type
+*/
+AntennasPerLinkConfiguration *AntennasPerLinkConfiguration::createSettings(const QString &name)
+{
+    AntennasPerLinkConfiguration *config = nullptr;
+    config->name() = name;
+    return config;
+}
+/*!
+  Duplicate link settings
+  @return A new copy of the given settings instance
+*/
+AntennasPerLinkConfiguration *AntennasPerLinkConfiguration::duplicateSettings(AntennasPerLinkConfiguration *source)
+{
+    AntennasPerLinkConfiguration *dupe = nullptr;
+
+    return dupe;
+}
+void AntennasPerLinkConfiguration::setName(const QString name)
+{
+    _name = name;
+    emit nameChanged(name);
 }

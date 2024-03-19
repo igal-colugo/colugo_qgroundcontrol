@@ -42,6 +42,10 @@ CommtactLinkManagement::CommtactLinkManagement(QGCApplication *app, QGCToolbox *
     connect(&_updateTimer, &QTimer::timeout, this, &CommtactLinkManagement::updateTimeout);
     _updateTimer.setInterval(500);
     _updateTimer.start();
+
+    AntennasPerLinkConfiguration *config = new AntennasPerLinkConfiguration("Vlad");
+    config->setName("Vlad");
+    _qmlAntennaLinkConfigurations.append(config);
 }
 void CommtactLinkManagement::setToolbox(QGCToolbox *toolbox)
 {
@@ -1640,4 +1644,9 @@ void CommtactLinkManagement::_commtactLinkMessageReceived(CommtactLinkInterface 
             break;
         }
     }
+}
+
+void CommtactLinkManagement::addConfiguration(AntennasPerLinkConfiguration *config)
+{
+    _qmlAntennaLinkConfigurations.append(config);
 }
