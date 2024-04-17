@@ -204,12 +204,16 @@ void JoystickManager::setActiveJoystick(Joystick *joystick)
     // if desired joystick eq to camera joystick destroy it
     if (_activeCamJoystick == joystick)
     {
-        _activeCamJoystick->stopPolling();
-        _activeCamJoystick = nullptr;
+        if (_activeCamJoystick != nullptr)
+        {
+            _activeCamJoystick->stopPolling();
+            _activeCamJoystick = nullptr;
+        }
     }
     if (_activeJoystick)
     {
         _activeJoystick->stopPolling();
+        _activeJoystick = nullptr;
     }
 
     _activeJoystick = joystick;
