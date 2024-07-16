@@ -149,7 +149,10 @@ Item {
             Layout.alignment: Qt.AlignLeft
 
             onReleased: {
-                joystickManager.epsilonCameraManagement.setCameraOrderCommand(1)
+                if (_activeVehicle !== null) {
+                    _activeVehicle.setAsioInitLocation(_latitude.text,
+                                                       _longitude.text)
+                }
             }
         }
 
