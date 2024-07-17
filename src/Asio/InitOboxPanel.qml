@@ -119,7 +119,7 @@ Item {
 
             maximumLength: 10
             text: {
-                _fromVehicleLocation.checked ? _activeVehicleCoordinate.latitude : _latitude.text
+                _fromVehicleLocation.checked ? _activeVehicleCoordinate.longitude : _longitude.text
             }
 
             Layout.rowSpan: 1
